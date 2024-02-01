@@ -86,7 +86,7 @@ public class StatusFilterAction extends AsyncExecutor<StatusFilterAction.Param, 
 		public final long id;
 		public final int mode;
 
-		public Result(int mode, long id, @Nullable Filter filter, @Nullable ConnectionException exception) {
+		Result(int mode, long id, @Nullable Filter filter, @Nullable ConnectionException exception) {
 			this.mode = mode;
 			this.id = id;
 			this.filter = filter;

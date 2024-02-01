@@ -249,7 +249,11 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 				MetaDialog.show(this, media.getMeta());
 			}
 		} else if (item.getItemId() == R.id.menu_video_add_description) {
-			DescriptionDialog.show(this);
+			if (media != null) {
+				DescriptionDialog.show(this, media.getDescription());
+			} else {
+				DescriptionDialog.show(this, "");
+			}
 		}
 		return super.onOptionsItemSelected(item);
 	}

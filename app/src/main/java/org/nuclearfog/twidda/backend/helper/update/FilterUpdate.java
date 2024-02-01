@@ -14,22 +14,33 @@ public class FilterUpdate implements Serializable {
 
 	private static final long serialVersionUID = 7408688572155707380L;
 
-	private long id = 0L;
-	private String title = "";
-	private String[] keyWordStr = {};
-	private long[] keywordIds = {};
-	private int expires_at = 0;
-	private int action = Filter.ACTION_HIDE;
-	private boolean filterHome = false;
-	private boolean filterNotification = false;
-	private boolean filterPublic = true;
-	private boolean filterUser = false;
-	private boolean filterThread = false;
+	private long id;
+	private String title;
+	private String[] keyWordStr;
+	private long[] keywordIds;
+	private int expires_at;
+	private int action;
+	private boolean filterHome;
+	private boolean filterNotification;
+	private boolean filterPublic;
+	private boolean filterUser;
+	private boolean filterThread;
 
 	/**
 	 *
 	 */
 	public FilterUpdate() {
+		id = 0L;
+		title = "";
+		expires_at = 0;
+		filterHome = false;
+		filterNotification = false;
+		filterPublic = true;
+		filterUser = false;
+		filterThread = false;
+		action = Filter.ACTION_HIDE;
+		keywordIds = new long[0];
+		keyWordStr = new String[0];
 	}
 
 	/**
@@ -38,11 +49,16 @@ public class FilterUpdate implements Serializable {
 	 * @param filter existing filter
 	 */
 	public FilterUpdate(Filter filter) {
-		int expires_at = (int) ((filter.getExpirationTime() - System.currentTimeMillis()) / 1000L);
-		Keyword[] keywords = filter.getKeywords();
 		id = filter.getId();
 		title = filter.getTitle();
 		action = filter.getAction();
+		filterHome = filter.filterHome();
+		filterNotification = filter.filterNotifications();
+		filterPublic = filter.filterPublic();
+		filterUser = filter.filterUserTimeline();
+		filterThread = filter.filterThreads();
+		// set keywords and their IDs
+		Keyword[] keywords = filter.getKeywords();
 		keyWordStr = new String[keywords.length];
 		keywordIds = new long[keywords.length];
 		for (int i = 0; i < keywords.length; i++) {
@@ -53,9 +69,9 @@ public class FilterUpdate implements Serializable {
 				keyWordStr[i] = keywords[i].getKeyword();
 			}
 		}
-		if (expires_at > 0) {
-			this.expires_at = expires_at;
-		}
+		// calculate remaining time to expire
+		int remainingTime = (int) ((filter.getExpirationTime() - System.currentTimeMillis()) / 1000L);
+		expires_at = Math.max(remainingTime, 0);
 	}
 
 	/**

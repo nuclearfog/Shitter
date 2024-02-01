@@ -63,7 +63,7 @@ public class ReportDialog extends DialogFragment implements OnClickListener {
 	private EditText editDescription;
 	private Spinner reportCategory;
 
-	private ReportUpdate update;
+	private ReportUpdate reportUpdate = new ReportUpdate();
 
 	/**
 	 *
@@ -101,8 +101,8 @@ public class ReportDialog extends DialogFragment implements OnClickListener {
 		if (savedInstanceState != null) {
 			Object data = savedInstanceState.getSerializable(KEY_REPORT);
 			if (data instanceof ReportUpdate) {
-				update = (ReportUpdate) data;
-				if (update.getStatusIds().length > 0) {
+				reportUpdate = (ReportUpdate) data;
+				if (reportUpdate.getStatusIds().length > 0) {
 					textTitle.setText(R.string.dialog_report_title_status);
 				} else {
 					textTitle.setText(R.string.dialog_report_title_user);
@@ -131,7 +131,7 @@ public class ReportDialog extends DialogFragment implements OnClickListener {
 
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle outstate) {
-		outstate.putSerializable(KEY_REPORT, update);
+		outstate.putSerializable(KEY_REPORT, reportUpdate);
 		super.onSaveInstanceState(outstate);
 	}
 
@@ -139,18 +139,18 @@ public class ReportDialog extends DialogFragment implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_report_apply) {
-			if (update != null && reportUpdater.isIdle()) {
+			if (reportUpdater.isIdle()) {
 				if (reportCategory.getSelectedItemPosition() == 0) {
-					update.setCategory(ReportUpdate.CATEGORY_SPAM);
+					reportUpdate.setCategory(ReportUpdate.CATEGORY_SPAM);
 				} else if (reportCategory.getSelectedItemPosition() == 1) {
-					update.setCategory(ReportUpdate.CATEGORY_VIOLATION);
+					reportUpdate.setCategory(ReportUpdate.CATEGORY_VIOLATION);
 				} else {
-					update.setCategory(ReportUpdate.CATEGORY_OTHER);
+					reportUpdate.setCategory(ReportUpdate.CATEGORY_OTHER);
 				}
-				update.setRuleIds(ruleAdapter.getSelectedIds());
-				update.setComment(editDescription.getText().toString());
-				update.setForward(switchForward.isChecked());
-				reportUpdater.execute(update, reportResult);
+				reportUpdate.setRuleIds(ruleAdapter.getSelectedIds());
+				reportUpdate.setComment(editDescription.getText().toString());
+				reportUpdate.setForward(switchForward.isChecked());
+				reportUpdater.execute(reportUpdate, reportResult);
 				Toast.makeText(getContext(), R.string.info_report_submit, Toast.LENGTH_SHORT).show();
 			}
 		}
@@ -181,7 +181,7 @@ public class ReportDialog extends DialogFragment implements OnClickListener {
 		Context context = getContext();
 		if (result.exception == null) {
 			if (context != null) {
-				if (update != null && update.getStatusIds().length > 0) {
+				if (reportUpdate != null && reportUpdate.getStatusIds().length > 0) {
 					Toast.makeText(context, R.string.info_status_reported, Toast.LENGTH_SHORT).show();
 				} else {
 					Toast.makeText(context, R.string.info_user_reported, Toast.LENGTH_SHORT).show();

@@ -14,8 +14,19 @@ public class ReportUpdate implements Serializable {
 
 	private static final long serialVersionUID = 7643792374030657129L;
 
+	/**
+	 * report category for other violations
+	 */
 	public static final int CATEGORY_OTHER = 10;
+
+	/**
+	 * report category for spam
+	 */
 	public static final int CATEGORY_SPAM = 11;
+
+	/**
+	 * report category for rule violation
+	 */
 	public static final int CATEGORY_VIOLATION = 12;
 
 	private long userId;
@@ -24,6 +35,14 @@ public class ReportUpdate implements Serializable {
 	private String comment = "";
 	private int category = CATEGORY_OTHER;
 	private boolean forward = false;
+
+	/**
+	 *
+	 */
+	public ReportUpdate() {
+		userId = 0L;
+		statusIds = new long[0];
+	}
 
 	/**
 	 * @param userId user ID to report

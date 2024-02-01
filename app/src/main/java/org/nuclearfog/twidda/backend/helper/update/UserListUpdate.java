@@ -15,11 +15,30 @@ public class UserListUpdate implements Serializable {
 
 	private static final long serialVersionUID = -366691257985800712L;
 
-	private long listId = 0L;
-	private String title = "";
-	private int policy = UserList.NONE;
-	private boolean isExclusive = false;
+	private long listId;
+	private String title;
+	private int policy;
+	private boolean isExclusive;
 
+	/**
+	 *
+	 */
+	public UserListUpdate() {
+		listId = 0L;
+		title = "";
+		policy = UserList.NONE;
+		isExclusive = false;
+	}
+
+	/**
+	 *
+	 */
+	public UserListUpdate(UserList list) {
+		listId = list.getId();
+		title = list.getTitle();
+		policy = list.getReplyPolicy();
+		isExclusive = false; // todo implement this
+	}
 
 	/**
 	 * set ID of an existing list to update

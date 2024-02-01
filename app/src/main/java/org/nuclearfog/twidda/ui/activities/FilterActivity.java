@@ -28,7 +28,7 @@ import org.nuclearfog.twidda.ui.fragments.ListFragment;
  */
 public class FilterActivity extends AppCompatActivity implements FilterDialogCallback {
 
-	private FilterDialog filterDialog;
+
 	private ListFragment.ItemViewModel viewModel;
 
 
@@ -44,7 +44,6 @@ public class FilterActivity extends AppCompatActivity implements FilterDialogCal
 		setContentView(R.layout.page_fragment);
 		ViewGroup root = findViewById(R.id.page_fragment_root);
 		Toolbar toolbar = findViewById(R.id.page_fragment_toolbar);
-		filterDialog = new FilterDialog(this, this);
 		viewModel = new ViewModelProvider(this).get(ListFragment.ItemViewModel.class);
 
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -68,7 +67,7 @@ public class FilterActivity extends AppCompatActivity implements FilterDialogCal
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (item.getItemId() == R.id.menu_filter_create) {
-			filterDialog.show();
+			FilterDialog.show(this);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

@@ -1,10 +1,10 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
-import android.app.Activity;
-import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -19,6 +19,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
@@ -35,63 +39,100 @@ import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
  *
  * @author nuclearfog
  */
-public class UserlistDialog extends Dialog implements OnClickListener, OnItemSelectedListener, OnCheckedChangeListener, TextWatcher, AsyncCallback<UserlistUpdater.Result> {
-
-	private TextView title_dialog;
-	private EditText title_input;
-	private CompoundButton exclusive;
-	private Spinner policy;
-	private Button apply;
-
-	private DropdownAdapter adapter;
-	private GlobalSettings settings;
-	private UserlistUpdater listUpdater;
-	private UserlistUpdatedCallback callback;
-
-	private UserListUpdate update = new UserListUpdate();
+public class UserlistDialog extends DialogFragment implements OnClickListener, OnItemSelectedListener, OnCheckedChangeListener, TextWatcher, AsyncCallback<UserlistUpdater.Result> {
 
 	/**
 	 *
 	 */
-	public UserlistDialog(Activity activity, UserlistUpdatedCallback callback) {
-		super(activity, R.style.DefaultDialog);
-		listUpdater = new UserlistUpdater(activity.getApplicationContext());
-		settings = GlobalSettings.get(activity.getApplicationContext());
-		adapter = new DropdownAdapter(activity.getApplicationContext());
-		this.callback = callback;
+	private static final String TAG = "UserListDialog";
+
+	/**
+	 * Bundle key used to set/restore userlsit configuration
+	 * @value type is {@link UserList} or {@link UserListUpdate}
+	 */
+	private static final String KEY_USERLIST = "userlist";
+
+	private EditText title_input;
+
+	private UserlistUpdater listUpdater;
+
+	private UserListUpdate userlist = new UserListUpdate();
+
+	/**
+	 *
+	 */
+	public UserlistDialog() {
+		setStyle(STYLE_NO_TITLE, R.style.DefaultDialog);
 	}
 
 
+	@Nullable
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		setContentView(R.layout.dialog_userlist);
-		ViewGroup rootView = findViewById(R.id.dialog_userlist_root);
-		apply = findViewById(R.id.dialog_userlist_apply);
-		View button_cancel = findViewById(R.id.dialog_userlist_cancel);
-		title_dialog = findViewById(R.id.dialog_userlist_title_dialog);
-		title_input = findViewById(R.id.dialog_userlist_title_input);
-		exclusive = findViewById(R.id.dialog_userlist_exclusive);
-		policy = findViewById(R.id.dialog_userlist_replies_selector);
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.dialog_userlist, container, false);
+		Button apply = view.findViewById(R.id.dialog_userlist_apply);
+		View button_cancel = view.findViewById(R.id.dialog_userlist_cancel);
+		TextView title_dialog = view.findViewById(R.id.dialog_userlist_title_dialog);
+		title_input = view.findViewById(R.id.dialog_userlist_title_input);
+		CompoundButton exclusive = view.findViewById(R.id.dialog_userlist_exclusive);
+		Spinner policy = view.findViewById(R.id.dialog_userlist_replies_selector);
+
+		listUpdater = new UserlistUpdater(requireContext());
+		GlobalSettings settings = GlobalSettings.get(requireContext());
+		DropdownAdapter adapter = new DropdownAdapter(requireContext());
 
 		adapter.setItems(R.array.userlist_policy);
 		policy.setAdapter(adapter);
-		AppStyles.setTheme(rootView, settings.getPopupColor());
+		AppStyles.setTheme((ViewGroup) view, settings.getPopupColor());
 
+		if (savedInstanceState == null)
+			savedInstanceState = getArguments();
+		if (savedInstanceState != null) {
+			Object data = savedInstanceState.getSerializable(KEY_USERLIST);
+			if (data instanceof UserListUpdate) {
+				userlist = (UserListUpdate) data;
+			} else if (data instanceof UserList) {
+				userlist = new UserListUpdate((UserList) data);
+			}
+		}
+		if (userlist.getId() != 0L)
+			title_dialog.setText(R.string.userlist_update_list);
+		else
+			title_dialog.setText(R.string.userlist_create_new_list);
+		apply.setText(R.string.userlist_update);
+		title_input.setText(userlist.getTitle());
+		exclusive.setChecked(userlist.isExclusive());
+		if (userlist.getPolicy() == UserList.NONE) {
+			policy.setSelection(0);
+		} else if (userlist.getPolicy() == UserList.FOLLOWED) {
+			policy.setSelection(1);
+		} else if (userlist.getPolicy() == UserList.LIST) {
+			policy.setSelection(2);
+		}
 		apply.setOnClickListener(this);
 		button_cancel.setOnClickListener(this);
 		policy.setOnItemSelectedListener(this);
 		exclusive.setOnCheckedChangeListener(this);
 		title_input.addTextChangedListener(this);
+		return view;
+	}
+
+
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_USERLIST, userlist);
+		super.onSaveInstanceState(outState);
 	}
 
 
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_userlist_apply) {
-			if (title_input.length() == 0) {
-				Toast.makeText(getContext(), R.string.error_list_title_empty, Toast.LENGTH_SHORT).show();
+			if (userlist.getTitle().trim().isEmpty()) {
+				title_input.setError(title_input.getContext().getString(R.string.error_list_title_empty));
 			} else if (listUpdater.isIdle()) {
-				listUpdater.execute(update, this);
+				listUpdater.execute(userlist, this);
+				title_input.setError(null);
 			}
 		} else if (v.getId() == R.id.dialog_userlist_cancel) {
 			dismiss();
@@ -100,19 +141,9 @@ public class UserlistDialog extends Dialog implements OnClickListener, OnItemSel
 
 
 	@Override
-	public void show() {
-		super.show();
-		title_dialog.setText(R.string.userlist_create_new_list);
-		apply.setText(R.string.userlist_create);
-		title_input.setText("");
-		policy.setSelection(0);
-	}
-
-
-	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		if (buttonView.getId() == R.id.dialog_userlist_exclusive) {
-			update.setExclusive(isChecked);
+			userlist.setExclusive(isChecked);
 		}
 	}
 
@@ -121,11 +152,11 @@ public class UserlistDialog extends Dialog implements OnClickListener, OnItemSel
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		if (parent.getId() == R.id.dialog_userlist_replies_selector) {
 			if (position == 0) {
-				update.setPolicy(UserList.NONE);
+				userlist.setPolicy(UserList.NONE);
 			} else if (position == 1) {
-				update.setPolicy(UserList.FOLLOWED);
+				userlist.setPolicy(UserList.FOLLOWED);
 			} else if (position == 2) {
-				update.setPolicy(UserList.LIST);
+				userlist.setPolicy(UserList.LIST);
 			}
 		}
 	}
@@ -148,67 +179,44 @@ public class UserlistDialog extends Dialog implements OnClickListener, OnItemSel
 
 	@Override
 	public void afterTextChanged(Editable s) {
-		update.setTitle(s.toString());
+		userlist.setTitle(s.toString());
 	}
 
 
 	@Override
 	public void onResult(@NonNull UserlistUpdater.Result result) {
+		Context context = getContext();
 		if (result.mode == UserlistUpdater.Result.CREATED) {
-			Toast.makeText(getContext(), R.string.info_list_created, Toast.LENGTH_SHORT).show();
-			callback.onUserlistUpdate(result.userlist);
+			if (context != null)
+				Toast.makeText(context, R.string.info_list_created, Toast.LENGTH_SHORT).show();
+			if (getActivity() instanceof UserlistUpdatedCallback)
+				((UserlistUpdatedCallback) getActivity()).onUserlistUpdate(result.userlist);
 			dismiss();
 		} else if (result.mode == UserlistUpdater.Result.UPDATED) {
-			Toast.makeText(getContext(), R.string.info_list_updated, Toast.LENGTH_SHORT).show();
-			callback.onUserlistUpdate(result.userlist);
+			if (context != null)
+				Toast.makeText(context, R.string.info_list_updated, Toast.LENGTH_SHORT).show();
+			if (getActivity() instanceof UserlistUpdatedCallback)
+				((UserlistUpdatedCallback) getActivity()).onUserlistUpdate(result.userlist);
 			dismiss();
 		} else if (result.mode == UserlistUpdater.Result.ERROR) {
-			ErrorUtils.showErrorMessage(getContext(), result.exception);
+			if (context != null) {
+				ErrorUtils.showErrorMessage(context, result.exception);
+			}
 		}
-	}
-
-	/**
-	 * show dialog
-	 *
-	 * @param userlist existing userlist information or null to create a new list
-	 */
-	public void show(@NonNull UserList userlist) {
-		super.show();
-		title_dialog.setText(R.string.userlist_update_list);
-		apply.setText(R.string.userlist_update);
-		title_input.setText(userlist.getTitle());
-		update.setId(userlist.getId());
-		if (userlist.getReplyPolicy() == UserList.NONE) {
-			policy.setSelection(0);
-		} else if (userlist.getReplyPolicy() == UserList.FOLLOWED) {
-			policy.setSelection(1);
-		} else if (userlist.getReplyPolicy() == UserList.LIST) {
-			policy.setSelection(2);
-		}
-	}
-
-	/**
-	 * set userlist information
-	 */
-	public void show(@NonNull UserListUpdate update) {
-		super.show();
-		this.update = update;
-		if (update.getPolicy() == UserList.NONE) {
-			policy.setSelection(0);
-		} else if (update.getPolicy() == UserList.FOLLOWED) {
-			policy.setSelection(1);
-		} else if (update.getPolicy() == UserList.LIST) {
-			policy.setSelection(2);
-		}
-		title_input.setText(update.getTitle());
-		exclusive.setChecked(update.isExclusive());
 	}
 
 	/**
 	 *
 	 */
-	public UserListUpdate getContent() {
-		return update;
+	public static void show(FragmentActivity activity, UserList userlist) {
+		Fragment dialogFragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
+		if (dialogFragment == null) {
+			UserlistDialog dialog = new UserlistDialog();
+			Bundle param = new Bundle();
+			param.putSerializable(KEY_USERLIST, userlist);
+			dialog.setArguments(param);
+			dialog.show(activity.getSupportFragmentManager(), TAG);
+		}
 	}
 
 	/**

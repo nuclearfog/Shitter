@@ -177,8 +177,6 @@
 	<string name="error_acc_update">Account Informationen konnten nicht aktualisiert werden! Bitte Eingaben überprüfen.</string>
 	<string name="settings_color_card">Kartenfarbe</string>
 	<string name="settings_icon_color">Symbolfarbe</string>
-	<string name="settings_key1_hint">Consumer Key</string>
-	<string name="settings_key2_hint">Consumer Secret</string>
 	<string name="info_location_pending">Ortung läuft, bitte warten.</string>
 	<string name="error_search">Suchbegriff ist entweder zu lang oder enthält nicht erlaubte Zeichen!</string>
 	<string name="button_share">Link teilen</string>
@@ -240,8 +238,6 @@
 	<string name="error_invalid_media">Ungültige Mediendatei!</string>
 	<string name="info_status_location_copied">Standortkoordinaten kopiert</string>
 	<string name="settings_enable_indicators">zeige zusätzliche Status Informationen an</string>
-	<string name="login_key_enable">Token einfügen</string>
-	<string name="login_key_enable_v2">API v2 nutzen</string>
 	<string name="info_tag_featuring">füge Hashtag-Feature hinzu..</string>
 	<string name="info_tag_following">folge Hashtag..</string>
 	<string name="info_open_mastodon_login">öffne Mastodon Loginseite</string>

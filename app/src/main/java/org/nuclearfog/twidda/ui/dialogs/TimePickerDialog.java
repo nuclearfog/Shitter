@@ -33,13 +33,19 @@ import java.util.GregorianCalendar;
  */
 public class TimePickerDialog extends DialogFragment implements OnClickListener {
 
+	/**
+	 *
+	 */
 	private static final String TAG = "TimePickerDialog";
 
+	/**
+	 * Bundle key used to set/restore selected time
+	 * value type is long
+	 */
 	private static final String KEY_TIME = "picker_time";
 
 	private TimePicker timePicker;
 	private DatePicker datePicker;
-
 
 	/**
 	 *
@@ -137,7 +143,9 @@ public class TimePickerDialog extends DialogFragment implements OnClickListener 
 		show(activity.getSupportFragmentManager(), time);
 	}
 
-
+	/**
+	 *
+	 */
 	private static void show(FragmentManager fm, long time) {
 		Fragment dialogFragment = fm.findFragmentByTag(TAG);
 		if (dialogFragment == null) {

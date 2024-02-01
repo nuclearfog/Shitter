@@ -42,8 +42,6 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 	private StatusFilterLoader filterLoader;
 	private StatusFilterAction filterAction;
 
-	private FilterDialog filterDialog;
-
 	private Filter selection;
 
 
@@ -52,7 +50,6 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 		super.onViewCreated(view, savedInstanceState);
 		filterLoader = new StatusFilterLoader(requireContext());
 		filterAction = new StatusFilterAction(requireContext());
-		filterDialog = new FilterDialog(requireActivity(), this);
 		adapter = new FilterAdapter(this);
 		setAdapter(adapter, false);
 
@@ -109,7 +106,7 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 	@Override
 	public void onFilterClick(Filter filter) {
 		if (!isRefreshing()) {
-			filterDialog.show(filter);
+			FilterDialog.show(this, filter);
 		}
 	}
 

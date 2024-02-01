@@ -84,8 +84,6 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 	private GlobalSettings settings;
 
-	private UserlistDialog userlistDialog;
-
 	private ViewPager2 viewPager;
 	private Toolbar toolbar;
 
@@ -109,7 +107,6 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 		viewPager = findViewById(R.id.page_tab_view_pager);
 
 		settings = GlobalSettings.get(this);
-		userlistDialog = new UserlistDialog(this, this);
 		listLoaderAsync = new UserlistAction(this);
 		listManagerAsync = new UserlistManager(this);
 		adapter = new UserlistAdapter(this);
@@ -179,7 +176,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 		if (userList != null && listLoaderAsync.isIdle()) {
 			// open user list editor
 			if (item.getItemId() == R.id.menu_list_edit) {
-				userlistDialog.show(userList);
+				UserlistDialog.show(this, userList);
 				return true;
 			}
 			// delete user list

@@ -53,6 +53,8 @@ public class DescriptionDialog extends DialogFragment implements OnClickListener
 		descriptionEdit = view.findViewById(R.id.dialog_description_input);
 		GlobalSettings settings = GlobalSettings.get(requireContext());
 
+		if (savedInstanceState == null)
+			savedInstanceState = getArguments();
 		if (savedInstanceState != null) {
 			String description = savedInstanceState.getString(KEY_DESCR, "");
 			descriptionEdit.setText(description);
@@ -87,10 +89,13 @@ public class DescriptionDialog extends DialogFragment implements OnClickListener
 	 *
 	 * @param activity activity from which to show the dialog
 	 */
-	public static void show(FragmentActivity activity) {
+	public static void show(FragmentActivity activity, String description) {
 		Fragment dialogFragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
 		if (dialogFragment == null) {
 			DescriptionDialog dialog = new DescriptionDialog();
+			Bundle param = new Bundle();
+			param.putString(KEY_DESCR, description);
+			dialog.setArguments(param);
 			dialog.show(activity.getSupportFragmentManager(), TAG);
 		}
 	}

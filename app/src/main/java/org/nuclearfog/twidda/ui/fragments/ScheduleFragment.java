@@ -83,12 +83,6 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 
 
 	@Override
-	public void onStop() {
-		super.onStop();
-	}
-
-
-	@Override
 	public void onDestroy() {
 		scheduleLoader.cancel();
 		scheduleAction.cancel();

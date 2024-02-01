@@ -220,7 +220,10 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageDow
 				return true;
 			}
 		} else if (item.getItemId() == R.id.menu_image_add_description) {
-			DescriptionDialog.show(this);
+			if (mediaStatus != null)
+				DescriptionDialog.show(this, mediaStatus.getDescription());
+			else
+				DescriptionDialog.show(this, "");
 			return true;
 		} else if (item.getItemId() == R.id.menu_image_show_meta) {
 			if (meta != null) {

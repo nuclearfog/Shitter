@@ -194,8 +194,6 @@
 	<string name="app_info_icons">svg icons from:</string>
 	<string name="profile_image">Profile image</string>
 	<string name="login_pin">enter PIN</string>
-	<string name="login_key_enable">add keys</string>
-	<string name="login_key_enable_v2">use API v2</string>
 	<string name="login_verifier">login</string>
 	<string name="popup_status_text_hint">what\'s new</string>
 	<string name="toolbar_userlist_repost">Status reposted by</string>
@@ -263,8 +261,6 @@
 	<string name="proxy_port">Port</string>
 	<string name="edit_proxy_user">Username</string>
 	<string name="proxy_password">Password</string>
-	<string name="settings_key1_hint">Consumer key</string>
-	<string name="settings_key2_hint">Consumer secret</string>
 	<string name="dialog_connection_custom_host">use custom hostname</string>
 	<string name="dialog_report_hint_description">additional description</string>
 	<string name="dialog_report_description_forward">forward report to source instance</string>

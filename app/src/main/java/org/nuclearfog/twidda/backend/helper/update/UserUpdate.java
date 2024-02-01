@@ -82,7 +82,6 @@ public class UserUpdate implements Closeable {
 
 	/**
 	 *
-	 * @param credentials
 	 */
 	public void updateWithCredentials(Credentials credentials) {
 		statusPref = new StatusPreferenceUpdate();

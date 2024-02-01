@@ -41,12 +41,22 @@ import java.util.TreeMap;
  */
 public class StatusPreferenceDialog extends DialogFragment implements OnCheckedChangeListener, OnItemSelectedListener, OnClickListener, TimeSelectedCallback {
 
+	/**
+	 *
+	 */
 	private static final String TAG = "StatusPreferenceDialog";
 
+	/**
+	 * Bundle key to set/restore status preference configuration
+	 * value type is {@link StatusPreferenceUpdate}
+	 */
 	private static final String KEY_PREF = "pref-status";
 
+	/**
+	 * Bundle key to enable extra settings of the configuration
+	 * value type is boolean
+	 */
 	private static final String KEY_EXT = "pref-extended";
-
 
 	// index of the visibility spinner list (see R.array.visibility)
 	private static final int IDX_VISIBILITY_DEFAULT = 0;

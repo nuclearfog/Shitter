@@ -229,12 +229,6 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 
 	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
-
-
-	@Override
 	public void onActivityResult(ActivityResult result) {
 		invalidateMenu();
 		Intent data = result.getData();

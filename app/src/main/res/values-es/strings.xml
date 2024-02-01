@@ -144,8 +144,6 @@
 	<string name="app_info_icons">Iconos SVG de:</string>
 	<string name="profile_image">Imagen de perfil</string>
 	<string name="login_pin">Ingresar PIN</string>
-	<string name="login_key_enable">Agregar claves</string>
-	<string name="login_key_enable_v2">Usar API v2</string>
 	<string name="login_verifier">Acceder</string>
 	<string name="popup_status_text_hint">Estadp</string>
 	<string name="toolbar_userlist_repost">Estado re-publicado por</string>
@@ -203,8 +201,6 @@
 	<string name="proxy_port">Puerto</string>
 	<string name="edit_proxy_user">Nombre de usuario</string>
 	<string name="proxy_password">Contraseña</string>
-	<string name="settings_key1_hint">Clave de consumidor</string>
-	<string name="settings_key2_hint">Secreto de consumidor</string>
 	<string name="dialog_connection_custom_host">Usar nombre de host personalizado</string>
 	<string name="confirm_mute">¿Silenciar usuario?</string>
 	<string name="list_appbar">Listas</string>

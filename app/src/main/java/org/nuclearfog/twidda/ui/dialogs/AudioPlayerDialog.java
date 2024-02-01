@@ -47,6 +47,11 @@ import org.nuclearfog.twidda.backend.utils.LinkUtils;
 public class AudioPlayerDialog extends DialogFragment implements OnClickListener {
 
 	/**
+	 *
+	 */
+	private static final String TAG = "AudioPlayerDialog";
+
+	/**
 	 * Bundle key used to set/restore audio uri
 	 * value type is {@link Uri}
 	 */
@@ -193,14 +198,13 @@ public class AudioPlayerDialog extends DialogFragment implements OnClickListener
 	 *
 	 */
 	private static void show(FragmentManager fm, Uri data) {
-		String tag = data.toString();
-		Fragment dialogFragment = fm.findFragmentByTag(tag);
+		Fragment dialogFragment = fm.findFragmentByTag(TAG);
 		if (dialogFragment == null) {
 			AudioPlayerDialog dialog = new AudioPlayerDialog();
 			Bundle args = new Bundle();
 			args.putParcelable(KEY_URI, data);
 			dialog.setArguments(args);
-			dialog.show(fm, tag);
+			dialog.show(fm, TAG);
 		}
 	}
 }

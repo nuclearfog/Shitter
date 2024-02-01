@@ -41,8 +41,6 @@
 	<string name="proxy_port">端口</string>
 	<string name="edit_proxy_user">用户名</string>
 	<string name="proxy_password">密码</string>
-	<string name="settings_key1_hint">Consumer key</string>
-	<string name="settings_key2_hint">Consumer secret</string>
 	<string name="confirm_mute">隐藏用户？</string>
 	<string name="list_appbar">列表</string>
 	<string name="edit_location_hint">输入位置</string>

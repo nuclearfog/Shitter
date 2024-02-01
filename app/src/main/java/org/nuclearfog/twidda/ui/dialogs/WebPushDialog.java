@@ -39,10 +39,15 @@ import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
  */
 public class WebPushDialog extends DialogFragment implements OnCheckedChangeListener, OnClickListener, OnItemSelectedListener, AsyncCallback<PushUpdater.Result> {
 
+	/**
+	 *
+	 */
 	private static final String TAG = "WebPushDialog";
 
-	private static final String KEY_SAVE = "push-update";
-
+	/**
+	 * Bundle key used to restore web push configuration
+	 * value type is {@link PushUpdate}
+	 */
 	private static final String KEY_PUSH = "push-save";
 
 	private GlobalSettings settings;
@@ -121,7 +126,7 @@ public class WebPushDialog extends DialogFragment implements OnCheckedChangeList
 
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle outstate) {
-		outstate.putSerializable(KEY_SAVE, update);
+		outstate.putSerializable(KEY_PUSH, update);
 		super.onSaveInstanceState(outstate);
 	}
 

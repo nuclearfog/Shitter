@@ -25,6 +25,15 @@ import org.nuclearfog.twidda.ui.adapter.listview.MetaAdapter;
  */
 public class MetaDialog extends DialogFragment {
 
+	/**
+	 *
+	 */
+	private static final String TAG = "MetaDialog";
+
+	/**
+	 * Bundle key used to set/restore MEta data
+	 * value type is {@link Meta}
+	 */
 	private static final String KEY_META = "meta-data";
 
 	private Meta meta;
@@ -33,7 +42,7 @@ public class MetaDialog extends DialogFragment {
 	 *
 	 */
 	public MetaDialog() {
-		setStyle(STYLE_NO_TITLE, R.style.DefaultDialog);
+		setStyle(STYLE_NO_TITLE, R.style.MetaDialog);
 	}
 
 
@@ -73,14 +82,13 @@ public class MetaDialog extends DialogFragment {
 	 * @param meta     media meta information to show
 	 */
 	public static void show(FragmentActivity activity, Meta meta) {
-		String tag = "MetaDialog: " + meta.hashCode();
 		Bundle args = new Bundle();
 		args.putSerializable(KEY_META, meta);
-		Fragment dialogFragment = activity.getSupportFragmentManager().findFragmentByTag(tag);
+		Fragment dialogFragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
 		if (dialogFragment == null) {
 			MetaDialog dialog = new MetaDialog();
 			dialog.setArguments(args);
-			dialog.show(activity.getSupportFragmentManager(), tag);
+			dialog.show(activity.getSupportFragmentManager(), TAG);
 		}
 	}
 }
