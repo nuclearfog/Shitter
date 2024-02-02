@@ -33,10 +33,11 @@ public class ScheduleActivity extends AppCompatActivity implements OnClickListen
 		Toolbar toolbar = findViewById(R.id.page_fragment_toolbar);
 		GlobalSettings settings = GlobalSettings.get(this);
 
-		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		fragmentTransaction.replace(R.id.page_fragment_container, ScheduleFragment.class, null);
-		fragmentTransaction.commit();
-
+		if (savedInstanceState == null) {
+			FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+			fragmentTransaction.replace(R.id.page_fragment_container, ScheduleFragment.class, null);
+			fragmentTransaction.commit();
+		}
 		if (settings.floatingButtonEnabled()) {
 			floatingButton.setVisibility(View.VISIBLE);
 		}

@@ -104,6 +104,18 @@ public class RuleAdapter extends BaseAdapter {
 	}
 
 	/**
+	 * set rule seletion
+	 *
+	 * @param ruleIdSelection array of selected rule IDs
+	 */
+	public void setSelectedIds(long[] ruleIdSelection) {
+		for (long ruleId : ruleIdSelection) {
+			selection.add(ruleId);
+		}
+		notifyDataSetChanged();
+	}
+
+	/**
 	 * get user selected item IDs
 	 *
 	 * @return an array containing selected item IDs

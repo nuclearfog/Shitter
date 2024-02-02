@@ -149,6 +149,7 @@
 			android:lines="1"
 			android:text="@android:string/cancel"
 			android:padding="@dimen/dialog_status_button_padding"
+			android:layout_margin="@dimen/dialog_status_layout_margins"
 			style="@style/FeedbackButton" />
 
 		<Button
@@ -158,6 +159,7 @@
 			android:lines="1"
 			android:text="@android:string/ok"
 			android:padding="@dimen/dialog_status_button_padding"
+			android:layout_margin="@dimen/dialog_status_layout_margins"
 			style="@style/FeedbackButton" />
 
 	</LinearLayout>

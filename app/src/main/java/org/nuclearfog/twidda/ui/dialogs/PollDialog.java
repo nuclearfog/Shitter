@@ -1,13 +1,19 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,7 +40,7 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class PollDialog extends DialogFragment implements OnClickListener {
+public class PollDialog extends DialogFragment implements OnClickListener, OnCheckedChangeListener, OnItemSelectedListener, TextWatcher {
 
 	/**
 	 *
@@ -55,7 +61,6 @@ public class PollDialog extends DialogFragment implements OnClickListener {
 
 	private EditOptionsAdapter optionAdapter;
 
-	private SwitchButton multiple_choice, hide_votes;
 	private Spinner timeUnitSelector;
 	private EditText durationInput;
 
@@ -81,8 +86,8 @@ public class PollDialog extends DialogFragment implements OnClickListener {
 		View close = view.findViewById(R.id.dialog_poll_close);
 		durationInput = view.findViewById(R.id.dialog_poll_duration_input);
 		timeUnitSelector = view.findViewById(R.id.dialog_poll_duration_timeunit);
-		multiple_choice = view.findViewById(R.id.dialog_poll_mul_choice);
-		hide_votes = view.findViewById(R.id.dialog_poll_hide_total);
+		SwitchButton multiple_choice = view.findViewById(R.id.dialog_poll_mul_choice);
+		SwitchButton hide_votes = view.findViewById(R.id.dialog_poll_hide_total);
 
 		optionAdapter = new EditOptionsAdapter();
 		DropdownAdapter timeUnitAdapter = new DropdownAdapter(requireContext());
@@ -119,16 +124,20 @@ public class PollDialog extends DialogFragment implements OnClickListener {
 			durationInput.setText(Integer.toString(Math.round(pollUpdate.getDuration() / 60.0f)));
 			timeUnitSelector.setSelection(0);
 		}
-
 		confirm.setOnClickListener(this);
 		remove.setOnClickListener(this);
 		close.setOnClickListener(this);
+		multiple_choice.setOnCheckedChangeListener(this);
+		hide_votes.setOnCheckedChangeListener(this);
+		timeUnitSelector.setOnItemSelectedListener(this);
+		durationInput.addTextChangedListener(this);
 		return view;
 	}
 
 
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle outState) {
+		pollUpdate.setOptions(optionAdapter.getItems());
 		outState.putSerializable(KEY_POLL, pollUpdate);
 		super.onSaveInstanceState(outState);
 	}
@@ -154,7 +163,7 @@ public class PollDialog extends DialogFragment implements OnClickListener {
 				Toast.makeText(getContext(), R.string.error_duration_time_low, Toast.LENGTH_SHORT).show();
 			} else if (instance != null && duration > instance.getMaxPollDuration()) {
 				Toast.makeText(getContext(), R.string.error_duration_time_high, Toast.LENGTH_SHORT).show();
-			} else if (pollUpdate != null) {
+			} else {
 				List<String> options = optionAdapter.getItems();
 				for (String option : options) {
 					if (option.trim().isEmpty()) {
@@ -163,8 +172,6 @@ public class PollDialog extends DialogFragment implements OnClickListener {
 					}
 				}
 				pollUpdate.setDuration(duration);
-				pollUpdate.setMultipleChoice(multiple_choice.isChecked());
-				pollUpdate.hideVotes(hide_votes.isChecked());
 				pollUpdate.setOptions(optionAdapter.getItems());
 				if (getActivity() instanceof PollUpdateCallback) {
 					((PollUpdateCallback) getActivity()).onPollUpdate(pollUpdate);
@@ -179,6 +186,45 @@ public class PollDialog extends DialogFragment implements OnClickListener {
 		} else if (v.getId() == R.id.dialog_poll_close) {
 			dismiss();
 		}
+	}
+
+
+	@Override
+	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+		if (buttonView.getId() == R.id.dialog_poll_mul_choice) {
+			pollUpdate.setMultipleChoice(isChecked);
+		} else if (buttonView.getId() == R.id.dialog_poll_hide_total) {
+			pollUpdate.hideVotes(isChecked);
+		}
+	}
+
+
+	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+	}
+
+
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count) {
+	}
+
+
+	@Override
+	public void afterTextChanged(Editable s) {
+		setDuration(s.toString(), timeUnitSelector.getSelectedItemPosition());
+	}
+
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		if (parent.getId() == R.id.dialog_poll_duration_timeunit) {
+			setDuration(durationInput.getText().toString(), position);
+		}
+	}
+
+
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
 	}
 
 	/**
@@ -196,6 +242,24 @@ public class PollDialog extends DialogFragment implements OnClickListener {
 			dialog.setArguments(args);
 			dialog.show(activity.getSupportFragmentManager(), TAG);
 		}
+	}
+
+	/**
+	 *
+	 */
+	private void setDuration(String input, int selection) {
+		int duration;
+		if (input.matches("\\d{1,3}"))
+			duration = Integer.parseInt(input);
+		else
+			duration = 1;
+		if (selection == 0)
+			duration *= 60;
+		else if (selection == 1)
+			duration *= 3600;
+		else if (selection == 2)
+			duration *= 86400;
+		pollUpdate.setDuration(duration);
 	}
 
 	/**

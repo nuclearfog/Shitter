@@ -246,63 +246,65 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		if (savedInstanceState == null) {
 			savedInstanceState = getIntent().getExtras();
 		}
-		if (savedInstanceState == null) {
-			return;
-		}
-		// get data
-		Serializable serialized = savedInstanceState.getSerializable(KEY_DATA);
-		long statusId = savedInstanceState.getLong(KEY_STATUS_ID, 0L);
-		long notificationId = savedInstanceState.getLong(KEY_NOTIFICATION_ID, 0L);
-		String replyUsername = "";
+		if (savedInstanceState != null) {
+			// get data
+			String replyUsername = "";
+			Serializable serialized = savedInstanceState.getSerializable(KEY_DATA);
+			long statusId = savedInstanceState.getLong(KEY_STATUS_ID, 0L);
+			long notificationId = savedInstanceState.getLong(KEY_NOTIFICATION_ID, 0L);
 
-		// set status data
-		if (serialized instanceof Status) {
-			Status status = (Status) serialized;
-			Status embeddedStatus = status.getEmbeddedStatus();
-			setStatus(status);
-			StatusAction.Param param = new StatusAction.Param(StatusAction.Param.ONLINE, status.getId());
-			statusLoader.execute(param, statusCallback);
-			if (embeddedStatus != null) {
-				statusId = embeddedStatus.getId();
-				replyUsername = embeddedStatus.getAuthor().getScreenname();
-				hidden = embeddedStatus.isHidden();
-			} else {
-				statusId = status.getId();
-				replyUsername = status.getAuthor().getScreenname();
-				hidden = status.isHidden();
+			// set status data
+			if (serialized instanceof Status) {
+				Status status = (Status) serialized;
+				Status embeddedStatus = status.getEmbeddedStatus();
+				setStatus(status);
+				StatusAction.Param param = new StatusAction.Param(StatusAction.Param.ONLINE, status.getId());
+				statusLoader.execute(param, statusCallback);
+				if (embeddedStatus != null) {
+					statusId = embeddedStatus.getId();
+					replyUsername = embeddedStatus.getAuthor().getScreenname();
+					hidden = embeddedStatus.isHidden();
+				} else {
+					statusId = status.getId();
+					replyUsername = status.getAuthor().getScreenname();
+					hidden = status.isHidden();
+				}
+			}
+			// set notification data
+			else if (serialized instanceof Notification) {
+				Notification notification = (Notification) serialized;
+				NotificationAction.Param notificationParam = new NotificationAction.Param(NotificationAction.Param.ONLINE, notification.getId());
+				notificationLoader.execute(notificationParam, notificationCallback);
+				if (notification.getStatus() != null) {
+					setNotification(notification);
+					statusId = notification.getStatus().getId();
+					replyUsername = notification.getStatus().getAuthor().getScreenname();
+				}
+			}
+			// get status data using status ID
+			else if (statusId != 0L) {
+				replyUsername = savedInstanceState.getString(KEY_NAME);
+				StatusAction.Param param = new StatusAction.Param(StatusAction.Param.DATABASE, statusId);
+				statusLoader.execute(param, statusCallback);
+			}
+			// get notification data using notification ID
+			else if (notificationId != 0L) {
+				replyUsername = savedInstanceState.getString(KEY_NAME);
+				NotificationAction.Param notificationParam = new NotificationAction.Param(NotificationAction.Param.ONLINE, notificationId);
+				notificationLoader.execute(notificationParam, notificationCallback);
+			}
+			String tag = replyUsername + ":" + statusId;
+			if (getSupportFragmentManager().findFragmentByTag(tag) == null) {
+				// initialize status reply list
+				Bundle param = new Bundle();
+				param.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_REPLY);
+				param.putString(StatusFragment.KEY_SEARCH, replyUsername);
+				param.putLong(StatusFragment.KEY_ID, statusId);
+				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+				fragmentTransaction.replace(R.id.page_status_reply_fragment, StatusFragment.class, param, tag);
+				fragmentTransaction.commit();
 			}
 		}
-		// set notification data
-		else if (serialized instanceof Notification) {
-			Notification notification = (Notification) serialized;
-			NotificationAction.Param notificationParam = new NotificationAction.Param(NotificationAction.Param.ONLINE, notification.getId());
-			notificationLoader.execute(notificationParam, notificationCallback);
-			if (notification.getStatus() != null) {
-				setNotification(notification);
-				statusId = notification.getStatus().getId();
-				replyUsername = notification.getStatus().getAuthor().getScreenname();
-			}
-		}
-		// get status data using status ID
-		else if (statusId != 0L) {
-			replyUsername = savedInstanceState.getString(KEY_NAME);
-			StatusAction.Param param = new StatusAction.Param(StatusAction.Param.DATABASE, statusId);
-			statusLoader.execute(param, statusCallback);
-		}
-		// get notification data using notification ID
-		else if (notificationId != 0L) {
-			replyUsername = savedInstanceState.getString(KEY_NAME);
-			NotificationAction.Param notificationParam = new NotificationAction.Param(NotificationAction.Param.ONLINE, notificationId);
-			notificationLoader.execute(notificationParam, notificationCallback);
-		}
-		// initialize status reply list
-		Bundle param = new Bundle();
-		param.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_REPLY);
-		param.putString(StatusFragment.KEY_SEARCH, replyUsername);
-		param.putLong(StatusFragment.KEY_ID, statusId);
-		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		fragmentTransaction.replace(R.id.page_status_reply_fragment, StatusFragment.class, param);
-		fragmentTransaction.commit();
 
 		repost_name_button.setOnClickListener(this);
 		reply_name.setOnClickListener(this);

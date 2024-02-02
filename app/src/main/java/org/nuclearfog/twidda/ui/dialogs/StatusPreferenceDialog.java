@@ -177,10 +177,12 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 			if (getActivity() instanceof PreferenceSetCallback) {
 				((PreferenceSetCallback)getActivity()).onPreferenceSet(prefUpdate);
 			}
+			dismiss();
 		} else if (v.getId() == R.id.dialog_status_cancel) {
 			if (getActivity() instanceof PreferenceSetCallback) {
 				((PreferenceSetCallback)getActivity()).onPreferenceSet(null);
 			}
+			dismiss();
 		}
 	}
 

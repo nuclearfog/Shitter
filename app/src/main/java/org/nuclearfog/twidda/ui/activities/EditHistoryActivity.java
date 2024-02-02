@@ -27,10 +27,11 @@ public class EditHistoryActivity extends AppCompatActivity {
 		ViewGroup root = findViewById(R.id.page_fragment_root);
 		Toolbar toolbar = findViewById(R.id.page_fragment_toolbar);
 
-		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		fragmentTransaction.replace(R.id.page_fragment_container, EditHistoryFragment.class, getIntent().getExtras());
-		fragmentTransaction.commit();
-
+		if (savedInstanceState == null) {
+			FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+			fragmentTransaction.replace(R.id.page_fragment_container, EditHistoryFragment.class, getIntent().getExtras());
+			fragmentTransaction.commit();
+		}
 		toolbar.setTitle(R.string.menu_status_history);
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);

@@ -95,11 +95,13 @@ public class UserlistDialog extends DialogFragment implements OnClickListener, O
 				userlist = new UserListUpdate((UserList) data);
 			}
 		}
-		if (userlist.getId() != 0L)
+		if (userlist.getId() != 0L) {
 			title_dialog.setText(R.string.userlist_update_list);
-		else
+			apply.setText(R.string.userlist_update);
+		} else {
 			title_dialog.setText(R.string.userlist_create_new_list);
-		apply.setText(R.string.userlist_update);
+			apply.setText(R.string.userlist_create);
+		}
 		title_input.setText(userlist.getTitle());
 		exclusive.setChecked(userlist.isExclusive());
 		if (userlist.getPolicy() == UserList.NONE) {
@@ -122,6 +124,13 @@ public class UserlistDialog extends DialogFragment implements OnClickListener, O
 	public void onSaveInstanceState(@NonNull Bundle outState) {
 		outState.putSerializable(KEY_USERLIST, userlist);
 		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public void onDestroyView() {
+		listUpdater.cancel();
+		super.onDestroyView();
 	}
 
 

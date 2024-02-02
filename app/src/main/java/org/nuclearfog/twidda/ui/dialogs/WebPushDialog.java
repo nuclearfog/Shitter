@@ -52,7 +52,6 @@ public class WebPushDialog extends DialogFragment implements OnCheckedChangeList
 
 	private GlobalSettings settings;
 	private PushUpdater pushUpdater;
-	private DropdownAdapter adapter;
 
 	private PushUpdate update;
 
@@ -79,13 +78,13 @@ public class WebPushDialog extends DialogFragment implements OnCheckedChangeList
 		SwitchButton status_edit = view.findViewById(R.id.dialog_push_edit_status);
 		Spinner policySelector = view.findViewById(R.id.dialog_push_policy);
 
-		AppStyles.setTheme((ViewGroup) view);
-		policySelector.setAdapter(adapter);
-		adapter = new DropdownAdapter(requireContext());
+		DropdownAdapter adapter = new DropdownAdapter(requireContext());
 		settings = GlobalSettings.get(requireContext());
 		pushUpdater = new PushUpdater(requireContext());
-		update = new PushUpdate(settings.getWebPush());
+
 		adapter.setItems(R.array.push_policy);
+		policySelector.setAdapter(adapter);
+		AppStyles.setTheme((ViewGroup) view);
 
 		if (savedInstanceState == null)
 			savedInstanceState = getArguments();
@@ -93,23 +92,28 @@ public class WebPushDialog extends DialogFragment implements OnCheckedChangeList
 			Object data = savedInstanceState.getSerializable(KEY_PUSH);
 			if (data instanceof PushUpdate) {
 				update = (PushUpdate) data;
-				mention.setCheckedImmediately(update.mentionsEnabled());
-				repost.setCheckedImmediately(update.repostEnabled());
-				favorite.setCheckedImmediately(update.favoriteEnabled());
-				poll.setCheckedImmediately(update.pollEnabled());
-				follow.setCheckedImmediately(update.followEnabled());
-				request.setCheckedImmediately(update.followRequestEnabled());
-				status_new.setCheckedImmediately(update.statusPostEnabled());
-				status_edit.setCheckedImmediately(update.statusEditEnabled());
-				if (update.getPolicy() == WebPush.POLICY_ALL) {
-					policySelector.setSelection(0);
-				} else if (update.getPolicy() == WebPush.POLICY_FOLLOWING) {
-					policySelector.setSelection(1);
-				} else if (update.getPolicy() == WebPush.POLICY_FOLLOWER) {
-					policySelector.setSelection(2);
-				}
+			} else {
+				update = new PushUpdate(settings.getWebPush());
 			}
+		} else {
+			update = new PushUpdate(settings.getWebPush());
 		}
+		mention.setCheckedImmediately(update.mentionsEnabled());
+		repost.setCheckedImmediately(update.repostEnabled());
+		favorite.setCheckedImmediately(update.favoriteEnabled());
+		poll.setCheckedImmediately(update.pollEnabled());
+		follow.setCheckedImmediately(update.followEnabled());
+		request.setCheckedImmediately(update.followRequestEnabled());
+		status_new.setCheckedImmediately(update.statusPostEnabled());
+		status_edit.setCheckedImmediately(update.statusEditEnabled());
+		if (update.getPolicy() == WebPush.POLICY_ALL) {
+			policySelector.setSelection(0);
+		} else if (update.getPolicy() == WebPush.POLICY_FOLLOWING) {
+			policySelector.setSelection(1);
+		} else if (update.getPolicy() == WebPush.POLICY_FOLLOWER) {
+			policySelector.setSelection(2);
+		}
+
 		mention.setOnCheckedChangeListener(this);
 		repost.setOnCheckedChangeListener(this);
 		favorite.setOnCheckedChangeListener(this);
@@ -128,6 +132,13 @@ public class WebPushDialog extends DialogFragment implements OnCheckedChangeList
 	public void onSaveInstanceState(@NonNull Bundle outstate) {
 		outstate.putSerializable(KEY_PUSH, update);
 		super.onSaveInstanceState(outstate);
+	}
+
+
+	@Override
+	public void onDestroyView() {
+		pushUpdater.cancel();
+		super.onDestroyView();
 	}
 
 

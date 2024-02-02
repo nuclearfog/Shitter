@@ -359,6 +359,7 @@
 	<dimen name="dialog_report_root_padding">2dp</dimen>
 	<dimen name="dialog_report_textsize_title">22sp</dimen>
 	<dimen name="dialog_report_list_height">200sp</dimen>
+	<dimen name="dialog_report_list_height_land">100sp</dimen>
 	<dimen name="dialog_report_textsize_label">12sp</dimen>
 	<dimen name="dialog_report_textsize_button">14sp</dimen>
 	<dimen name="dialog_report_margin_items_layout">4dp</dimen>

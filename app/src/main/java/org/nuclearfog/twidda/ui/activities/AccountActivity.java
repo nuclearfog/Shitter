@@ -76,12 +76,13 @@ public class AccountActivity extends AppCompatActivity implements ActivityResult
 		setContentView(R.layout.page_fragment);
 		Toolbar tool = findViewById(R.id.page_fragment_toolbar);
 		root = findViewById(R.id.page_fragment_root);
-
 		viewModel = new ViewModelProvider(this).get(ListFragment.ItemViewModel.class);
-		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		fragmentTransaction.replace(R.id.page_fragment_container, AccountFragment.class, null);
-		fragmentTransaction.commit();
 
+		if (savedInstanceState == null) {
+			FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+			fragmentTransaction.replace(R.id.page_fragment_container, AccountFragment.class, null);
+			fragmentTransaction.commit();
+		}
 		tool.setTitle(R.string.menu_select_account);
 		setSupportActionBar(tool);
 

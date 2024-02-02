@@ -296,10 +296,10 @@
 	<string name="login_info">4 steps to login</string>
 	<string name="userlist_enter_title">enter list title</string>
 	<string name="userlist_exclusive">exclude members from home feed</string>
-	<string name="userlist_create">create userlist</string>
+	<string name="userlist_create">create list</string>
 	<string name="userlist_update">update</string>
 	<string name="userlist_create_new_list">create a new userlist</string>
-	<string name="userlist_update_list">edit userlist</string>
+	<string name="userlist_update_list">edit list</string>
 	<string name="confirm_remove_user_from_list">remove user from list?</string>
 	<string name="descr_remove_user">remove user from list</string>
 	<string name="descr_remove_tag">remove hashtag from list</string>

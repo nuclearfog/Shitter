@@ -2,13 +2,19 @@ package org.nuclearfog.twidda.ui.dialogs;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,8 +23,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-
-import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
@@ -37,7 +41,7 @@ import org.nuclearfog.twidda.ui.adapter.listview.RuleAdapter;
  *
  * @author nuclearfog
  */
-public class ReportDialog extends DialogFragment implements OnClickListener {
+public class ReportDialog extends DialogFragment implements OnClickListener, OnItemSelectedListener, OnCheckedChangeListener, TextWatcher {
 
 	/**
 	 *
@@ -53,15 +57,9 @@ public class ReportDialog extends DialogFragment implements OnClickListener {
 	private AsyncCallback<ReportUpdater.Result> reportResult = this::onReportResult;
 	private AsyncCallback<Rules> rulesResult = this::onRulesLoaded;
 
-	private DropdownAdapter selectorAdapter;
 	private RuleAdapter ruleAdapter;
 	private RuleLoader ruleLoader;
 	private ReportUpdater reportUpdater;
-	private GlobalSettings settings;
-
-	private SwitchButton switchForward;
-	private EditText editDescription;
-	private Spinner reportCategory;
 
 	private ReportUpdate reportUpdate = new ReportUpdate();
 
@@ -80,20 +78,15 @@ public class ReportDialog extends DialogFragment implements OnClickListener {
 		View reportButton = view.findViewById(R.id.dialog_report_apply);
 		ListView ruleSelector = view.findViewById(R.id.dialog_report_rule_selector);
 		TextView textTitle = view.findViewById(R.id.dialog_report_title);
-		reportCategory = view.findViewById(R.id.dialog_report_category);
-		switchForward = view.findViewById(R.id.dialog_report_switch_forward);
-		editDescription = view.findViewById(R.id.dialog_report_description);
+		Spinner reportCategory = view.findViewById(R.id.dialog_report_category);
+		CompoundButton switchForward = view.findViewById(R.id.dialog_report_switch_forward);
+		EditText editDescription = view.findViewById(R.id.dialog_report_description);
 
-		AppStyles.setTheme((ViewGroup) view, settings.getPopupColor());
-		reportCategory.setAdapter(selectorAdapter);
-		ruleSelector.setAdapter(ruleAdapter);
-		reportButton.setOnClickListener(this);
-
-		selectorAdapter = new DropdownAdapter(requireContext());
+		GlobalSettings settings = GlobalSettings.get(requireContext());
+		DropdownAdapter selectorAdapter = new DropdownAdapter(requireContext());
 		reportUpdater = new ReportUpdater(requireContext());
 		ruleLoader = new RuleLoader(requireContext());
 		ruleAdapter = new RuleAdapter(requireContext());
-		settings = GlobalSettings.get(requireContext());
 		selectorAdapter.setItems(R.array.reports);
 
 		if (savedInstanceState == null)
@@ -102,6 +95,7 @@ public class ReportDialog extends DialogFragment implements OnClickListener {
 			Object data = savedInstanceState.getSerializable(KEY_REPORT);
 			if (data instanceof ReportUpdate) {
 				reportUpdate = (ReportUpdate) data;
+				ruleAdapter.setSelectedIds(reportUpdate.getRuleIds());
 				if (reportUpdate.getStatusIds().length > 0) {
 					textTitle.setText(R.string.dialog_report_title_status);
 				} else {
@@ -109,6 +103,15 @@ public class ReportDialog extends DialogFragment implements OnClickListener {
 				}
 			}
 		}
+		AppStyles.setTheme((ViewGroup) view, settings.getPopupColor());
+		reportCategory.setAdapter(selectorAdapter);
+		reportCategory.setSelection(0);
+		ruleSelector.setAdapter(ruleAdapter);
+
+		reportButton.setOnClickListener(this);
+		editDescription.addTextChangedListener(this);
+		switchForward.setOnCheckedChangeListener(this);
+		reportCategory.setOnItemSelectedListener(this);
 		return view;
 	}
 
@@ -123,6 +126,14 @@ public class ReportDialog extends DialogFragment implements OnClickListener {
 
 
 	@Override
+	public void onSaveInstanceState(@NonNull Bundle outstate) {
+		reportUpdate.setRuleIds(ruleAdapter.getSelectedIds());
+		outstate.putSerializable(KEY_REPORT, reportUpdate);
+		super.onSaveInstanceState(outstate);
+	}
+
+
+	@Override
 	public void onDestroyView() {
 		ruleLoader.cancel();
 		super.onDestroyView();
@@ -130,30 +141,57 @@ public class ReportDialog extends DialogFragment implements OnClickListener {
 
 
 	@Override
-	public void onSaveInstanceState(@NonNull Bundle outstate) {
-		outstate.putSerializable(KEY_REPORT, reportUpdate);
-		super.onSaveInstanceState(outstate);
-	}
-
-
-	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_report_apply) {
 			if (reportUpdater.isIdle()) {
-				if (reportCategory.getSelectedItemPosition() == 0) {
-					reportUpdate.setCategory(ReportUpdate.CATEGORY_SPAM);
-				} else if (reportCategory.getSelectedItemPosition() == 1) {
-					reportUpdate.setCategory(ReportUpdate.CATEGORY_VIOLATION);
-				} else {
-					reportUpdate.setCategory(ReportUpdate.CATEGORY_OTHER);
-				}
 				reportUpdate.setRuleIds(ruleAdapter.getSelectedIds());
-				reportUpdate.setComment(editDescription.getText().toString());
-				reportUpdate.setForward(switchForward.isChecked());
 				reportUpdater.execute(reportUpdate, reportResult);
 				Toast.makeText(getContext(), R.string.info_report_submit, Toast.LENGTH_SHORT).show();
 			}
 		}
+	}
+
+
+	@Override
+	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+		if (buttonView.getId() == R.id.dialog_report_switch_forward) {
+			reportUpdate.setForward(isChecked);
+		}
+	}
+
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		if (parent.getId() == R.id.dialog_report_category) {
+			if (position == 0) {
+				reportUpdate.setCategory(ReportUpdate.CATEGORY_SPAM);
+			} else if (position == 1) {
+				reportUpdate.setCategory(ReportUpdate.CATEGORY_VIOLATION);
+			} else {
+				reportUpdate.setCategory(ReportUpdate.CATEGORY_OTHER);
+			}
+		}
+	}
+
+
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
+	}
+
+
+	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+	}
+
+
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count) {
+	}
+
+
+	@Override
+	public void afterTextChanged(Editable s) {
+		reportUpdate.setComment(s.toString());
 	}
 
 	/**

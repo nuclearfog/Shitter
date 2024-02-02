@@ -46,10 +46,11 @@ public class FilterActivity extends AppCompatActivity implements FilterDialogCal
 		Toolbar toolbar = findViewById(R.id.page_fragment_toolbar);
 		viewModel = new ViewModelProvider(this).get(ListFragment.ItemViewModel.class);
 
-		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		fragmentTransaction.replace(R.id.page_fragment_container, FilterFragment.class, null);
-		fragmentTransaction.commit();
-
+		if (savedInstanceState == null) {
+			FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+			fragmentTransaction.replace(R.id.page_fragment_container, FilterFragment.class, null);
+			fragmentTransaction.commit();
+		}
 		toolbar.setTitle(R.string.toolbar_title_filter);
 		setSupportActionBar(toolbar);
 

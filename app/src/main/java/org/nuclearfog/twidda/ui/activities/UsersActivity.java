@@ -108,8 +108,8 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 
 	@Override
-	protected void onCreate(Bundle savedInst) {
-		super.onCreate(savedInst);
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_tab_view);
 		ViewGroup root = findViewById(R.id.page_tab_view_root);
 		Toolbar toolbar = findViewById(R.id.page_tab_view_toolbar);
@@ -141,12 +141,13 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 					viewPager.setVisibility(View.GONE);
 					tabSelector.setVisibility(View.GONE);
 					fragmentContainer.setVisibility(View.VISIBLE);
-
-					param.putLong(UserFragment.KEY_ID, id);
-					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOWING);
-					fragmentTransaction = getSupportFragmentManager().beginTransaction();
-					fragmentTransaction.replace(R.id.page_tab_view_fragment_container, UserFragment.class, param);
-					fragmentTransaction.commit();
+					if (savedInstanceState == null) {
+						param.putLong(UserFragment.KEY_ID, id);
+						param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOWING);
+						fragmentTransaction = getSupportFragmentManager().beginTransaction();
+						fragmentTransaction.replace(R.id.page_tab_view_fragment_container, UserFragment.class, param);
+						fragmentTransaction.commit();
+					}
 				}
 				break;
 
@@ -161,12 +162,13 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 					viewPager.setVisibility(View.GONE);
 					tabSelector.setVisibility(View.GONE);
 					fragmentContainer.setVisibility(View.VISIBLE);
-
-					param.putLong(UserFragment.KEY_ID, id);
-					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOWER);
-					fragmentTransaction = getSupportFragmentManager().beginTransaction();
-					fragmentTransaction.replace(R.id.page_tab_view_fragment_container, UserFragment.class, param);
-					fragmentTransaction.commit();
+					if (savedInstanceState == null) {
+						param.putLong(UserFragment.KEY_ID, id);
+						param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOWER);
+						fragmentTransaction = getSupportFragmentManager().beginTransaction();
+						fragmentTransaction.replace(R.id.page_tab_view_fragment_container, UserFragment.class, param);
+						fragmentTransaction.commit();
+					}
 				}
 				break;
 
@@ -174,26 +176,28 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 				viewPager.setVisibility(View.GONE);
 				tabSelector.setVisibility(View.GONE);
 				fragmentContainer.setVisibility(View.VISIBLE);
-
 				toolbar.setTitle(R.string.toolbar_userlist_repost);
-				param.putLong(UserFragment.KEY_ID, id);
-				param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_REPOSTER);
-				fragmentTransaction = getSupportFragmentManager().beginTransaction();
-				fragmentTransaction.replace(R.id.page_tab_view_fragment_container, UserFragment.class, param);
-				fragmentTransaction.commit();
+				if (savedInstanceState == null) {
+					param.putLong(UserFragment.KEY_ID, id);
+					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_REPOSTER);
+					fragmentTransaction = getSupportFragmentManager().beginTransaction();
+					fragmentTransaction.replace(R.id.page_tab_view_fragment_container, UserFragment.class, param);
+					fragmentTransaction.commit();
+				}
 				break;
 
 			case USERS_FAVORIT:
 				viewPager.setVisibility(View.GONE);
 				tabSelector.setVisibility(View.GONE);
 				fragmentContainer.setVisibility(View.VISIBLE);
-
 				toolbar.setTitle(settings.likeEnabled() ? R.string.toolbar_status_liker : R.string.toolbar_status_favoriter);
-				param.putLong(UserFragment.KEY_ID, id);
-				param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FAVORITER);
-				fragmentTransaction = getSupportFragmentManager().beginTransaction();
-				fragmentTransaction.replace(R.id.page_tab_view_fragment_container, UserFragment.class, param);
-				fragmentTransaction.commit();
+				if (savedInstanceState == null) {
+					param.putLong(UserFragment.KEY_ID, id);
+					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FAVORITER);
+					fragmentTransaction = getSupportFragmentManager().beginTransaction();
+					fragmentTransaction.replace(R.id.page_tab_view_fragment_container, UserFragment.class, param);
+					fragmentTransaction.commit();
+				}
 				break;
 
 			case USERS_EXCLUDED:
