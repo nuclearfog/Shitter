@@ -7,21 +7,28 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.model.Credentials;
+import org.nuclearfog.twidda.model.User;
 
 import java.io.Closeable;
+import java.io.Serializable;
 
 /**
  * This class is used to upload profile information
  *
  * @author nuclearfog
  */
-public class UserUpdate implements Closeable {
+public class UserUpdate implements Serializable, Closeable {
+
+	private static final long serialVersionUID = -7555621393621077213L;
 
 	private MediaStatus profileImage, bannerImage;
 
 	private String name = "";
 	private String description = "";
 	private String location = "";
+	private String userUrl = "";
+	private String profileImageUrl = "";
+	private String bannerImageUrl = "";
 	private boolean privacy = false;
 
 	private StatusPreferenceUpdate statusPref;
@@ -40,50 +47,21 @@ public class UserUpdate implements Closeable {
 	}
 
 	/**
-	 * setup profile information
-	 *
-	 * @param name        username to update
-	 * @param description description of the profile
-	 * @param location    location name
+	 * set user information
 	 */
-	public void setProfile(String name, String description, String location) {
-		this.name = name;
-		this.description = description;
-		this.location = location;
+	public void updateUser(User user) {
+		name = user.getUsername();
+		description = user.getDescription();
+		location = user.getLocation();
+		userUrl = user.getProfileUrl();
+		profileImageUrl = user.getProfileImageThumbnailUrl();
+		bannerImageUrl = user.getBannerImageThumbnailUrl();
 	}
 
 	/**
-	 *
+	 * set user information using credentials
 	 */
-	public void setProfileImage(MediaStatus profileImage) {
-		this.profileImage = profileImage;
-	}
-
-	/**
-	 *
-	 */
-	public void setBannerImage(MediaStatus bannerImage) {
-		this.bannerImage = bannerImage;
-	}
-
-	/**
-	 * enable/disable follow confirmation
-	 */
-	public void setPrivacy(boolean privacy) {
-		this.privacy = privacy;
-	}
-
-	/**
-	 *
-	 */
-	public void setStatusPreference(StatusPreferenceUpdate statusPref) {
-		this.statusPref = statusPref;
-	}
-
-	/**
-	 *
-	 */
-	public void updateWithCredentials(Credentials credentials) {
+	public void updateCredentials(Credentials credentials) {
 		statusPref = new StatusPreferenceUpdate();
 		privacy = credentials.isLocked();
 		statusPref.setSensitive(credentials.isSensitive());
@@ -94,8 +72,15 @@ public class UserUpdate implements Closeable {
 	/**
 	 * @return screen name of the user
 	 */
-	public String getName() {
+	public String getUsername() {
 		return name;
+	}
+
+	/**
+	 * @param name profile name
+	 */
+	public void setUsername(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -106,12 +91,58 @@ public class UserUpdate implements Closeable {
 	}
 
 	/**
+	 * @param description profile description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * @return user location name
+	 */
+	public String getLocation() {
+		return location;
+	}
+
+	/**
+	 *
+	 * @param location user location name
+	 */
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	/**
+	 * get user url attached to the profile
+	 *
+	 * @return user url
+	 */
+	public String getUrl() {
+		return userUrl;
+	}
+
+	/**
+	 * set user url
+	 */
+	public void setUrl(String userUrl) {
+		this.userUrl = userUrl;
+	}
+
+	/**
 	 * @return profile image media instance or null if not added
 	 */
 	@Nullable
 	public MediaStatus getProfileImageMedia() {
 		return profileImage;
 	}
+
+	/**
+	 *
+	 */
+	public void setProfileImage(MediaStatus profileImage) {
+		this.profileImage = profileImage;
+	}
+
 
 	/**
 	 * @return banner image media instance or null if not added
@@ -124,9 +155,23 @@ public class UserUpdate implements Closeable {
 	/**
 	 *
 	 */
+	public void setBannerImage(MediaStatus bannerImage) {
+		this.bannerImage = bannerImage;
+	}
+
+	/**
+	 *
+	 */
 	@Nullable
 	public StatusPreferenceUpdate getStatusPreference() {
 		return statusPref;
+	}
+
+	/**
+	 *
+	 */
+	public void setStatusPreference(StatusPreferenceUpdate statusPref) {
+		this.statusPref = statusPref;
 	}
 
 	/**
@@ -134,8 +179,29 @@ public class UserUpdate implements Closeable {
 	 *
 	 * @return true to ask user to confirm new followers
 	 */
-	public boolean privacyEnabled() {
+	public boolean isPrivate() {
 		return privacy;
+	}
+
+	/**
+	 * enable/disable follow confirmation
+	 */
+	public void setPrivacy(boolean privacy) {
+		this.privacy = privacy;
+	}
+
+	/**
+	 * @return profile image thumbnail url
+	 */
+	public String getProfileImageUrl() {
+		return profileImageUrl;
+	}
+
+	/**
+	 * @return get banner image preview url
+	 */
+	public String getBannerImageUrl() {
+		return bannerImageUrl;
 	}
 
 	/**
@@ -152,11 +218,14 @@ public class UserUpdate implements Closeable {
 	@NonNull
 	@Override
 	public String toString() {
-		String result = "name=\"" + name + "\"";
-		if (!description.isEmpty())
-			result += " bio=\"" + description + "\"";
-		if (!location.isEmpty())
-			result += " location=\"" + location + "\"";
-		return result;
+		StringBuilder buf = new StringBuilder("name=\"");
+		buf.append(getUsername()).append('\"');
+		if (!getDescription().isEmpty())
+			buf.append(" bio=\"").append(getDescription()).append('\"');
+		if (!getLocation().isEmpty())
+			buf.append(" location=\"").append(getLocation()).append('\"');
+		if (!getUrl().isEmpty())
+			buf.append(" url=\"").append(getUrl()).append('\"');
+		return buf.toString();
 	}
 }

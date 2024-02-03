@@ -6,8 +6,7 @@ import android.content.res.Resources;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Patterns;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -41,13 +40,14 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.backend.utils.ToolbarUpdater;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.model.Credentials;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.StatusPreferenceDialog;
 import org.nuclearfog.twidda.ui.dialogs.StatusPreferenceDialog.PreferenceSetCallback;
+import org.nuclearfog.twidda.ui.views.InputView;
+import org.nuclearfog.twidda.ui.views.InputView.OnTextChangeListener;
 
 import java.io.FileNotFoundException;
 
@@ -58,13 +58,13 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class ProfileEditor extends MediaActivity implements OnClickListener, OnConfirmListener, TextWatcher, PreferenceSetCallback, Callback {
+public class ProfileEditor extends MediaActivity implements OnClickListener, OnConfirmListener, OnTextChangeListener, OnCheckedChangeListener, PreferenceSetCallback, Callback {
 
 	/**
-	 * key to preload user data
-	 * value is {@link User}
+	 * key to set/restore user information
+	 * value is {@link User} or {@link UserUpdate}
 	 */
-	public static final String KEY_USER = "profile-editor-data";
+	public static final String KEY_USER = "profile-editor-user-data";
 
 	/**
 	 * return code used if profile information has changed
@@ -77,14 +77,12 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 	private Picasso picasso;
 
 	private ImageView profile_image, profile_banner, toolbar_background, changeBannerBtn;
-	private EditText username, profileLocation, userDescription;
+	private InputView username, profileUrl;
 	private Button addBannerBtn;
 	private CompoundButton privacy;
 
-	@Nullable
-	private Credentials credentials;
 	private UserUpdate userUpdate = new UserUpdate();
-	private boolean changed = false;
+	private boolean profileModified = false;
 
 	private AsyncCallback<CredentialsLoader.Result> credentialsLoaderCallback = this::onCredentialsLoaderResult;
 	private AsyncCallback<CredentialsUpdater.Result> credentialsUpdateCallback = this::onCredentialsUpdateResult;
@@ -105,24 +103,21 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 		View profileLocationLabel = findViewById(R.id.profile_edit_change_location_label);
 		View profileUrlLabel = findViewById(R.id.profile_edit_change_url_label);
 		View statusPrefBtn = findViewById(R.id.profile_edit_status_pref);
-		EditText profileUrl = findViewById(R.id.profile_edit_change_url);
+		InputView profileLocation = findViewById(R.id.profile_edit_change_location);
+		InputView userDescription = findViewById(R.id.profile_edit_change_description);
+		profileUrl = findViewById(R.id.profile_edit_change_url);
+		privacy = findViewById(R.id.profile_edit_privacy);
 		profile_image = findViewById(R.id.edit_profile_image);
 		profile_banner = findViewById(R.id.profile_edit_banner);
 		addBannerBtn = findViewById(R.id.profile_edit_add_banner);
 		changeBannerBtn = findViewById(R.id.profile_edit_change_banner);
 		toolbar_background = findViewById(R.id.profile_edit_toolbar_background);
 		username = findViewById(R.id.profile_edit_change_name);
-		profileLocation = findViewById(R.id.profile_edit_change_location);
-		userDescription = findViewById(R.id.profile_edit_change_description);
-		privacy = findViewById(R.id.profile_edit_privacy);
 
 		credentialUpdater = new CredentialsUpdater(this);
 		credentialsLoader = new CredentialsLoader(this);
 		settings = GlobalSettings.get(this);
 		picasso = PicassoBuilder.get(this);
-
-		toolbar.setTitle(R.string.menu_edit_profile);
-		setSupportActionBar(toolbar);
 
 		if (!settings.toolbarOverlapEnabled()) {
 			ConstraintSet constraints = new ConstraintSet();
@@ -139,24 +134,45 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 			profileLocation.setVisibility(View.GONE);
 			profileLocationLabel.setVisibility(View.GONE);
 		}
+		toolbar.setTitle(R.string.menu_edit_profile);
 		toolbar.setBackgroundColor(settings.getBackgroundColor() & ProfileActivity.TOOLBAR_TRANSPARENCY);
 		profile_banner.setDrawingCacheEnabled(true);
+		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
 
 		if (savedInstanceState == null)
 			savedInstanceState = getIntent().getExtras();
 		if (savedInstanceState != null) {
-			Object data = savedInstanceState.getSerializable(KEY_USER);
-			if (data instanceof User) {
-				User user = (User) data;
-				String profileImageUrl = user.getProfileImageThumbnailUrl();
-				String bannerImageUrl = user.getBannerImageThumbnailUrl();
-				if (!profileImageUrl.isEmpty()) {
+			Object userData = savedInstanceState.getSerializable(KEY_USER);
+			if (userData instanceof UserUpdate) {
+				userUpdate = (UserUpdate) userData;
+				if (userUpdate.getProfileImageMedia() != null) {
+					Uri uri = Uri.parse(userUpdate.getProfileImageMedia().getPath());
+					profile_image.setImageURI(uri);
+				} else if (!userUpdate.getProfileImageUrl().isEmpty()) {
 					Transformation roundCorner = new RoundedCornersTransformation(5, 0);
-					picasso.load(profileImageUrl).transform(roundCorner).into(profile_image);
+					picasso.load(userUpdate.getProfileImageUrl()).transform(roundCorner).into(profile_image);
 				}
-				if (!bannerImageUrl.isEmpty()) {
-					picasso.load(bannerImageUrl).into(profile_banner, this);
+				if (userUpdate.getBannerImageMedia() != null) {
+					Uri uri = Uri.parse(userUpdate.getBannerImageMedia().getPath());
+					profile_banner.setImageURI(uri);
+				} else if (!userUpdate.getBannerImageUrl().isEmpty()) {
+					picasso.load(userUpdate.getBannerImageUrl()).into(profile_banner, this);
+				}
+				username.setText(userUpdate.getUsername());
+				profileUrl.setText(userUpdate.getUrl());
+				profileLocation.setText(userUpdate.getLocation());
+				userDescription.setText(userUpdate.getDescription());
+				privacy.setChecked(userUpdate.isPrivate());
+			} else if (userData instanceof User) {
+				User user = (User) userData;
+				userUpdate.updateUser(user);
+				if (!user.getProfileImageThumbnailUrl().isEmpty()) {
+					Transformation roundCorner = new RoundedCornersTransformation(5, 0);
+					picasso.load(user.getProfileImageThumbnailUrl()).transform(roundCorner).into(profile_image);
+				}
+				if (!user.getBannerImageThumbnailUrl().isEmpty()) {
+					picasso.load(user.getBannerImageThumbnailUrl()).into(profile_banner, this);
 					addBannerBtn.setVisibility(View.INVISIBLE);
 					changeBannerBtn.setVisibility(View.VISIBLE);
 				} else {
@@ -167,24 +183,35 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 				profileUrl.setText(user.getProfileUrl());
 				profileLocation.setText(user.getLocation());
 				userDescription.setText(user.getDescription());
+				// load user credentials
+				credentialsLoader.execute(null, credentialsLoaderCallback);
 			}
 		}
-		username.addTextChangedListener(this);
-		profileUrl.addTextChangedListener(this);
-		profileLocation.addTextChangedListener(this);
-		userDescription.addTextChangedListener(this);
+		username.setOnTextChangeListener(this);
+		profileUrl.setOnTextChangeListener(this);
+		profileLocation.setOnTextChangeListener(this);
+		userDescription.setOnTextChangeListener(this);
 		profile_image.setOnClickListener(this);
 		profile_banner.setOnClickListener(this);
 		addBannerBtn.setOnClickListener(this);
+		privacy.setOnCheckedChangeListener(this);
 		statusPrefBtn.setOnClickListener(this);
 	}
 
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-		if (credentials == null) {
-			credentialsLoader.execute(null, credentialsLoaderCallback);
+	protected void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_USER, userUpdate);
+		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public void onBackPressed() {
+		if (profileModified) {
+			ConfirmDialog.show(this, ConfirmDialog.PROFILE_EDITOR_LEAVE, null);
+		} else {
+			super.onBackPressed();
 		}
 	}
 
@@ -198,20 +225,10 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 
 
 	@Override
-	public void onBackPressed() {
-		if (changed) {
-			ConfirmDialog.show(this, ConfirmDialog.PROFILE_EDITOR_LEAVE, null);
-		} else {
-			super.onBackPressed();
-		}
-	}
-
-
-	@Override
 	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.edit, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
-		return super.onCreateOptionsMenu(m);
+		return true;
 	}
 
 
@@ -219,6 +236,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (item.getItemId() == R.id.action_save) {
 			updateUser();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -237,6 +255,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 			if (resultType == REQUEST_PROFILE) {
 				userUpdate.setProfileImage(mediaStatus);
 				profile_image.setImageURI(uri);
+				profileModified = true;
 			}
 			// Add image as banner image
 			else if (resultType == REQUEST_BANNER) {
@@ -245,6 +264,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 				picasso.load(uri).resize(widthPixels, widthPixels / 3).centerCrop(Gravity.TOP).into(profile_banner, this);
 				addBannerBtn.setVisibility(View.INVISIBLE);
 				changeBannerBtn.setVisibility(View.VISIBLE);
+				profileModified = true;
 			}
 		} catch (FileNotFoundException exception) {
 			Toast.makeText(getApplicationContext(), R.string.error_adding_media, Toast.LENGTH_SHORT).show();
@@ -264,28 +284,38 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 		}
 		//
 		else if (v.getId() == R.id.profile_edit_status_pref) {
-			if (userUpdate.getStatusPreference() != null) {
-				StatusPreferenceDialog.show(this, userUpdate.getStatusPreference(), false);
-			} else {
-				StatusPreferenceDialog.show(this, new StatusPreferenceUpdate(), false);
-			}
+			StatusPreferenceUpdate statusPref = userUpdate.getStatusPreference();
+			if (statusPref == null)
+				statusPref = new StatusPreferenceUpdate();
+			StatusPreferenceDialog.show(this, statusPref, false);
 		}
 	}
 
 
 	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+		if (buttonView.getId() == R.id.profile_edit_privacy) {
+			userUpdate.setPrivacy(isChecked);
+			profileModified = true;
+		}
 	}
 
 
 	@Override
-	public void onTextChanged(CharSequence s, int start, int before, int count) {
-	}
-
-
-	@Override
-	public void afterTextChanged(Editable s) {
-		changed = true;
+	public void onTextChanged(InputView inputView, String text) {
+		if (inputView.getId() == R.id.profile_edit_change_name) {
+			userUpdate.setUsername(text);
+			profileModified = true;
+		} else if (inputView.getId() == R.id.profile_edit_change_location) {
+			userUpdate.setLocation(text);
+			profileModified = true;
+		} else if (inputView.getId() == R.id.profile_edit_change_description) {
+			userUpdate.setDescription(text);
+			profileModified = true;
+		} else if (inputView.getId() == R.id.profile_edit_change_url) {
+			userUpdate.setUrl(text);
+			profileModified = true;
+		}
 	}
 
 
@@ -305,6 +335,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 	@Override
 	public void onPreferenceSet(StatusPreferenceUpdate update) {
 		userUpdate.setStatusPreference(update);
+		profileModified = true;
 	}
 
 
@@ -326,15 +357,11 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 	 */
 	private void updateUser() {
 		if (credentialUpdater.isIdle()) {
-			String username = this.username.getText().toString();
-			String userLoc = profileLocation.getText().toString();
-			String userBio = userDescription.getText().toString();
-			if (username.trim().isEmpty()) {
-				String errMsg = getString(R.string.error_empty_name);
-				this.username.setError(errMsg);
+			if (userUpdate.getUsername().trim().isEmpty()) {
+				username.setError(getString(R.string.error_empty_name));
+			} else if (!userUpdate.getUrl().trim().isEmpty() && !Patterns.WEB_URL.matcher(userUpdate.getUrl()).matches()) {
+				profileUrl.setError(getString(R.string.error_wrong_url));
 			} else {
-				userUpdate.setProfile(username, userBio, userLoc);
-				userUpdate.setPrivacy(privacy.isChecked());
 				if (userUpdate.prepare(getContentResolver())) {
 					credentialUpdater.execute(userUpdate, credentialsUpdateCallback);
 					ProgressDialog.show(this, false);
@@ -346,22 +373,12 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 	}
 
 	/**
-	 * set current user's credentials
-	 */
-	private void setCredentials() {
-		if (credentials != null) {
-			privacy.setChecked(credentials.isLocked());
-			userUpdate.updateWithCredentials(credentials);
-		}
-	}
-
-	/**
 	 *
 	 */
 	private void onCredentialsLoaderResult(CredentialsLoader.Result result) {
 		if (result.credentials != null) {
-			credentials = result.credentials;
-			setCredentials();
+			privacy.setChecked(result.credentials.isLocked());
+			userUpdate.updateCredentials(result.credentials);
 		} else if (result.exception != null) {
 			String message = ErrorUtils.getErrorMessage(this, result.exception);
 			ConfirmDialog.show(this, ConfirmDialog.PROFILE_EDITOR_ERROR, message);

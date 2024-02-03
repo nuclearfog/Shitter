@@ -43,7 +43,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="@dimen/dialog_report_list_height" />
 
-	<EditText
+	<org.nuclearfog.twidda.ui.views.InputView
 		android:id="@+id/dialog_report_description"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"

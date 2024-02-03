@@ -1,12 +1,9 @@
 package org.nuclearfog.twidda.ui.adapter.recyclerview.holder;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageButton;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,13 +12,15 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.ui.views.InputView;
+import org.nuclearfog.twidda.ui.views.InputView.OnTextChangeListener;
 
 /**
  * ViewHolder implementation for {@link org.nuclearfog.twidda.ui.adapter.recyclerview.EditOptionsAdapter}
  *
  * @author nuclearfog
  */
-public class EditOptionsHolder extends ViewHolder implements OnClickListener, TextWatcher {
+public class EditOptionsHolder extends ViewHolder implements OnClickListener, OnTextChangeListener {
 
 	/**
 	 * indicates that the item is locked and can't be removed
@@ -39,7 +38,7 @@ public class EditOptionsHolder extends ViewHolder implements OnClickListener, Te
 	public static final int STATE_DISABLED = 3;
 
 
-	private EditText option_name;
+	private InputView option_name;
 	private ImageButton option_button;
 
 	private OnOptionChangedListener listener;
@@ -60,7 +59,7 @@ public class EditOptionsHolder extends ViewHolder implements OnClickListener, Te
 		AppStyles.setTheme((ViewGroup) itemView, settings.getPopupColor());
 
 		option_button.setOnClickListener(this);
-		option_name.addTextChangedListener(this);
+		option_name.setOnTextChangeListener(this);
 	}
 
 
@@ -89,20 +88,12 @@ public class EditOptionsHolder extends ViewHolder implements OnClickListener, Te
 
 
 	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-	}
-
-
-	@Override
-	public void onTextChanged(CharSequence s, int start, int before, int count) {
-	}
-
-
-	@Override
-	public void afterTextChanged(Editable s) {
-		int position = getLayoutPosition();
-		if (position != RecyclerView.NO_POSITION && option_name.hasFocus()) {
-			listener.OnOptionChange(position, s.toString());
+	public void onTextChanged(InputView inputView, String text) {
+		if (inputView.getId() == R.id.item_option_edit_name) {
+			int position = getLayoutPosition();
+			if (position != RecyclerView.NO_POSITION && option_name.hasFocus()) {
+				listener.OnOptionChange(position, text);
+			}
 		}
 	}
 

@@ -89,7 +89,7 @@
 		android:gravity="center_vertical"
 		android:layout_marginTop="@dimen/dialog_poll_layout_margins">
 
-		<EditText
+		<org.nuclearfog.twidda.ui.views.InputView
 			android:id="@+id/dialog_poll_duration_input"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"

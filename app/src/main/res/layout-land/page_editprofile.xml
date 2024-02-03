@@ -52,7 +52,7 @@
 		app:layout_constraintStart_toStartOf="@id/edit_profile_toolbar"
 		app:layout_constraintTop_toTopOf="@id/edit_profile_toolbar"
 		app:layout_constraintBottom_toBottomOf="@id/edit_profile_toolbar"
-		app:layout_constraintEnd_toEndOf="@id/edit_profile_toolbar"
+		app:layout_constraintEnd_toEndOf="@id/profile_edit_banner"
 		tools:ignore="ContentDescription" />
 
 	<androidx.appcompat.widget.Toolbar
@@ -61,7 +61,7 @@
 		android:layout_height="@dimen/editprofile_toolbar_height"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintEnd_toEndOf="@id/profile_edit_banner" />
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<ImageView
 		android:id="@+id/edit_profile_image"
@@ -107,7 +107,7 @@
 				android:padding="@dimen/editprofile_edittext_padding"
 				android:text="@string/username" />
 
-			<EditText
+			<org.nuclearfog.twidda.ui.views.InputView
 				android:id="@+id/profile_edit_change_name"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
@@ -125,7 +125,7 @@
 				android:padding="@dimen/editprofile_edittext_padding"
 				android:text="@string/profile_location" />
 
-			<EditText
+			<org.nuclearfog.twidda.ui.views.InputView
 				android:id="@+id/profile_edit_change_location"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
@@ -142,7 +142,7 @@
 				android:padding="@dimen/editprofile_edittext_padding"
 				android:text="@string/profile_link" />
 
-			<EditText
+			<org.nuclearfog.twidda.ui.views.InputView
 				android:id="@+id/profile_edit_change_url"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
@@ -158,7 +158,7 @@
 				android:padding="@dimen/editprofile_edittext_padding"
 				android:text="@string/profile_bio" />
 
-			<EditText
+			<org.nuclearfog.twidda.ui.views.InputView
 				android:id="@+id/profile_edit_change_description"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"

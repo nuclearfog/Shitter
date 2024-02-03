@@ -1269,9 +1269,9 @@ public class Mastodon implements Connection {
 		List<InputStream> streams = new ArrayList<>();
 		List<String> keys = new ArrayList<>();
 
-		params.add("display_name=" + StringUtils.encode(update.getName()));
+		params.add("display_name=" + StringUtils.encode(update.getUsername()));
 		params.add("note=" + StringUtils.encode(update.getDescription()));
-		params.add("locked=" + update.privacyEnabled());
+		params.add("locked=" + update.isPrivate());
 		if (update.getProfileImageMedia() != null) {
 			streams.add(update.getProfileImageMedia().getStream());
 			keys.add("avatar");

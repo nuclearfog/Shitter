@@ -15,7 +15,7 @@
 		android:contentDescription="@string/poll_option_edit_button"
 		style="@style/FeedbackButton" />
 
-	<EditText
+	<org.nuclearfog.twidda.ui.views.InputView
 		android:id="@+id/item_option_edit_name"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"

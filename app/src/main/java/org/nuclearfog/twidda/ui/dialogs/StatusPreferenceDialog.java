@@ -67,9 +67,9 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 
 	private TextView scheduleText;
 
-	private DropdownAdapter language_adapter;
-
+	private String[] languageCodes = {};
 	private StatusPreferenceUpdate prefUpdate = new StatusPreferenceUpdate();
+	private boolean enable_extras = false;
 
 	/**
 	 *
@@ -96,12 +96,12 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 
 		GlobalSettings settings = GlobalSettings.get(requireContext());
 		DropdownAdapter visibility_adapter = new DropdownAdapter(requireContext());
-		language_adapter = new DropdownAdapter(requireContext());
+		DropdownAdapter language_adapter = new DropdownAdapter(requireContext());
 
 		if (savedInstanceState == null)
 			savedInstanceState = getArguments();
 		if (savedInstanceState != null) {
-			boolean enable_extras = savedInstanceState.getBoolean(KEY_EXT);
+			enable_extras = savedInstanceState.getBoolean(KEY_EXT);
 			Object data = savedInstanceState.getSerializable(KEY_PREF);
 			if (data instanceof StatusPreferenceUpdate) {
 				prefUpdate = (StatusPreferenceUpdate) data;
@@ -114,6 +114,10 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 		}
 		sensitiveCheck.setCheckedImmediately(prefUpdate.isSensitive());
 		spoilerCheck.setCheckedImmediately(prefUpdate.isSpoiler());
+
+		visibility_adapter.setItems(R.array.visibility);
+		visibilitySelector.setAdapter(visibility_adapter);
+		languageSelector.setAdapter(language_adapter);
 		if (prefUpdate.getVisibility() == Status.VISIBLE_DEFAULT) {
 			visibilitySelector.setSelection(IDX_VISIBILITY_DEFAULT, false);
 		} else if (prefUpdate.getVisibility() == Status.VISIBLE_PUBLIC) {
@@ -124,6 +128,8 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 			visibilitySelector.setSelection(IDX_VISIBILITY_DIRECT, false);
 		} else if (prefUpdate.getVisibility() == Status.VISIBLE_UNLISTED) {
 			visibilitySelector.setSelection(IDX_VISIBILITY_UNLISTED, false);
+		} else {
+			visibilitySelector.setSelection(0, false);
 		}
 		if (!prefUpdate.getLanguage().isEmpty()) {
 			// initialize language selector
@@ -133,23 +139,14 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 			for (Locale locale : locales) {
 				languages.put(locale.getDisplayLanguage(), locale.getLanguage());
 			}
-			String[] languageCodes = languages.values().toArray(new String[0]);
+			languageCodes = languages.values().toArray(new String[0]);
 			language_adapter.setItems(languages.keySet().toArray(new String[0]));
 			for (int i = 0; i < languageCodes.length; i++) {
 				if (languageCodes[i].equals(prefUpdate.getLanguage())) {
-					languageSelector.setSelection(i);
+					languageSelector.setSelection(i, false);
 				}
 			}
 		}
-		languageSelector.setAdapter(language_adapter);
-		languageSelector.setSelection(0, false);
-		languageSelector.setSelected(false);
-
-		visibility_adapter.setItems(R.array.visibility);
-		visibilitySelector.setAdapter(visibility_adapter);
-		visibilitySelector.setSelection(0, false);
-		visibilitySelector.setSelected(false);
-
 		AppStyles.setTheme((ViewGroup) view, settings.getPopupColor());
 		if (!settings.getLogin().getConfiguration().statusVisibilitySupported()) {
 			statusVisibility.setVisibility(View.GONE);
@@ -166,6 +163,14 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 		okButton.setOnClickListener(this);
 		cancelButton.setOnClickListener(this);
 		return view;
+	}
+
+
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_PREF, prefUpdate);
+		outState.putSerializable(KEY_EXT, enable_extras);
+		super.onSaveInstanceState(outState);
 	}
 
 
@@ -225,7 +230,9 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 			}
 			prefUpdate.setVisibility(visibility);
 		} else if (parent.getId() == R.id.dialog_status_language) {
-			prefUpdate.setLanguage(language_adapter.getItem(position));
+			if (position < languageCodes.length) {
+				prefUpdate.setLanguage(languageCodes[position]);
+			}
 		}
 	}
 

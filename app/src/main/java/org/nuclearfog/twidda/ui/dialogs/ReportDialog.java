@@ -2,8 +2,6 @@ package org.nuclearfog.twidda.ui.dialogs;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -35,13 +32,15 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.lists.Rules;
 import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
 import org.nuclearfog.twidda.ui.adapter.listview.RuleAdapter;
+import org.nuclearfog.twidda.ui.views.InputView;
+import org.nuclearfog.twidda.ui.views.InputView.OnTextChangeListener;
 
 /**
  * User/Status report dialog
  *
  * @author nuclearfog
  */
-public class ReportDialog extends DialogFragment implements OnClickListener, OnItemSelectedListener, OnCheckedChangeListener, TextWatcher {
+public class ReportDialog extends DialogFragment implements OnClickListener, OnItemSelectedListener, OnCheckedChangeListener, OnTextChangeListener {
 
 	/**
 	 *
@@ -80,7 +79,7 @@ public class ReportDialog extends DialogFragment implements OnClickListener, OnI
 		TextView textTitle = view.findViewById(R.id.dialog_report_title);
 		Spinner reportCategory = view.findViewById(R.id.dialog_report_category);
 		CompoundButton switchForward = view.findViewById(R.id.dialog_report_switch_forward);
-		EditText editDescription = view.findViewById(R.id.dialog_report_description);
+		InputView editDescription = view.findViewById(R.id.dialog_report_description);
 
 		GlobalSettings settings = GlobalSettings.get(requireContext());
 		DropdownAdapter selectorAdapter = new DropdownAdapter(requireContext());
@@ -109,7 +108,7 @@ public class ReportDialog extends DialogFragment implements OnClickListener, OnI
 		ruleSelector.setAdapter(ruleAdapter);
 
 		reportButton.setOnClickListener(this);
-		editDescription.addTextChangedListener(this);
+		editDescription.setOnTextChangeListener(this);
 		switchForward.setOnCheckedChangeListener(this);
 		reportCategory.setOnItemSelectedListener(this);
 		return view;
@@ -180,18 +179,10 @@ public class ReportDialog extends DialogFragment implements OnClickListener, OnI
 
 
 	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-	}
-
-
-	@Override
-	public void onTextChanged(CharSequence s, int start, int before, int count) {
-	}
-
-
-	@Override
-	public void afterTextChanged(Editable s) {
-		reportUpdate.setComment(s.toString());
+	public void onTextChanged(InputView inputView, String text) {
+		if (inputView.getId() == R.id.dialog_report_description) {
+			reportUpdate.setComment(text);
+		}
 	}
 
 	/**

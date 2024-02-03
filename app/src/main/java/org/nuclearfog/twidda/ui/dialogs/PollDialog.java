@@ -1,8 +1,6 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Toast;
@@ -32,6 +29,8 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.EditOptionsAdapter;
+import org.nuclearfog.twidda.ui.views.InputView;
+import org.nuclearfog.twidda.ui.views.InputView.OnTextChangeListener;
 
 import java.util.List;
 
@@ -40,7 +39,7 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class PollDialog extends DialogFragment implements OnClickListener, OnCheckedChangeListener, OnItemSelectedListener, TextWatcher {
+public class PollDialog extends DialogFragment implements OnClickListener, OnCheckedChangeListener, OnItemSelectedListener, OnTextChangeListener {
 
 	/**
 	 *
@@ -62,7 +61,7 @@ public class PollDialog extends DialogFragment implements OnClickListener, OnChe
 	private EditOptionsAdapter optionAdapter;
 
 	private Spinner timeUnitSelector;
-	private EditText durationInput;
+	private InputView durationInput;
 
 	@Nullable
 	private Instance instance;
@@ -130,7 +129,7 @@ public class PollDialog extends DialogFragment implements OnClickListener, OnChe
 		multiple_choice.setOnCheckedChangeListener(this);
 		hide_votes.setOnCheckedChangeListener(this);
 		timeUnitSelector.setOnItemSelectedListener(this);
-		durationInput.addTextChangedListener(this);
+		durationInput.setOnTextChangeListener(this);
 		return view;
 	}
 
@@ -146,22 +145,9 @@ public class PollDialog extends DialogFragment implements OnClickListener, OnChe
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_poll_create) {
-			String durationStr = durationInput.getText().toString();
-			int duration;
-			if (durationStr.matches("\\d{1,3}")) {
-				duration = Integer.parseInt(durationStr);
-			} else {
-				duration = 1;
-			}
-			if (timeUnitSelector.getSelectedItemPosition() == 0)
-				duration *= 60;
-			else if (timeUnitSelector.getSelectedItemPosition() == 1)
-				duration *= 3600;
-			else if (timeUnitSelector.getSelectedItemPosition() == 2)
-				duration *= 86400;
-			if (instance != null && duration < instance.getMinPollDuration()) {
+			if (instance != null && pollUpdate.getDuration() < instance.getMinPollDuration()) {
 				Toast.makeText(getContext(), R.string.error_duration_time_low, Toast.LENGTH_SHORT).show();
-			} else if (instance != null && duration > instance.getMaxPollDuration()) {
+			} else if (instance != null && pollUpdate.getDuration() > instance.getMaxPollDuration()) {
 				Toast.makeText(getContext(), R.string.error_duration_time_high, Toast.LENGTH_SHORT).show();
 			} else {
 				List<String> options = optionAdapter.getItems();
@@ -171,7 +157,6 @@ public class PollDialog extends DialogFragment implements OnClickListener, OnChe
 						return;
 					}
 				}
-				pollUpdate.setDuration(duration);
 				pollUpdate.setOptions(optionAdapter.getItems());
 				if (getActivity() instanceof PollUpdateCallback) {
 					((PollUpdateCallback) getActivity()).onPollUpdate(pollUpdate);
@@ -200,25 +185,17 @@ public class PollDialog extends DialogFragment implements OnClickListener, OnChe
 
 
 	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-	}
-
-
-	@Override
-	public void onTextChanged(CharSequence s, int start, int before, int count) {
-	}
-
-
-	@Override
-	public void afterTextChanged(Editable s) {
-		setDuration(s.toString(), timeUnitSelector.getSelectedItemPosition());
+	public void onTextChanged(InputView inputView, String text) {
+		if (inputView.getId() == R.id.dialog_poll_duration_input) {
+			setDuration(text, timeUnitSelector.getSelectedItemPosition());
+		}
 	}
 
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		if (parent.getId() == R.id.dialog_poll_duration_timeunit) {
-			setDuration(durationInput.getText().toString(), position);
+			setDuration(durationInput.getInput(), position);
 		}
 	}
 
