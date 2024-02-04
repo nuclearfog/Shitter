@@ -90,7 +90,6 @@ public class GlobalSettings {
 	private static final String PROXY_PORT = "proxy_port";
 	private static final String PROXY_USER = "proxy_user";
 	private static final String PROXY_PASS = "proxy_pass";
-	private static final String PROXY_WARNING = "proxy_warning";
 	private static final String ENABLE_LIKE = "like_enable";
 	private static final String FILTER_RESULTS = "filter_results";
 	private static final String PUBLIC_TIMELINE = "public_timeline";
@@ -156,7 +155,6 @@ public class GlobalSettings {
 	private boolean push_enabled;
 	private boolean isProxyEnabled;
 	private boolean isProxyAuthSet;
-	private boolean proxyWarning;
 	private boolean toolbarOverlap;
 	private boolean showStatusIcons;
 	private boolean filterResults;
@@ -811,9 +809,6 @@ public class GlobalSettings {
 		edit.putString(PROXY_PASS, proxyPass);
 		edit.apply();
 
-		if (!proxyWarning) {
-			setProxyWarning(true);
-		}
 		notifySettingsChange();
 	}
 
@@ -838,19 +833,6 @@ public class GlobalSettings {
 		edit.apply();
 
 		notifySettingsChange();
-	}
-
-	/**
-	 * enable/disable proxy warning
-	 *
-	 * @param enable true to enable proxy warning
-	 */
-	public void setProxyWarning(boolean enable) {
-		proxyWarning = enable;
-
-		Editor edit = settings.edit();
-		edit.putBoolean(PROXY_WARNING, enable);
-		edit.apply();
 	}
 
 	/**
@@ -939,13 +921,6 @@ public class GlobalSettings {
 	 */
 	public boolean isProxyAuthSet() {
 		return isProxyAuthSet;
-	}
-
-	/**
-	 * check if proxy warning should be shown when trying to open external link
-	 */
-	public boolean isProxyWarningEnabled() {
-		return proxyWarning;
 	}
 
 	/**
@@ -1056,7 +1031,6 @@ public class GlobalSettings {
 		enableLike = settings.getBoolean(ENABLE_LIKE, false);
 		hideSensitive = settings.getBoolean(HIDE_SENSITIVE, true);
 		floatingEnabled = settings.getBoolean(FLOATING_BUTTON, true);
-		proxyWarning = settings.getBoolean(PROXY_WARNING, true);
 		publicTimeline = settings.getString(PUBLIC_TIMELINE, TIMELINE_COMBINED);
 		showAllAnnouncements = settings.getBoolean(ANNOUNCEMENTS_SHOW_ALL, false);
 		chrologicalTimeline = settings.getBoolean(CHRONOLOGICAL_TIMELINE, false);

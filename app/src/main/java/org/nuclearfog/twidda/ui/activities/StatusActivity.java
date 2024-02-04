@@ -683,7 +683,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onCardClick(Card card, int type) {
 		if (type == OnCardClickListener.TYPE_LINK) {
-			//LinkUtils.openLink(this, card.getUrl());
+			if (!card.getUrl().isEmpty()) {
+				LinkUtils.redirectToBrowser(this, card.getUrl());
+			}
 		} else if (type == OnCardClickListener.TYPE_IMAGE) {
 			String imageUrl = card.getImageUrl();
 			if (!imageUrl.isEmpty()) {

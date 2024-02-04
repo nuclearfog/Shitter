@@ -137,7 +137,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	private Relation relation;
 	@Nullable
 	private User user;
-	private String urlToRedirect;
 
 
 	@Override
@@ -435,18 +434,16 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 
 	@Override
-	public void onTagClick(String text) {
+	public void onTagClick(String tag) {
 		Intent intent = new Intent(this, SearchActivity.class);
-		intent.putExtra(SearchActivity.KEY_QUERY, text);
+		intent.putExtra(SearchActivity.KEY_QUERY, tag);
 		startActivity(intent);
 	}
 
 
 	@Override
-	public void onLinkClick(String tag) {
-		if (ConfirmDialog.show(this, ConfirmDialog.CONTINUE_BROWSER, null)) {
-			urlToRedirect = tag;
-		}
+	public void onLinkClick(String link) {
+		LinkUtils.redirectToBrowser(this, link);
 	}
 
 
@@ -471,9 +468,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		// open link added to profile
 		else if (v.getId() == R.id.page_profile_links) {
 			if (!user.getProfileUrl().isEmpty()) {
-				if (ConfirmDialog.show(this, ConfirmDialog.CONTINUE_BROWSER, null)) {
-					urlToRedirect = user.getProfileUrl();
-				}
+				LinkUtils.redirectToBrowser(this, user.getProfileUrl());
 			}
 		}
 		// open profile image
@@ -528,11 +523,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 				String url = Uri.parse(user.getProfileUrl()).getHost();
 				DomainAction.Param param = new DomainAction.Param(DomainAction.Param.MODE_BLOCK, url);
 				domainAction.execute(param, domainCallback);
-			}
-			// confirmed redirect to browser
-			else if (type == ConfirmDialog.CONTINUE_BROWSER) {
-				settings.setProxyWarning(!remember);
-				LinkUtils.redirectToBrowser(this, urlToRedirect);
 			}
 		}
 	}

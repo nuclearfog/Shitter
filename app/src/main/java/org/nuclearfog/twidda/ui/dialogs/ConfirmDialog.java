@@ -134,11 +134,6 @@ public class ConfirmDialog extends DialogFragment implements OnClickListener {
 	public static final int FILTER_REMOVE = 626;
 
 	/**
-	 * show notification when opening an external link while proxy is enabled
-	 */
-	public static final int CONTINUE_BROWSER = 627;
-
-	/**
 	 * show 'unfollow tag' dialog
 	 */
 	public static final int UNFOLLOW_TAG = 628;
@@ -175,7 +170,7 @@ public class ConfirmDialog extends DialogFragment implements OnClickListener {
 	 */
 	private static final String KEY_MESSAGE = "dialog-message";
 
-	private TextView title, message, remember_label;
+	private TextView title, message;
 	private Button confirm, cancel;
 	private CompoundButton remember;
 
@@ -199,7 +194,6 @@ public class ConfirmDialog extends DialogFragment implements OnClickListener {
 		title = view.findViewById(R.id.confirm_title);
 		message = view.findViewById(R.id.confirm_message);
 		remember = view.findViewById(R.id.confirm_remember);
-		remember_label = view.findViewById(R.id.confirm_remember_label);
 		GlobalSettings settings = GlobalSettings.get(requireContext());
 
 		if (savedInstanceState == null)
@@ -383,14 +377,6 @@ public class ConfirmDialog extends DialogFragment implements OnClickListener {
 
 			case FILTER_REMOVE:
 				messageRes = R.string.confirm_remove_filter;
-				break;
-
-			case CONTINUE_BROWSER:
-				titleVis = View.VISIBLE;
-				remember_label.setVisibility(View.VISIBLE);
-				remember.setVisibility(View.VISIBLE);
-				titleRes = R.string.confirm_warning;
-				messageRes = R.string.confirm_proxy_bypass;
 				break;
 
 			case UNFOLLOW_TAG:
