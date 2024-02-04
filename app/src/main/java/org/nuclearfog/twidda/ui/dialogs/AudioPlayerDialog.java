@@ -125,7 +125,7 @@ public class AudioPlayerDialog extends DialogFragment implements OnClickListener
 			public Renderer[] createRenderers(@NonNull Handler eventHandler, @NonNull VideoRendererEventListener videoRendererEventListener,
 			                                  @NonNull AudioRendererEventListener audioRendererEventListener, @NonNull TextOutput textRendererOutput,
 			                                  @NonNull MetadataOutput metadataRendererOutput) {
-				return new Renderer[] { new MediaCodecAudioRenderer(requireContext(), MediaCodecSelector.DEFAULT, eventHandler, audioRendererEventListener)};
+				return new Renderer[]{new MediaCodecAudioRenderer(requireContext(), MediaCodecSelector.DEFAULT, eventHandler, audioRendererEventListener)};
 			}
 		}).build();
 		player.setMediaSource(mediaSource);
@@ -176,7 +176,7 @@ public class AudioPlayerDialog extends DialogFragment implements OnClickListener
 	 * show audioplayer dialog
 	 *
 	 * @param fragment parent fragment
-	 * @param data path/url to the audio file
+	 * @param data     path/url to the audio file
 	 */
 	public static void show(Fragment fragment, Uri data) {
 		if (fragment.isAdded()) {
@@ -188,7 +188,7 @@ public class AudioPlayerDialog extends DialogFragment implements OnClickListener
 	 * show audioplayer dialog
 	 *
 	 * @param activity parent activity
-	 * @param data path/url to the audio file
+	 * @param data     path/url to the audio file
 	 */
 	public static void show(FragmentActivity activity, Uri data) {
 		show(activity.getSupportFragmentManager(), data);

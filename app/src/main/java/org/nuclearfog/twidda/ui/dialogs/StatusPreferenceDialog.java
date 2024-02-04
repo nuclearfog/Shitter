@@ -114,7 +114,6 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 		}
 		sensitiveCheck.setCheckedImmediately(prefUpdate.isSensitive());
 		spoilerCheck.setCheckedImmediately(prefUpdate.isSpoiler());
-
 		visibility_adapter.setItems(R.array.visibility);
 		visibilitySelector.setAdapter(visibility_adapter);
 		languageSelector.setAdapter(language_adapter);
@@ -131,20 +130,20 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 		} else {
 			visibilitySelector.setSelection(0, false);
 		}
-		if (!prefUpdate.getLanguage().isEmpty()) {
-			// initialize language selector
-			Map<String, String> languages = new TreeMap<>();
-			languages.put("", "");
-			Locale[] locales = Locale.getAvailableLocales();
-			for (Locale locale : locales) {
-				languages.put(locale.getDisplayLanguage(), locale.getLanguage());
-			}
-			languageCodes = languages.values().toArray(new String[0]);
-			language_adapter.setItems(languages.keySet().toArray(new String[0]));
-			for (int i = 0; i < languageCodes.length; i++) {
-				if (languageCodes[i].equals(prefUpdate.getLanguage())) {
-					languageSelector.setSelection(i, false);
-				}
+		// initialize language selector
+		Map<String, String> languages = new TreeMap<>();
+		languages.put("", "");
+		Locale[] locales = Locale.getAvailableLocales();
+		for (Locale locale : locales) {
+			languages.put(locale.getDisplayLanguage(), locale.getLanguage());
+		}
+		languageCodes = languages.values().toArray(new String[0]);
+		language_adapter.setItems(languages.keySet().toArray(new String[0]));
+		languageSelector.setSelection(0, false);
+		for (int i = 0; i < languageCodes.length; i++) {
+			if (languageCodes[i].equals(prefUpdate.getLanguage())) {
+				languageSelector.setSelection(i, false);
+				break;
 			}
 		}
 		AppStyles.setTheme((ViewGroup) view, settings.getPopupColor());
@@ -154,7 +153,6 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 		if (!settings.getLogin().getConfiguration().statusSpoilerSupported()) {
 			statusSpoiler.setVisibility(View.GONE);
 		}
-
 		sensitiveCheck.setOnCheckedChangeListener(this);
 		spoilerCheck.setOnCheckedChangeListener(this);
 		languageSelector.setOnItemSelectedListener(this);
@@ -180,12 +178,12 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 			TimePickerDialog.show(this, prefUpdate.getScheduleTime());
 		} else if (v.getId() == R.id.dialog_status_ok) {
 			if (getActivity() instanceof PreferenceSetCallback) {
-				((PreferenceSetCallback)getActivity()).onPreferenceSet(prefUpdate);
+				((PreferenceSetCallback) getActivity()).onPreferenceSet(prefUpdate);
 			}
 			dismiss();
 		} else if (v.getId() == R.id.dialog_status_cancel) {
 			if (getActivity() instanceof PreferenceSetCallback) {
-				((PreferenceSetCallback)getActivity()).onPreferenceSet(null);
+				((PreferenceSetCallback) getActivity()).onPreferenceSet(null);
 			}
 			dismiss();
 		}

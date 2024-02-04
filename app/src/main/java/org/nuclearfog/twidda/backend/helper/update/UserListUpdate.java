@@ -88,7 +88,7 @@ public class UserListUpdate implements Serializable {
 	/**
 	 * get userlist policy
 	 *
-	 * @return  policy values from {@link UserList#NONE,UserList#FOLLOWED,UserList#LIST}
+	 * @return policy values from {@link UserList#NONE,UserList#FOLLOWED,UserList#LIST}
 	 */
 	public int getPolicy() {
 		return policy;

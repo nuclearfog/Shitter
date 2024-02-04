@@ -111,13 +111,13 @@ public class TimePickerDialog extends DialogFragment implements OnClickListener 
 						datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute());
 				Date selectedDate = calendar.getTime();
 				if (getParentFragment() instanceof TimeSelectedCallback) {
-					((TimeSelectedCallback)getParentFragment()).onTimeSelected(selectedDate.getTime());
+					((TimeSelectedCallback) getParentFragment()).onTimeSelected(selectedDate.getTime());
 				}
 				dismiss();
 			}
 		} else if (v.getId() == R.id.dialog_timepicker_remove) {
 			if (getParentFragment() instanceof TimeSelectedCallback) {
-				((TimeSelectedCallback)getParentFragment()).onTimeSelected(0L);
+				((TimeSelectedCallback) getParentFragment()).onTimeSelected(0L);
 			}
 			dismiss();
 		}

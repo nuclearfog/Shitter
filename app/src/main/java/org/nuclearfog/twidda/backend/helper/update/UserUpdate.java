@@ -105,7 +105,6 @@ public class UserUpdate implements Serializable, Closeable {
 	}
 
 	/**
-	 *
 	 * @param location user location name
 	 */
 	public void setLocation(String location) {

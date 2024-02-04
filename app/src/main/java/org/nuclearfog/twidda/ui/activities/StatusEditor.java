@@ -175,7 +175,6 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 			} else {
 				statusUpdate.addReplyStatusId(status.getId());
 				statusUpdate.getStatusPreferences().setVisibility(status.getVisibility());
-				statusUpdate.getStatusPreferences().setLanguage(status.getLanguage());
 				statusUpdate.addText(status.getUserMentions());
 				statusText.append(status.getUserMentions());
 			}

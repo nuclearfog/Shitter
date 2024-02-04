@@ -33,7 +33,7 @@ public class DescriptionDialog extends DialogFragment implements OnClickListener
 	 * bundle key used to restore description
 	 * value type is String
 	 */
-	private static final String KEY_DESCR ="description_save";
+	private static final String KEY_DESCR = "description_save";
 
 	private EditText descriptionEdit;
 

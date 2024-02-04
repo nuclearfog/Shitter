@@ -49,7 +49,7 @@ public class FilterDialog extends DialogFragment implements OnClickListener, OnC
 	 * Bunlde key used to set/restore filter configuration
 	 * value type is {@link Filter} or {@link FilterUpdate}
 	 */
-	private static final String KEY_FILTER ="filter_data";
+	private static final String KEY_FILTER = "filter_data";
 
 	private SwitchButton sw_home, sw_notification, sw_public, sw_user, sw_thread;
 	private EditText txt_title, txt_keywords, txt_duration;
@@ -211,9 +211,9 @@ public class FilterDialog extends DialogFragment implements OnClickListener, OnC
 			if (context != null)
 				Toast.makeText(context, R.string.info_filter_created, Toast.LENGTH_SHORT).show();
 			if (getParentFragment() instanceof FilterDialogCallback)
-				((FilterDialogCallback)getParentFragment()).onFilterUpdated(result.filter);
+				((FilterDialogCallback) getParentFragment()).onFilterUpdated(result.filter);
 			else if (result.filter != null && getActivity() instanceof FilterDialogCallback)
-				((FilterDialogCallback)getActivity()).onFilterUpdated(result.filter);
+				((FilterDialogCallback) getActivity()).onFilterUpdated(result.filter);
 			dismiss();
 		} else if (result.mode == StatusFilterAction.Result.ERROR) {
 			if (context != null) {

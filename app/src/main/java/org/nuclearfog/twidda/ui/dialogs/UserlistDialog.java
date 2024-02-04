@@ -7,11 +7,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +47,7 @@ public class UserlistDialog extends DialogFragment implements OnClickListener, O
 
 	/**
 	 * Bundle key used to set/restore userlsit configuration
+	 *
 	 * @value type is {@link UserList} or {@link UserListUpdate}
 	 */
 	private static final String KEY_USERLIST = "userlist";

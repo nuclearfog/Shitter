@@ -158,10 +158,10 @@ public class ColorPickerDialog extends DialogFragment implements OnClickListener
 	/**
 	 * set color picker values and show dialog
 	 *
-	 * @param activity     parent activity
-	 * @param color        predefined color
-	 * @param type         type of color
-	 * @param enableAlpha  true to enable alpha slider
+	 * @param activity    parent activity
+	 * @param color       predefined color
+	 * @param type        type of color
+	 * @param enableAlpha true to enable alpha slider
 	 */
 	public static void show(FragmentActivity activity, int color, int type, boolean enableAlpha) {
 		Fragment dialogFragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);

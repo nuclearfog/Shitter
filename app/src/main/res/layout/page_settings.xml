@@ -363,7 +363,7 @@
 						android:layout_marginStart="@dimen/settings_spinner_margin"
 						app:layout_constraintHorizontal_weight="2"
 						app:layout_constraintStart_toEndOf="@id/page_settings_font_selector"
-						app:layout_constraintTop_toTopOf="@id/page_settings_font_selector"/>
+						app:layout_constraintTop_toTopOf="@id/page_settings_font_selector" />
 
 				</androidx.constraintlayout.widget.ConstraintLayout>
 

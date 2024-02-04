@@ -76,7 +76,6 @@ public class StatusUpdate implements Serializable, Closeable {
 		statusPreferences.setSensitive(status.isSensitive());
 		statusPreferences.setSpoiler(status.isSpoiler());
 		statusPreferences.setVisibility(status.getVisibility());
-		statusPreferences.setLanguage(status.getLanguage());
 		if (status.getPoll() != null) {
 			poll = new PollUpdate(status.getPoll());
 		}
