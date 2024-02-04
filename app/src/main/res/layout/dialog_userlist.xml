@@ -13,12 +13,11 @@
 		android:lines="1"
 		android:textSize="@dimen/userlist_textsize_title" />
 
-	<EditText
+	<org.nuclearfog.twidda.ui.views.InputView
 		android:id="@+id/dialog_userlist_title_input"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_margin="@dimen/userlist_layout_margin"
-		android:background="@android:color/transparent"
 		android:inputType="text"
 		android:maxLines="2"
 		android:autofillHints="text"

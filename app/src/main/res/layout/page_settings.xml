@@ -333,8 +333,7 @@
 						android:layout_marginStart="@dimen/settings_switch_margin"
 						android:layout_margin="@dimen/settings_layout_margin"
 						app:layout_constraintStart_toEndOf="@id/page_settings_public_timeline_label"
-						app:layout_constraintTop_toBottomOf="@id/page_settings_chronological_timeline_sw"
-						app:layout_constraintEnd_toEndOf="parent" />
+						app:layout_constraintTop_toBottomOf="@id/page_settings_chronological_timeline_sw" />
 
 					<ImageView
 						android:id="@+id/page_settings_font_icon"
@@ -351,8 +350,7 @@
 						android:id="@+id/page_settings_font_selector"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
-						android:layout_marginStart="@dimen/settings_switch_margin"
-						android:layout_margin="@dimen/settings_layout_margin"
+						android:layout_marginStart="@dimen/settings_spinner_margin"
 						app:layout_constraintStart_toEndOf="@+id/page_settings_font_icon"
 						app:layout_constraintTop_toBottomOf="@id/page_settings_public_timeline_selector"
 						app:layout_constraintEnd_toStartOf="@id/page_settings_textscale_selector"
@@ -365,8 +363,7 @@
 						android:layout_marginStart="@dimen/settings_spinner_margin"
 						app:layout_constraintHorizontal_weight="2"
 						app:layout_constraintStart_toEndOf="@id/page_settings_font_selector"
-						app:layout_constraintTop_toTopOf="@id/page_settings_font_selector"
-						app:layout_constraintEnd_toEndOf="parent" />
+						app:layout_constraintTop_toTopOf="@id/page_settings_font_selector"/>
 
 				</androidx.constraintlayout.widget.ConstraintLayout>
 

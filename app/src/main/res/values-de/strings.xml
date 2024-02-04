@@ -358,7 +358,7 @@
 	<string name="descr_remove_schedule">geplanten Post von der Liste entfernen</string>
 	<string name="confirm_tag_unfeature">entferne Hashtag-Feature</string>
 	<string name="confirm_schedule_remove">geplanten Post verwerfen?</string>
-	<string name="userlist_exclusive">Mitglieder aus den Home-Timeline filtern</string>
+	<string name="userlist_exclusive">Mitglieder aus der Home-Timeline filtern</string>
 	<string name="userlist_update_list">Nutzerliste bearbeiten</string>
 	<string name="confirm_accept_follow_request">Follow-Anfrage annehmen?</string>
 	<string name="info_follow_request_accepted">Follow-Anfrage angenommen</string>

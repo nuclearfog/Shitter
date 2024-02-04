@@ -3,13 +3,10 @@ package org.nuclearfog.twidda.ui.dialogs;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +16,8 @@ import androidx.fragment.app.FragmentActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.ui.views.InputView;
+import org.nuclearfog.twidda.ui.views.InputView.OnTextChangeListener;
 
 import java.util.regex.Pattern;
 
@@ -30,7 +29,7 @@ import top.defaults.colorpicker.ColorPickerView;
  *
  * @author nuclearfog
  */
-public class ColorPickerDialog extends DialogFragment implements OnClickListener, ColorObserver, TextWatcher {
+public class ColorPickerDialog extends DialogFragment implements OnClickListener, OnTextChangeListener, ColorObserver {
 
 	/**
 	 *
@@ -61,10 +60,10 @@ public class ColorPickerDialog extends DialogFragment implements OnClickListener
 	private static final Pattern HEX_PATTERN = Pattern.compile("[0123456789ABCDEFabcdef]{1,8}");
 
 	private ColorPickerView colorPickerView;
-	private EditText hexCode;
+	private InputView hecCodeInput;
 
 	private boolean enableAlpha;
-	private int type;
+	private int colorType;
 
 	/**
 	 *
@@ -80,7 +79,7 @@ public class ColorPickerDialog extends DialogFragment implements OnClickListener
 		View root = inflater.inflate(R.layout.dialog_colorpicker, container, false);
 		colorPickerView = root.findViewById(R.id.dialog_colorpicker_selector);
 		root = root.findViewById(R.id.dialog_colorpicker_root);
-		hexCode = root.findViewById(R.id.dialog_colorpicker_hex);
+		hecCodeInput = root.findViewById(R.id.dialog_colorpicker_hex);
 		View confirm = root.findViewById(R.id.dialog_colorpicker_ok);
 		View cancel = root.findViewById(R.id.dialog_colorpicker_cancel);
 
@@ -89,15 +88,15 @@ public class ColorPickerDialog extends DialogFragment implements OnClickListener
 		if (savedInstanceState != null) {
 			int color = savedInstanceState.getInt(KEY_COLOR);
 			enableAlpha = savedInstanceState.getBoolean(KEY_ALPHA);
-			type = savedInstanceState.getInt(KEY_TYPE);
+			colorType = savedInstanceState.getInt(KEY_TYPE);
 			colorPickerView.setInitialColor(color);
-			hexCode.setText(String.format("%08X", color));
+			hecCodeInput.setText(String.format("%08X", color));
 			colorPickerView.setEnabledAlpha(enableAlpha);
 		}
 		AppStyles.setTheme((ViewGroup) root);
-		hexCode.setTypeface(Typeface.MONOSPACE);
+		hecCodeInput.setTypeface(Typeface.MONOSPACE);
 
-		hexCode.addTextChangedListener(this);
+		hecCodeInput.setOnTextChangeListener(this);
 		confirm.setOnClickListener(this);
 		cancel.setOnClickListener(this);
 		colorPickerView.subscribe(this);
@@ -109,7 +108,7 @@ public class ColorPickerDialog extends DialogFragment implements OnClickListener
 	public void onSaveInstanceState(Bundle outState) {
 		int color = colorPickerView.getColor();
 		outState.putInt(KEY_COLOR, color);
-		outState.putInt(KEY_TYPE, type);
+		outState.putInt(KEY_TYPE, colorType);
 		outState.putBoolean(KEY_ALPHA, enableAlpha);
 		super.onSaveInstanceState(outState);
 	}
@@ -127,7 +126,7 @@ public class ColorPickerDialog extends DialogFragment implements OnClickListener
 		if (v.getId() == R.id.dialog_colorpicker_ok) {
 			Activity activity = getActivity();
 			if (activity instanceof OnColorSelectedListener)
-				((OnColorSelectedListener) activity).onColorSelected(type, colorPickerView.getColor());
+				((OnColorSelectedListener) activity).onColorSelected(colorType, colorPickerView.getColor());
 			dismiss();
 		} else if (v.getId() == R.id.dialog_colorpicker_cancel) {
 			dismiss();
@@ -139,28 +138,19 @@ public class ColorPickerDialog extends DialogFragment implements OnClickListener
 	public void onColor(int color, boolean fromUser, boolean shouldPropagate) {
 		// only handle user input
 		if (fromUser) {
-			hexCode.setText(String.format("%08X", color));
+			hecCodeInput.setText(String.format("%08X", color));
 		}
 	}
 
 
 	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-	}
-
-
-	@Override
-	public void onTextChanged(CharSequence s, int start, int before, int count) {
-	}
-
-
-	@Override
-	public void afterTextChanged(Editable s) {
-		// only handle user input
-		if (hexCode.hasFocus()) {
-			String hex = s.toString();
-			if (HEX_PATTERN.matcher(hex).matches()) {
-				colorPickerView.setInitialColor(Integer.parseUnsignedInt(hex, 16));
+	public void onTextChanged(InputView inputView, String text) {
+		if (inputView.getId() == R.id.dialog_colorpicker_hex) {
+			if (HEX_PATTERN.matcher(text).matches()) {
+				int color = Integer.parseUnsignedInt(text, 16);
+				if (!enableAlpha)
+					color |= 0xff000000;
+				colorPickerView.setInitialColor(color);
 			}
 		}
 	}

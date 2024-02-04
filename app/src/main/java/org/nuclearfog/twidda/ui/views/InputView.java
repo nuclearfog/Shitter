@@ -30,25 +30,35 @@ public class InputView extends AppCompatEditText implements TextWatcher {
 	 */
 	public InputView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		super.addTextChangedListener(this);
+		setBackgroundColor(0);
+	}
+
+	/**
+	 *
+	 */
+	public InputView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		super.addTextChangedListener(this);
+		setBackgroundColor(0);
 	}
 
 
 	@Override
 	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-	}
-
-
-	@Override
-	public void afterTextChanged(Editable s) {
-		if (listener != null) {
-			listener.onTextChanged(this, s.toString());
-		}
 	}
 
 
 	@Override
 	public void onTextChanged(CharSequence s, int start, int before, int count) {
+	}
+
+
+	@Override
+	public void afterTextChanged(Editable s) {
+		if (listener != null && hasFocus()) {
+			listener.onTextChanged(this, s.toString());
+		}
 	}
 
 
@@ -81,7 +91,9 @@ public class InputView extends AppCompatEditText implements TextWatcher {
 	public interface OnTextChangeListener {
 
 		/**
-		 * called after text changes
+		 * called after user changes
+		 *
+		 * @param text new text
 		 */
 		void onTextChanged(InputView inputView, String text);
 	}

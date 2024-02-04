@@ -5,12 +5,9 @@ import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -51,6 +48,8 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
 import org.nuclearfog.twidda.ui.dialogs.StatusPreferenceDialog;
 import org.nuclearfog.twidda.ui.dialogs.StatusPreferenceDialog.PreferenceSetCallback;
+import org.nuclearfog.twidda.ui.views.InputView;
+import org.nuclearfog.twidda.ui.views.InputView.OnTextChangeListener;
 
 import java.io.FileNotFoundException;
 import java.io.Serializable;
@@ -60,8 +59,8 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class StatusEditor extends MediaActivity implements ActivityResultCallback<ActivityResult>, OnClickListener, OnProgressStopListener, OnConfirmListener,
-		OnIconClickListener, TextWatcher, PollUpdateCallback, OnEmojiSelectListener, PreferenceSetCallback {
+public class StatusEditor extends MediaActivity implements ActivityResultCallback<ActivityResult>, OnClickListener, OnTextChangeListener,
+		OnProgressStopListener, OnConfirmListener, OnIconClickListener, PollUpdateCallback, OnEmojiSelectListener, PreferenceSetCallback {
 
 	/**
 	 * return code used to send status information to calling activity
@@ -94,7 +93,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	private View locationBtn;
 	private View pollBtn;
 	private View locationPending;
-	private EditText statusText;
+	private InputView statusText;
 
 	private StatusUpdater statusUpdater;
 	private InstanceLoader instanceLoader;
@@ -184,8 +183,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 			statusUpdate.addText(prefix);
 			statusText.append(prefix);
 		}
-
-		statusText.addTextChangedListener(this);
+		statusText.setOnTextChangeListener(this);
 		emojiButton.setOnClickListener(this);
 		preference.setOnClickListener(this);
 		statusButton.setOnClickListener(this);
@@ -323,25 +321,17 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 		} else {
 			tagToInsert = ' ' + emoji.getCode() + ' ';
 		}
-		statusText.getText().replace(Math.min(start, end), Math.max(start, end), tagToInsert, 0, tagToInsert.length());
+		if (statusText.getText() != null) {
+			statusText.getText().replace(Math.min(start, end), Math.max(start, end), tagToInsert, 0, tagToInsert.length());
+		}
 	}
 
 
 	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-	}
-
-
-	@Override
-	public void onTextChanged(CharSequence s, int start, int before, int count) {
-		// todo replace emoji tags with images
-	}
-
-
-	@Override
-	public void afterTextChanged(Editable s) {
-		statusUpdate.addText(s.toString());
-		// todo add character limit check
+	public void onTextChanged(InputView inputView, String text) {
+		if (inputView.getId() == R.id.popup_status_input) {
+			statusUpdate.addText(text);
+		}
 	}
 
 

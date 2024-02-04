@@ -20,11 +20,10 @@
 		app:layout_constraintHeight_percent="0.75"
 		tools:ignore="ContentDescription" />
 
-	<EditText
+	<org.nuclearfog.twidda.ui.views.InputView
 		android:id="@+id/popup_status_input"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
-		android:background="@android:color/transparent"
 		android:layout_marginStart="@dimen/popup_status_margin_layout"
 		android:layout_marginTop="@dimen/popup_status_margin_layout"
 		android:layout_marginEnd="@dimen/popup_status_margin_layout"
