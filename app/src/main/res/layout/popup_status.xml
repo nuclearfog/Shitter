@@ -31,6 +31,7 @@
 		android:hint="@string/popup_status_text_hint"
 		android:importantForAutofill="no"
 		android:inputType="textMultiLine"
+		android:background="@android:color/transparent"
 		app:layout_constraintStart_toStartOf="@id/popup_status_background"
 		app:layout_constraintTop_toTopOf="@id/popup_status_background"
 		app:layout_constraintBottom_toTopOf="@id/popup_status_button_barrier"

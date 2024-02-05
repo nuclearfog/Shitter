@@ -31,7 +31,6 @@ public class InputView extends AppCompatEditText implements TextWatcher {
 	public InputView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		super.addTextChangedListener(this);
-		setBackgroundColor(0);
 	}
 
 	/**
@@ -40,7 +39,6 @@ public class InputView extends AppCompatEditText implements TextWatcher {
 	public InputView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		super.addTextChangedListener(this);
-		setBackgroundColor(0);
 	}
 
 

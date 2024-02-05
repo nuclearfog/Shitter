@@ -248,6 +248,7 @@
 	<string name="menu_media_add_description">Beschreibung hinzufügen</string>
 	<string name="menu_media_show_meta">zeige Medieninformationen</string>
 	<string name="status_replyname_empty">Antwort</string>
+	<string name="error_empty_filter_keywords">Es muss mindestens ein Wort zum Filtern angegeben werden</string>
 	<string name="error_wrong_url">ungültiger Link</string>
 	<string name="error_empty_text">Text ist leer!</string>
 	<string name="status_media_preview">Medienvorschau</string>
@@ -375,4 +376,5 @@
 	<string name="info_status_unpinned">Status wurde vom Profil abgeheftet</string>
 	<string name="menu_status_pin">an Profil anheften</string>
 	<string name="menu_status_unpin">vom Profil abheften</string>
+	<string name="error_empty_filter_expiration">bitte Filterdauer angeben</string>
 </resources>

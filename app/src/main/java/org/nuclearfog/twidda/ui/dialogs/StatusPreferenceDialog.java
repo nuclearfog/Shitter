@@ -29,7 +29,7 @@ import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
 import org.nuclearfog.twidda.ui.dialogs.TimePickerDialog.TimeSelectedCallback;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
@@ -117,6 +117,8 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 		visibility_adapter.setItems(R.array.visibility);
 		visibilitySelector.setAdapter(visibility_adapter);
 		languageSelector.setAdapter(language_adapter);
+		if (prefUpdate.getScheduleTime() != 0L)
+			scheduleText.setText(SimpleDateFormat.getDateTimeInstance().format(prefUpdate.getScheduleTime()));
 		if (prefUpdate.getVisibility() == Status.VISIBLE_DEFAULT) {
 			visibilitySelector.setSelection(IDX_VISIBILITY_DEFAULT, false);
 		} else if (prefUpdate.getVisibility() == Status.VISIBLE_PUBLIC) {
@@ -244,7 +246,7 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 	public void onTimeSelected(long time) {
 		prefUpdate.setScheduleTime(time);
 		if (time != 0L) {
-			scheduleText.setText(new Date(time).toString());
+			scheduleText.setText(SimpleDateFormat.getDateTimeInstance().format(time));
 		} else {
 			scheduleText.setText("");
 		}

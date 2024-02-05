@@ -20,21 +20,7 @@
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintEnd_toEndOf="parent" />
 
-	<TextView
-		android:id="@+id/dialog_filter_name_title"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:lines="1"
-		android:text="@string/dialog_filter_title_name"
-		android:textSize="@dimen/dialog_filter_textsize_title_sub"
-		android:layout_marginTop="@dimen/dialog_filter_margin_columns"
-		android:layout_marginStart="@dimen/dialog_filter_margin_items_layout"
-		android:layout_marginEnd="@dimen/dialog_filter_margin_items_layout"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/dialog_filter_title_dialog"
-		app:layout_constraintEnd_toEndOf="parent" />
-
-	<EditText
+	<org.nuclearfog.twidda.ui.views.InputView
 		android:id="@+id/dialog_filter_name"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
@@ -46,8 +32,9 @@
 		android:importantForAutofill="no"
 		android:textSize="@dimen/dialog_filter_textsize_input"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/dialog_filter_name_title"
-		app:layout_constraintEnd_toEndOf="parent" />
+		app:layout_constraintTop_toBottomOf="@id/dialog_filter_title_dialog"
+		app:layout_constraintEnd_toEndOf="parent"
+		style="@style/TextInput"/>
 
 	<TextView
 		android:id="@+id/dialog_filter_title_switch"
@@ -202,20 +189,7 @@
 		app:layout_constraintBottom_toBottomOf="@id/dialog_filter_switch_hide"
 		app:layout_constraintEnd_toEndOf="parent" />
 
-	<TextView
-		android:id="@+id/dialog_filter_title_keywords"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:text="@string/dialog_filter_title_keywords"
-		android:textSize="@dimen/dialog_filter_textsize_title_sub"
-		android:layout_marginTop="@dimen/dialog_filter_margin_columns"
-		android:layout_marginStart="@dimen/dialog_filter_margin_items_layout"
-		android:layout_marginEnd="@dimen/dialog_filter_margin_items_layout"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/dialog_filter_switch_thread"
-		app:layout_constraintEnd_toEndOf="parent" />
-
-	<EditText
+	<org.nuclearfog.twidda.ui.views.InputView
 		android:id="@+id/dialog_filter_keywords"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
@@ -230,11 +204,12 @@
 		android:inputType="textMultiLine"
 		android:textSize="@dimen/dialog_filter_textsize_input"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/dialog_filter_title_keywords"
+		app:layout_constraintTop_toBottomOf="@id/dialog_filter_switch_thread"
 		app:layout_constraintEnd_toEndOf="parent"
-		android:importantForAutofill="no" />
+		android:importantForAutofill="no"
+		style="@style/TextInput" />
 
-	<EditText
+	<org.nuclearfog.twidda.ui.views.InputView
 		android:id="@+id/dialog_filter_time"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
@@ -248,7 +223,8 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_filter_keywords"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/dialog_filter_timeunit" />
+		app:layout_constraintEnd_toStartOf="@id/dialog_filter_timeunit"
+		style="@style/TextInput"/>
 
 	<Spinner
 		android:id="@+id/dialog_filter_timeunit"
@@ -258,6 +234,7 @@
 		app:layout_constraintHorizontal_weight="3"
 		app:layout_constraintStart_toEndOf="@id/dialog_filter_time"
 		app:layout_constraintTop_toBottomOf="@id/dialog_filter_keywords"
+		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toStartOf="@id/dialog_filter_create" />
 
 	<Button

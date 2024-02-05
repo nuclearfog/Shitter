@@ -135,6 +135,8 @@
 	<string name="error_media_init">Error while preparing media files for upload!</string>
 	<string name="error_empty_filter_title">Filter description must not be empty</string>
 	<string name="error_empty_filter_selection">It must be at least one filter enabled</string>
+	<string name="error_empty_filter_expiration">missing expiration time</string>
+	<string name="error_empty_filter_keywords">It must be at least one keyword set</string>
 	<string name="error_wrong_url">Wrong URL format</string>
 	<string name="error_empty_text">Empty text!</string>
 

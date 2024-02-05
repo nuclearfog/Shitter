@@ -400,8 +400,9 @@ public class AppStyles {
 					card.setCardBackgroundColor(settings.getCardColor());
 					setSubViewTheme(card, color);
 				} else if (child instanceof NavigationView) {
-					child.setBackgroundColor(settings.getBackgroundColor());
-					setSubViewTheme((ViewGroup) child, color);
+					NavigationView navigationView = (NavigationView) child;
+					navigationView.setBackgroundColor(settings.getBackgroundColor());
+					navigationView.setItemTextColor(ColorStateList.valueOf(settings.getTextColor()));
 				} else if (!(child instanceof ViewPager2)) {
 					setSubViewTheme((ViewGroup) child, color);
 				}
