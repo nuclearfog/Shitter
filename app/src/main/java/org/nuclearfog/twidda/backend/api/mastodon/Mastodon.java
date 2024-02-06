@@ -1288,12 +1288,10 @@ public class Mastodon implements Connection {
 			}
 			if (statusPref.getVisibility() == Status.VISIBLE_PUBLIC) {
 				params.add("source[privacy]=public");
-			} else if (statusPref.getVisibility() == Status.VISIBLE_PRIVATE) {
+			} else if (statusPref.getVisibility() == Status.VISIBLE_PRIVATE || statusPref.getVisibility() == Status.VISIBLE_DIRECT) {
 				params.add("source[privacy]=private");
 			} else if (statusPref.getVisibility() == Status.VISIBLE_UNLISTED) {
 				params.add("source[privacy]=unlisted");
-			} else if (statusPref.getVisibility() == Status.VISIBLE_DIRECT) {
-				params.add("source[privacy]=direct");
 			}
 		}
 		try {

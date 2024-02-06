@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Matrix;
@@ -69,6 +70,7 @@ public class ZoomView extends AppCompatImageView {
 	}
 
 
+	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (getScaleType() != ScaleType.MATRIX)

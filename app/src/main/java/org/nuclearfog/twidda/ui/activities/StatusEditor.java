@@ -163,6 +163,9 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 		}
 		if (serializedData instanceof StatusUpdate) {
 			statusUpdate = (StatusUpdate) serializedData;
+			for (MediaStatus item : statusUpdate.getMediaStatuses()) {
+				addMedia(item.getMediaType());
+			}
 		} else if (serializedData instanceof Status) {
 			Status status = (Status) serializedData;
 			if (editStatus) {
@@ -171,6 +174,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 				for (Media media : status.getMedia()) {
 					addMedia(media.getMediaType());
 				}
+				// disable attach button
 				mediaBtn.setVisibility(View.GONE);
 			} else {
 				statusUpdate.addReplyStatusId(status.getId());

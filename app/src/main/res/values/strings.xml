@@ -251,7 +251,6 @@
 	<string name="dialog_poll_title">create poll</string>
 	<string name="dialog_poll_button_create">create</string>
 	<string name="dialog_title_create_filter">create Filter</string>
-	<string name="dialog_filter_title_name">Filter title</string>
 	<string name="dialog_poll_button_remove">remove</string>
 	<string name="dialog_poll_mc">multiple choice</string>
 	<string name="dialog_poll_hide">hide votes</string>
@@ -320,8 +319,6 @@
 	<string name="status_translate_source_language">Language:\u0020</string>
 	<string name="field_verified">verified:\u0020</string>
 	<string name="confirm_remember">remember choice</string>
-	<string name="confirm_warning">Warning</string>
-	<string name="confirm_proxy_bypass">Opening an external link would bypass proxy connection. Proceed?</string>
 	<string name="confirm_tag_unfollow">unfollow hashtag?</string>
 	<string name="confirm_tag_unfeature">unfeature hashtag?</string>
 	<string name="confirm_schedule_remove">cancel scheduled post?</string>
@@ -395,7 +392,6 @@
 	<string name="dialog_filter_user">User timeline</string>
 	<string name="dialog_filter_threads">Threads</string>
 	<string name="dialog_filter_hide_status">hide posts matching this filter</string>
-	<string name="dialog_filter_title_keywords">Words to exclude</string>
 	<string name="dialog_filter_edit_hint_exclude">word anotherword\n\"whole word\"</string>
 	<string name="hint_duration">Duration</string>
 </resources>

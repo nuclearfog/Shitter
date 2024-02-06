@@ -66,6 +66,12 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 	public static final String KEY_VIDEO_DATA = "media-video";
 
 	/**
+	 * bundle key used to save/restore last player position
+	 * value type is long
+	 */
+	private static final String KEY_LAST_POS = "player-last-pos";
+
+	/**
 	 * Activity result code used to update {@link MediaStatus} information
 	 */
 	public static final int RESULT_VIDEO_UPDATE = 0x1528;
@@ -107,12 +113,15 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 		playerView.setShowNextButton(false);
 		playerView.setShowPreviousButton(false);
 
-		ProgressiveMediaSource mediaSource = null;
+		long lastPos;
 		Serializable serializedData;
+		ProgressiveMediaSource mediaSource = null;
 		if (savedInstance != null) {
 			serializedData = savedInstance.getSerializable(KEY_VIDEO_DATA);
+			lastPos = savedInstance.getLong(KEY_LAST_POS, 0L);
 		} else {
 			serializedData = getIntent().getSerializableExtra(KEY_VIDEO_DATA);
+			lastPos = getIntent().getLongExtra(KEY_LAST_POS, 0L);
 		}
 		// check if video is online
 		if (serializedData instanceof Media) {
@@ -163,6 +172,7 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 			playerView.setPlayer(player);
 			player.addListener(this);
 			player.prepare();
+			player.seekTo(lastPos);
 			player.setPlayWhenReady(true);
 		} else {
 			finish();
@@ -198,6 +208,7 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 		} else if (media != null) {
 			outState.putSerializable(KEY_VIDEO_DATA, media);
 		}
+		outState.putLong(KEY_LAST_POS, player.getCurrentPosition());
 		super.onSaveInstanceState(outState);
 	}
 

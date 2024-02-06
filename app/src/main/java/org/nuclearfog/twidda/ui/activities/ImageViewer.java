@@ -68,6 +68,8 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageDow
 	@Nullable
 	private MediaStatus mediaStatus;
 	@Nullable
+	private Media media;
+	@Nullable
 	private ImageDownloader imageAsync;
 	private GlobalSettings settings;
 	private File cacheFolder;
@@ -89,16 +91,14 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageDow
 		descriptionView = findViewById(R.id.page_image_description);
 		loadingCircle = findViewById(R.id.page_image_progress);
 		zoomImage = findViewById(R.id.page_image_viewer);
-
 		settings = GlobalSettings.get(this);
-		AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
-		toolbar.setTitle("");
-		toolbar.setBackgroundColor(settings.getBackgroundColor());
-		setSupportActionBar(toolbar);
-
 		imageAsync = new ImageDownloader(this);
-
 		cacheFolder = new File(getExternalCacheDir(), ImageViewer.CACHE_FOLDER);
+
+		AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
+		toolbar.setBackgroundColor(settings.getBackgroundColor());
+		toolbar.setTitle("");
+		setSupportActionBar(toolbar);
 		cacheFolder.mkdirs();
 
 		// get parameters
@@ -121,7 +121,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageDow
 			local = imageUrl != null && !imageUrl.startsWith("http");
 			description = mediaStatus.getDescription();
 		} else if (serializedData instanceof Media) {
-			Media media = (Media) serializedData;
+			media = (Media) serializedData;
 			meta = media.getMeta();
 			blurHash = media.getBlurHash();
 			imageUrl = media.getUrl();
@@ -132,8 +132,6 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageDow
 			}
 		} else if (serializedData instanceof String) {
 			imageUrl = (String) serializedData;
-		} else {
-			finish();
 		}
 		// setup image view
 		if (imageUrl != null && !imageUrl.trim().isEmpty()) {
@@ -169,6 +167,16 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageDow
 			zoomImage.setImageBitmap(blur);
 			zoomImage.setMovable(false);
 		}
+	}
+
+
+	@Override
+	protected void onSaveInstanceState(@NonNull Bundle outState) {
+		if (mediaStatus != null)
+			outState.putSerializable(KEY_IMAGE_DATA, mediaStatus);
+		else if (media != null)
+			outState.putSerializable(KEY_IMAGE_DATA, media);
+		super.onSaveInstanceState(outState);
 	}
 
 

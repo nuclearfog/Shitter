@@ -188,8 +188,6 @@
 	<string name="status_translate_text">übersetzen</string>
 	<string name="field_verified">verifiziert:\u0020</string>
 	<string name="confirm_remember">Entscheidung merken</string>
-	<string name="confirm_warning">Warnung</string>
-	<string name="confirm_proxy_bypass">Das Öffnen des Links umgeht die eingestellte Proxy-Verbindung. Fortsetzen?</string>
 	<string name="confirm_remove_account">Account aus der Liste entfernen?</string>
 	<string name="menu_select_account">Accounts</string>
 	<string name="menu_instance_show_all">zeige alle Benachrichtigungen</string>
@@ -271,7 +269,6 @@
 	<string name="dialog_poll_title">Umfrage erstellen</string>
 	<string name="dialog_poll_button_create">erstellen</string>
 	<string name="dialog_title_create_filter">Filter erstellen</string>
-	<string name="dialog_filter_title_name">Filtertitel</string>
 	<string name="dialog_poll_button_remove">entfernen</string>
 	<string name="dialog_poll_mc">Mehrfachauswahl</string>
 	<string name="dialog_poll_hide">Stimmen verstecken</string>
@@ -347,7 +344,6 @@
 	<string name="dialog_filter_user">Nutzer-Timeline</string>
 	<string name="dialog_filter_threads">Threads</string>
 	<string name="dialog_filter_hide_status">verstecke gefilterte Posts</string>
-	<string name="dialog_filter_title_keywords">Zu filterne Wörter</string>
 	<string name="error_empty_filter_title">Filterbezeichnung darf nicht leer sein</string>
 	<string name="error_empty_filter_selection">es muss mindestens ein Filter aktiviert sein</string>
 	<string name="dialog_description_title">Medienbeschreibung</string>
