@@ -52,18 +52,31 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 					return new Result(statuses, param.pos, null);
 
 				case Param.USER:
-				case Param.USER_ALL:
-					boolean withReplies = param.type == Param.USER_ALL;
 					if (param.minId == Param.NO_ID && param.maxId == Param.NO_ID) {
 						statuses = db.getUserTimeline(param.id);
 						if (statuses.isEmpty()) {
-							statuses = connection.getUserTimeline(param.id, 0L, 0L, withReplies);
+							statuses = connection.getUserTimeline(param.id, 0L, 0L, false);
 							db.saveUserTimeline(statuses);
 						}
 					} else {
-						statuses = connection.getUserTimeline(param.id, param.minId, param.maxId, withReplies);
+						statuses = connection.getUserTimeline(param.id, param.minId, param.maxId, false);
 						if (param.maxId == Param.NO_ID) {
 							db.saveUserTimeline(statuses);
+						}
+					}
+					return new Result(statuses, param.pos, null);
+
+				case Param.USER_REPLIES:
+					if (param.minId == Param.NO_ID && param.maxId == Param.NO_ID) {
+						statuses = db.getUserReplies(param.id);
+						if (statuses.isEmpty()) {
+							statuses = connection.getUserTimeline(param.id, 0L, 0L, true);
+							db.saveUserReplies(statuses);
+						}
+					} else {
+						statuses = connection.getUserTimeline(param.id, param.minId, param.maxId, true);
+						if (param.maxId == Param.NO_ID) {
+							db.saveUserReplies(statuses);
 						}
 					}
 					return new Result(statuses, param.pos, null);
@@ -150,7 +163,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 
 		public static final int HOME = 1;
 		public static final int USER = 2;
-		public static final int USER_ALL = 3;
+		public static final int USER_REPLIES = 3;
 		public static final int FAVORIT = 4;
 		public static final int REPLIES = 5;
 		public static final int REPLIES_LOCAL = 6;

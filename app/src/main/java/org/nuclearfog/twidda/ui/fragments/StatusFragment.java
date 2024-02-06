@@ -276,7 +276,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 				break;
 
 			case MODE_USER_ALL:
-				request = new StatusLoader.Param(StatusLoader.Param.USER_ALL, id, sinceId, maxId, index, search);
+				request = new StatusLoader.Param(StatusLoader.Param.USER_REPLIES, id, sinceId, maxId, index, search);
 				break;
 
 			case MODE_FAVORIT:

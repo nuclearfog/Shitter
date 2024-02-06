@@ -107,10 +107,21 @@ public class AppDatabase {
 			+ " LIMIT ?;";
 
 	/**
-	 * SQL query to get status of an user
+	 * SQL query to get timeline of an user
 	 */
 	private static final String USER_STATUS_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
 			+ " WHERE " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.FLAGS + "&" + StatusPropertiesTable.MASK_STATUS_USER_TIMELINE + " IS NOT 0"
+			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.OWNER + "=?"
+			+ " AND " + UserPropertiesTable.TABLE + "." + UserPropertiesTable.OWNER + "=?"
+			+ " AND " + StatusTable.TABLE + "." + StatusTable.USER + "=?"
+			+ " ORDER BY " + StatusTable.ID + " DESC"
+			+ " LIMIT ?;";
+
+	/**
+	 * SQL query to get timeline of an user with replies
+	 */
+	private static final String USER_REPLY_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
+			+ " WHERE " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.FLAGS + "&" + StatusPropertiesTable.MASK_STATUS_USER_REPLY + " IS NOT 0"
 			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.OWNER + "=?"
 			+ " AND " + UserPropertiesTable.TABLE + "." + UserPropertiesTable.OWNER + "=?"
 			+ " AND " + StatusTable.TABLE + "." + StatusTable.USER + "=?"
@@ -354,6 +365,22 @@ public class AppDatabase {
 				SQLiteDatabase db = adapter.getDbWrite();
 				for (Status status : statuses)
 					saveStatus(status, db, StatusPropertiesTable.MASK_STATUS_USER_TIMELINE);
+				adapter.commit();
+			}
+		}
+	}
+
+	/**
+	 * save user reply timeline
+	 *
+	 * @param statuses user timeline
+	 */
+	public void saveUserReplies(Statuses statuses) {
+		synchronized (adapter) {
+			if (!statuses.isEmpty()) {
+				SQLiteDatabase db = adapter.getDbWrite();
+				for (Status status : statuses)
+					saveStatus(status, db, StatusPropertiesTable.MASK_STATUS_USER_REPLY);
 				adapter.commit();
 			}
 		}
@@ -689,6 +716,23 @@ public class AppDatabase {
 
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.rawQuery(USER_STATUS_QUERY, args);
+			return getStatuses(cursor, db);
+		}
+	}
+
+	/**
+	 * load user reply timeline
+	 *
+	 * @param userId user ID
+	 * @return user timeline
+	 */
+	public Statuses getUserReplies(long userId) {
+		synchronized (adapter) {
+			String homeStr = Long.toString(settings.getLogin().getId());
+			String[] args = {homeStr, homeStr, Long.toString(userId), Integer.toString(settings.getListSize())};
+
+			SQLiteDatabase db = adapter.getDbRead();
+			Cursor cursor = db.rawQuery(USER_REPLY_QUERY, args);
 			return getStatuses(cursor, db);
 		}
 	}

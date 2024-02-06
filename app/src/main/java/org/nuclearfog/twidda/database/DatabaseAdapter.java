@@ -954,6 +954,11 @@ public class DatabaseAdapter {
 		 * status is pinned to profile
 		 */
 		int MASK_STATUS_PINNED = 1 << 13;
+
+		/**
+		 * status is from an user timeline (replies included)
+		 */
+		int MASK_STATUS_USER_REPLY = 1 << 14;
 	}
 
 	/**
