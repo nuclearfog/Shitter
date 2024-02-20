@@ -1,9 +1,8 @@
-<p><br><b>Features:</b></p>
-<ul>
-    <li>access to posts, users, lists and trending hashtags</li>
-    <li>real timelines (chronological/reverse chronological order)</li>
-    <li>customizable theme (colors and fonts)</li>
-    <li>push notification support (unifiedpush)</li>
-    <li>multi account support</li>
-    <li>Proxy support</li>
-</ul>
+Features:
+
+- access to posts, users, lists and trending hashtags
+- real timelines (chronological/reverse chronological order)
+- customizable theme (colors and fonts)
+- push notification support (unifiedpush)
+- multi account support
+- Proxy support
