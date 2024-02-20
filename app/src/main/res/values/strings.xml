@@ -318,7 +318,6 @@
 	<string name="status_translate_source">Translated by:\u0020</string>
 	<string name="status_translate_source_language">Language:\u0020</string>
 	<string name="field_verified">verified:\u0020</string>
-	<string name="confirm_remember">remember choice</string>
 	<string name="confirm_tag_unfollow">unfollow hashtag?</string>
 	<string name="confirm_tag_unfeature">unfeature hashtag?</string>
 	<string name="confirm_schedule_remove">cancel scheduled post?</string>

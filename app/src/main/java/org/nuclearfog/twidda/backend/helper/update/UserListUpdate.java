@@ -41,15 +41,6 @@ public class UserListUpdate implements Serializable {
 	}
 
 	/**
-	 * set ID of an existing list to update
-	 *
-	 * @param listId ID of an existing list
-	 */
-	public void setId(long listId) {
-		this.listId = listId;
-	}
-
-	/**
 	 * get ID of the list
 	 *
 	 * @return list ID

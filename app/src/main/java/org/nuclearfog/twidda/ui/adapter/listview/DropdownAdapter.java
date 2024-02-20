@@ -65,7 +65,6 @@ public class DropdownAdapter extends BaseAdapter {
 			textItem = convertView.findViewById(R.id.dropdown_textitem);
 			textItem.setTextColor(settings.getTextColor());
 			textItem.setTypeface(settings.getTypeFace());
-			textItem.setBackgroundColor(settings.getCardColor());
 		} else {
 			textItem = convertView.findViewById(R.id.dropdown_textitem);
 		}

@@ -206,7 +206,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		repost_name_button = findViewById(R.id.page_status_reposter_reference);
 		translate_text = findViewById(R.id.page_status_text_translate);
 		spoiler_hint = findViewById(R.id.page_status_text_sensitive_hint);
-		//card_container = findViewById(R.id.page_status_cards_container);
 
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 		statusLoader = new StatusAction(this);
@@ -666,7 +665,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	public void onConfirm(int type, boolean remember) {
+	public void onConfirm(int type) {
 		if (type == ConfirmDialog.DELETE_STATUS) {
 			if (status != null) {
 				long id = status.getId();

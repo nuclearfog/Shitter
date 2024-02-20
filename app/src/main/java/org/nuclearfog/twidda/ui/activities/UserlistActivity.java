@@ -209,7 +209,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 
 	@Override
-	public void onConfirm(int type, boolean remember) {
+	public void onConfirm(int type) {
 		// delete user list
 		if (type == ConfirmDialog.LIST_DELETE && userList != null) {
 			if (listLoaderAsync.isIdle()) {

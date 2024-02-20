@@ -128,7 +128,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 
 	@Override
-	public void onConfirm(int type, boolean remember) {
+	public void onConfirm(int type) {
 		if (type == ConfirmDialog.REMOVE_ACCOUNT) {
 			if (selection != null) {
 				AccountAction.Param param = new AccountAction.Param(AccountAction.Param.REMOVE, selection);

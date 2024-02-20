@@ -33,31 +33,6 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/confirm_title" />
 
-
-	<com.kyleduo.switchbutton.SwitchButton
-		android:id="@+id/confirm_remember"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:visibility="gone"
-		android:layout_margin="@dimen/confirm_button_margin"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/confirm_message" />
-
-	<TextView
-		android:id="@+id/confirm_remember_label"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:visibility="gone"
-		android:lines="1"
-		android:text="@string/confirm_remember"
-		android:textSize="@dimen/confirm_button_fontsize"
-		android:layout_marginStart="@dimen/confirm_text_margin"
-		android:layout_marginEnd="@dimen/confirm_text_margin"
-		app:layout_constraintStart_toEndOf="@id/confirm_remember"
-		app:layout_constraintTop_toTopOf="@id/confirm_remember"
-		app:layout_constraintBottom_toBottomOf="@id/confirm_remember"
-		app:layout_constraintEnd_toEndOf="parent" />
-
 	<Button
 		android:id="@+id/confirm_no"
 		android:layout_width="wrap_content"
@@ -70,7 +45,7 @@
 		app:layout_constraintHorizontal_chainStyle="packed"
 		app:layout_constraintHorizontal_bias="1"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/confirm_remember"
+		app:layout_constraintTop_toBottomOf="@id/confirm_message"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toStartOf="@id/confirm_yes"
 		style="@style/FeedbackButton" />
@@ -85,7 +60,7 @@
 		android:text="@android:string/ok"
 		android:textSize="@dimen/confirm_button_fontsize"
 		app:layout_constraintStart_toEndOf="@id/confirm_no"
-		app:layout_constraintTop_toBottomOf="@id/confirm_remember"
+		app:layout_constraintTop_toBottomOf="@id/confirm_message"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		style="@style/FeedbackButton" />

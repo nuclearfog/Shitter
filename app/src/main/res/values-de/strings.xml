@@ -187,7 +187,6 @@
 	<string name="toolbar_title_filter">Status-Filter</string>
 	<string name="status_translate_text">übersetzen</string>
 	<string name="field_verified">verifiziert:\u0020</string>
-	<string name="confirm_remember">Entscheidung merken</string>
 	<string name="confirm_remove_account">Account aus der Liste entfernen?</string>
 	<string name="menu_select_account">Accounts</string>
 	<string name="menu_instance_show_all">zeige alle Benachrichtigungen</string>

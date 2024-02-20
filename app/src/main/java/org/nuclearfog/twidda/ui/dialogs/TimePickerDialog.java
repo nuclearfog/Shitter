@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import org.joda.time.DateTime;
@@ -132,15 +131,6 @@ public class TimePickerDialog extends DialogFragment implements OnClickListener 
 		if (fragment.isAdded()) {
 			show(fragment.getChildFragmentManager(), time);
 		}
-	}
-
-	/**
-	 * show timepicker with default value
-	 *
-	 * @param time selected time or '0' to select the current time
-	 */
-	public static void show(FragmentActivity activity, long time) {
-		show(activity.getSupportFragmentManager(), time);
 	}
 
 	/**

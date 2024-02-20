@@ -113,10 +113,6 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 					}
 					return new Result(statuses, param.pos, null);
 
-				case Param.REPLIES_LOCAL:
-					statuses = db.getReplies(param.id);
-					return new Result(statuses, param.pos, null);
-
 				case Param.REPLIES:
 					if (param.minId == Param.NO_ID && param.maxId == Param.NO_ID) {
 						statuses = db.getReplies(param.id);
@@ -166,7 +162,6 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 		public static final int USER_REPLIES = 3;
 		public static final int FAVORIT = 4;
 		public static final int REPLIES = 5;
-		public static final int REPLIES_LOCAL = 6;
 		public static final int SEARCH = 7;
 		public static final int USERLIST = 8;
 		public static final int PUBLIC = 9;

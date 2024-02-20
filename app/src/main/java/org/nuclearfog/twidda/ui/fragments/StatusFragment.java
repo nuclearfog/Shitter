@@ -284,10 +284,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 				break;
 
 			case MODE_REPLY:
-				if (index == CLEAR_LIST)
-					request = new StatusLoader.Param(StatusLoader.Param.REPLIES_LOCAL, id, sinceId, maxId, CLEAR_LIST, search);
-				else
-					request = new StatusLoader.Param(StatusLoader.Param.REPLIES, id, sinceId, maxId, CLEAR_LIST, search);
+				request = new StatusLoader.Param(StatusLoader.Param.REPLIES, id, sinceId, maxId, CLEAR_LIST, search);
 				break;
 
 			case MODE_SEARCH:

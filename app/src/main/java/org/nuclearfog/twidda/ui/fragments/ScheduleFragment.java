@@ -161,7 +161,7 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 
 
 	@Override
-	public void onConfirm(int type, boolean remember) {
+	public void onConfirm(int type) {
 		if (type == ConfirmDialog.SCHEDULE_REMOVE) {
 			if (selection != null) {
 				ScheduleAction.Param param = new ScheduleAction.Param(ScheduleAction.Param.REMOVE, selection.getId(), 0L);

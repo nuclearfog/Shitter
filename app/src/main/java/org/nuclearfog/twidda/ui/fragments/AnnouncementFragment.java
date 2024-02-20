@@ -107,7 +107,7 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 
 
 	@Override
-	public void onConfirm(int type, boolean remember) {
+	public void onConfirm(int type) {
 		if (type == ConfirmDialog.ANNOUNCEMENT_DISMISS) {
 			AnnouncementAction.Param param = new AnnouncementAction.Param(AnnouncementAction.Param.MODE_DISMISS, selectedId);
 			announcementAction.execute(param, announcementResult);

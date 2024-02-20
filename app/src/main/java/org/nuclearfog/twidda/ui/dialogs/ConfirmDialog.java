@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -172,7 +171,6 @@ public class ConfirmDialog extends DialogFragment implements OnClickListener {
 
 	private TextView title, message;
 	private Button confirm, cancel;
-	private CompoundButton remember;
 
 	private int type = 0;
 	private String messageStr = "";
@@ -193,7 +191,6 @@ public class ConfirmDialog extends DialogFragment implements OnClickListener {
 		cancel = view.findViewById(R.id.confirm_no);
 		title = view.findViewById(R.id.confirm_title);
 		message = view.findViewById(R.id.confirm_message);
-		remember = view.findViewById(R.id.confirm_remember);
 		GlobalSettings settings = GlobalSettings.get(requireContext());
 
 		if (savedInstanceState == null)
@@ -228,9 +225,9 @@ public class ConfirmDialog extends DialogFragment implements OnClickListener {
 				int type = (int) tag;
 				// get parent activity or fragment inplementing OnConfirmListener and return result
 				if (getParentFragment() instanceof OnConfirmListener) {
-					((OnConfirmListener) getParentFragment()).onConfirm(type, remember.isChecked());
+					((OnConfirmListener) getParentFragment()).onConfirm(type);
 				} else if (getActivity() instanceof OnConfirmListener) {
-					((OnConfirmListener) getActivity()).onConfirm(type, remember.isChecked());
+					((OnConfirmListener) getActivity()).onConfirm(type);
 				}
 			}
 			dismiss();
@@ -425,9 +422,8 @@ public class ConfirmDialog extends DialogFragment implements OnClickListener {
 		/**
 		 * called when the positive button was clicked
 		 *
-		 * @param type     type of dialog
-		 * @param remember true if "remember choice" is checked
+		 * @param type type of dialog
 		 */
-		void onConfirm(int type, boolean remember);
+		void onConfirm(int type);
 	}
 }

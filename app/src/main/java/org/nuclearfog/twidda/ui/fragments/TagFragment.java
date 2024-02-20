@@ -217,7 +217,7 @@ public class TagFragment extends ListFragment implements OnTagClickListener, Act
 
 
 	@Override
-	public void onConfirm(int type, boolean remember) {
+	public void onConfirm(int type) {
 		if (selection != null) {
 			if (type == ConfirmDialog.UNFOLLOW_TAG) {
 				TagAction.Param param = new TagAction.Param(TagAction.Param.UNFOLLOW, selection.getName(), selection.getId());

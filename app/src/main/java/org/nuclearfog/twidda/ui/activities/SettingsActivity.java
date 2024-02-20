@@ -306,7 +306,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 
 	@Override
-	public void onConfirm(int type, boolean remember) {
+	public void onConfirm(int type) {
 		// remove account from database
 		if (type == ConfirmDialog.APP_LOG_OUT) {
 			settings.setLogin(null, true);
