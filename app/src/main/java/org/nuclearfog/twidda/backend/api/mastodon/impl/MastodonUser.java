@@ -36,6 +36,8 @@ public class MastodonUser implements User {
 	private int statusCount;
 	private boolean locked;
 	private boolean isCurrentUser;
+	private boolean indexable;
+	private boolean discoverable;
 	private Emoji[] emojis = {};
 	private Field[] fields = {};
 
@@ -60,6 +62,8 @@ public class MastodonUser implements User {
 		follower = json.optInt("followers_count");
 		statusCount = json.optInt("statuses_count");
 		locked = json.optBoolean("locked");
+		indexable = !json.optBoolean("indexable", true);
+		discoverable = json.optBoolean("discoverable", false);
 		if (!description.isEmpty()) {
 			this.description = Jsoup.parse(description).text();
 		}
@@ -168,6 +172,18 @@ public class MastodonUser implements User {
 	@Override
 	public boolean isProtected() {
 		return locked;
+	}
+
+
+	@Override
+	public boolean isIndexable() {
+		return indexable;
+	}
+
+
+	@Override
+	public boolean isDiscoverable() {
+		return discoverable;
 	}
 
 

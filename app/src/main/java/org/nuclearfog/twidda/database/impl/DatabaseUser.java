@@ -26,7 +26,7 @@ public class DatabaseUser implements User, UserTable, UserPropertiesTable {
 
 	private long id, createdAt;
 	private int following, follower, statusCount, favorCount;
-	private boolean isCurrentUser, isVerified, isLocked, defaultImage;
+	private boolean isCurrentUser, isVerified, isLocked, defaultImage, indexable, discoverable;
 	private String username = "";
 	private String screen_name = "";
 	private String description = "";
@@ -62,6 +62,8 @@ public class DatabaseUser implements User, UserTable, UserPropertiesTable {
 		isVerified = (register & MASK_USER_VERIFIED) != 0;
 		isLocked = (register & MASK_USER_PRIVATE) != 0;
 		defaultImage = (register & MASK_USER_DEFAULT_IMAGE) != 0;
+		discoverable = (register & MASK_USER_DISCOVERABLE) != 0;
+		indexable = (register & MASK_USER_DISCOVERABLE) != 0;
 
 		if (emojiKeys != null && !emojiKeys.isEmpty())
 			this.emojiKeys = KEY_SEPARATOR.split(emojiKeys);
@@ -164,6 +166,18 @@ public class DatabaseUser implements User, UserTable, UserPropertiesTable {
 	@Override
 	public boolean isProtected() {
 		return isLocked;
+	}
+
+
+	@Override
+	public boolean isIndexable() {
+		return indexable;
+	}
+
+
+	@Override
+	public boolean isDiscoverable() {
+		return discoverable;
 	}
 
 

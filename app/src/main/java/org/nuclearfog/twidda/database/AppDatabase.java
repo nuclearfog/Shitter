@@ -1424,6 +1424,16 @@ public class AppDatabase {
 		} else {
 			flags &= ~UserPropertiesTable.MASK_USER_DEFAULT_IMAGE;
 		}
+		if (user.isDiscoverable()) {
+			flags |= UserPropertiesTable.MASK_USER_DISCOVERABLE;
+		} else {
+			flags &= ~UserPropertiesTable.MASK_USER_DISCOVERABLE;
+		}
+		if (user.isIndexable()) {
+			flags |= UserPropertiesTable.MASK_USER_INDEXABLE;
+		} else {
+			flags &= ~UserPropertiesTable.MASK_USER_INDEXABLE;
+		}
 		ContentValues column = new ContentValues(14);
 		if (user.getEmojis().length > 0) {
 			StringBuilder buf = new StringBuilder();

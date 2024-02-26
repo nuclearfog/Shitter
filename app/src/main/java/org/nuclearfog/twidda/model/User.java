@@ -80,6 +80,16 @@ public interface User extends Serializable, Comparable<User> {
 	boolean isProtected();
 
 	/**
+	 * @return true if user is indexable (user information and post are accessable in the public)
+	 */
+	boolean isIndexable();
+
+	/**
+	 * @return true if following/follower information is public
+	 */
+	boolean isDiscoverable();
+
+	/**
 	 * @return number of following
 	 */
 	int getFollowing();

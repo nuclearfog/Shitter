@@ -1,5 +1,4 @@
 Features:
-
 - Einfacher Zugriff auf Posts, Nutzerprofile, Listen und Hashtags
 - Echte Timelines (chronologisch/umgekehrt-chronologisch)
 - Anpassbares Aussehen (Schrift & Farben)

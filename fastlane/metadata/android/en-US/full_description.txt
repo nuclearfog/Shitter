@@ -1,5 +1,4 @@
 Features:
-
 - access to posts, users, lists and trending hashtags
 - real timelines (chronological/reverse chronological order)
 - customizable theme (colors and fonts)

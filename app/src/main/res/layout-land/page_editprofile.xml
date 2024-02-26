@@ -178,7 +178,9 @@
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:gravity="center_vertical">
+				android:gravity="center_vertical"
+				android:orientation="horizontal"
+				android:layout_marginBottom="@dimen/editprofile_layout_margin">
 
 				<com.kyleduo.switchbutton.SwitchButton
 					android:id="@+id/profile_edit_privacy"
@@ -187,7 +189,6 @@
 					android:layout_marginEnd="@dimen/editprofile_button_margin" />
 
 				<TextView
-					android:id="@+id/profile_edit_privacy_label"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
 					android:layout_weight="1"
@@ -196,13 +197,58 @@
 
 			</LinearLayout>
 
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center_vertical"
+				android:orientation="horizontal"
+				android:layout_marginBottom="@dimen/editprofile_layout_margin">
+
+				<com.kyleduo.switchbutton.SwitchButton
+					android:id="@+id/profile_edit_indexable"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="@dimen/editprofile_button_margin" />
+
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/profile_indexable"
+					android:lines="1" />
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center_vertical"
+				android:orientation="horizontal"
+				android:layout_marginBottom="@dimen/editprofile_layout_margin">
+
+				<com.kyleduo.switchbutton.SwitchButton
+					android:id="@+id/profile_edit_hide_collection"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="@dimen/editprofile_button_margin" />
+
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/profile_hide_collections"
+					android:lines="1" />
+
+			</LinearLayout>
+
 			<Button
 				android:id="@+id/profile_edit_status_pref"
 				android:layout_width="wrap_content"
 				android:layout_height="@dimen/editprofile_button_height"
-				android:paddingLeft="@dimen/editprofile_button_padding"
-				android:paddingRight="@dimen/editprofile_button_padding"
-				android:layout_margin="@dimen/editprofile_button_margin"
+				android:paddingStart="@dimen/editprofile_button_padding"
+				android:paddingEnd="@dimen/editprofile_button_padding"
+				android:layout_marginTop="@dimen/editprofile_button_margin"
+				android:layout_marginBottom="@dimen/editprofile_button_margin"
 				android:text="@string/profile_status_pref"
 				style="@style/FeedbackButton" />
 

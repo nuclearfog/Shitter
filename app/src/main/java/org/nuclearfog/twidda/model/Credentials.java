@@ -49,4 +49,14 @@ public interface Credentials extends Serializable {
 	 * check if account requires follow request
 	 */
 	boolean isLocked();
+
+	/**
+	 * check if user is indexable (visible to public)
+	 */
+	boolean isIndexable();
+
+	/**
+	 * check if following/follower information is hidden
+	 */
+	boolean collectionHidden();
 }

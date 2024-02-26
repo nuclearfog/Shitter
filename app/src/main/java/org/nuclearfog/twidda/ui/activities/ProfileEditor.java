@@ -24,6 +24,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
+import com.kyleduo.switchbutton.SwitchButton;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -77,9 +78,9 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 	private Picasso picasso;
 
 	private ImageView profile_image, profile_banner, toolbar_background, changeBannerBtn;
+	private SwitchButton privacy, indexable, hideCollections;
 	private InputView username, profileUrl;
 	private Button addBannerBtn;
-	private CompoundButton privacy;
 
 	private UserUpdate userUpdate = new UserUpdate();
 	private boolean profileModified = false;
@@ -105,6 +106,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 		View statusPrefBtn = findViewById(R.id.profile_edit_status_pref);
 		InputView profileLocation = findViewById(R.id.profile_edit_change_location);
 		InputView userDescription = findViewById(R.id.profile_edit_change_description);
+		hideCollections = findViewById(R.id.profile_edit_hide_collection);
+		indexable = findViewById(R.id.profile_edit_indexable);
 		profileUrl = findViewById(R.id.profile_edit_change_url);
 		privacy = findViewById(R.id.profile_edit_privacy);
 		profile_image = findViewById(R.id.edit_profile_image);
@@ -113,7 +116,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 		changeBannerBtn = findViewById(R.id.profile_edit_change_banner);
 		toolbar_background = findViewById(R.id.profile_edit_toolbar_background);
 		username = findViewById(R.id.profile_edit_change_name);
-
 		credentialUpdater = new CredentialsUpdater(this);
 		credentialsLoader = new CredentialsLoader(this);
 		settings = GlobalSettings.get(this);
@@ -164,6 +166,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 				profileLocation.setText(userUpdate.getLocation());
 				userDescription.setText(userUpdate.getDescription());
 				privacy.setChecked(userUpdate.isPrivate());
+				hideCollections.setCheckedImmediately(userUpdate.hiddenCollections());
+				indexable.setCheckedImmediately(userUpdate.isIndexable());
 			} else if (userData instanceof User) {
 				User user = (User) userData;
 				userUpdate.updateUser(user);
@@ -183,6 +187,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 				profileUrl.setText(user.getProfileUrl());
 				profileLocation.setText(user.getLocation());
 				userDescription.setText(user.getDescription());
+				indexable.setCheckedImmediately(user.isIndexable());
 				// load user credentials
 				credentialsLoader.execute(null, credentialsLoaderCallback);
 			}
@@ -195,6 +200,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 		profile_banner.setOnClickListener(this);
 		addBannerBtn.setOnClickListener(this);
 		privacy.setOnCheckedChangeListener(this);
+		hideCollections.setOnCheckedChangeListener(this);
+		indexable.setOnCheckedChangeListener(this);
 		statusPrefBtn.setOnClickListener(this);
 	}
 
@@ -294,8 +301,14 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		if (buttonView.getId() == R.id.profile_edit_privacy) {
-			userUpdate.setPrivacy(isChecked);
+		if (buttonView.isPressed()) {
+			if (buttonView.getId() == R.id.profile_edit_privacy) {
+				userUpdate.setPrivacy(isChecked);
+			} else if (buttonView.getId() == R.id.profile_edit_indexable) {
+				userUpdate.setIndexable(isChecked);
+			} else if (buttonView.getId() == R.id.profile_edit_hide_collection) {
+				userUpdate.hideCollections(isChecked);
+			}
 			profileModified = true;
 		}
 	}
@@ -378,6 +391,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 	private void onCredentialsLoaderResult(CredentialsLoader.Result result) {
 		if (result.credentials != null) {
 			privacy.setChecked(result.credentials.isLocked());
+			indexable.setChecked(result.credentials.isIndexable());
+			hideCollections.setChecked(result.credentials.collectionHidden());
 			userUpdate.updateCredentials(result.credentials);
 		} else if (result.exception != null) {
 			String message = ErrorUtils.getErrorMessage(this, result.exception);

@@ -1004,6 +1004,16 @@ public class DatabaseAdapter {
 		 * flag indicates that the user has a default profile image
 		 */
 		int MASK_USER_DEFAULT_IMAGE = 1 << 4;
+
+		/**
+		 * flag indicates that the user'S posts are public indexed
+		 */
+		int MASK_USER_INDEXABLE = 1 << 5;
+
+		/**
+		 * flag indicates that the user's information are public discoverable
+		 */
+		int MASK_USER_DISCOVERABLE = 1 << 6;
 	}
 
 	/**

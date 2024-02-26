@@ -21,6 +21,8 @@ public class MastodonCredentials implements Credentials {
 	private int visibility;
 	private boolean sensitive;
 	private boolean locked;
+	private boolean hideCollections;
+	private boolean indexable;
 
 	/**
 	 * @param json Credentials json format
@@ -33,6 +35,8 @@ public class MastodonCredentials implements Credentials {
 		description = sourceJson.getString("note");
 		language = sourceJson.getString("language");
 		sensitive = sourceJson.getBoolean("sensitive");
+		hideCollections = sourceJson.getBoolean("hide_collections");
+		indexable = !json.getBoolean("indexable");
 		locked = json.optBoolean("locked");
 
 		switch (visStr) {
@@ -103,5 +107,17 @@ public class MastodonCredentials implements Credentials {
 	@Override
 	public boolean isLocked() {
 		return locked;
+	}
+
+
+	@Override
+	public boolean isIndexable() {
+		return indexable;
+	}
+
+
+	@Override
+	public boolean collectionHidden() {
+		return hideCollections;
 	}
 }

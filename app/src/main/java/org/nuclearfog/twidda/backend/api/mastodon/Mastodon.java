@@ -1268,10 +1268,11 @@ public class Mastodon implements Connection {
 		List<String> params = new ArrayList<>();
 		List<InputStream> streams = new ArrayList<>();
 		List<String> keys = new ArrayList<>();
-
 		params.add("display_name=" + StringUtils.encode(update.getUsername()));
 		params.add("note=" + StringUtils.encode(update.getDescription()));
 		params.add("locked=" + update.isPrivate());
+		params.add("indexable=" + update.isIndexable());
+		params.add("hide_collections=" + update.hiddenCollections());
 		if (update.getProfileImageMedia() != null) {
 			streams.add(update.getProfileImageMedia().getStream());
 			keys.add("avatar");

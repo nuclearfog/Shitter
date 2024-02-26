@@ -30,6 +30,8 @@ public class UserUpdate implements Serializable, Closeable {
 	private String profileImageUrl = "";
 	private String bannerImageUrl = "";
 	private boolean privacy = false;
+	private boolean hideCollections = false;
+	private boolean indexable = false;
 
 	private StatusPreferenceUpdate statusPref;
 
@@ -67,6 +69,8 @@ public class UserUpdate implements Serializable, Closeable {
 		statusPref.setSensitive(credentials.isSensitive());
 		statusPref.setLanguage(credentials.getLanguage());
 		statusPref.setVisibility(credentials.getVisibility());
+		hideCollections = credentials.collectionHidden();
+		indexable = credentials.isIndexable();
 	}
 
 	/**
@@ -156,6 +160,34 @@ public class UserUpdate implements Serializable, Closeable {
 	 */
 	public void setBannerImage(MediaStatus bannerImage) {
 		this.bannerImage = bannerImage;
+	}
+
+	/**
+	 *
+	 */
+	public boolean isIndexable() {
+		return indexable;
+	}
+
+	/**
+	 *
+	 */
+	public void setIndexable(boolean indexable) {
+		this.indexable = indexable;
+	}
+
+	/**
+	 *
+	 */
+	public boolean hiddenCollections() {
+		return hideCollections;
+	}
+
+	/**
+	 *
+	 */
+	public void hideCollections(boolean hideCollections) {
+		this.hideCollections = hideCollections;
 	}
 
 	/**
