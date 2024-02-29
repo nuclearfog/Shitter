@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 
 /**
  * dialog used to show app information and resource links
@@ -37,8 +38,9 @@ public class InfoDialog extends DialogFragment {
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.dialog_app_info, container, false);
 		TextView appInfo = view.findViewById(R.id.settings_app_info);
-		appInfo.append(" V");
+		appInfo.setText(" V");
 		appInfo.append(BuildConfig.VERSION_NAME);
+		AppStyles.setTheme((ViewGroup) view);
 		return view;
 	}
 

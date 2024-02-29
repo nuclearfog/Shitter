@@ -36,10 +36,7 @@
 	</style>
 
 	<style name="AppInfoDialog" parent="DefaultDialog">
-		<item name="android:background">@android:color/white</item>
-		<item name="android:textColor">@android:color/black</item>
-		<item name="android:textColorLink">@android:color/holo_blue_dark</item>
-		<item name="android:colorBackground">@color/bright_transparent</item>
+		<item name="android:windowCloseOnTouchOutside">true</item>
 	</style>
 
 	<style name="LicenseDialog" parent="DefaultDialog">
