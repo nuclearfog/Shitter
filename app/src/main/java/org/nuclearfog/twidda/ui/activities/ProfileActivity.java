@@ -125,7 +125,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 	private TextView user_location, user_createdAt, user_website, description, follow_back, username, screenName;
 	private ImageView profileImage, bannerImage, toolbarBackground;
-	private View verifiedIcon, botIcon, groupIcon, lockedIcon;
+	private View botIcon, groupIcon, lockedIcon;
 	private Button following, follower;
 
 	private ViewPager2 viewPager;
@@ -172,7 +172,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		groupIcon = findViewById(R.id.page_profile_group);
 		botIcon = findViewById(R.id.page_profile_bot);
 		lockedIcon = findViewById(R.id.page_profile_locked);
-		verifiedIcon = findViewById(R.id.page_profile_verified);
 
 		relationLoader = new RelationLoader(this);
 		domainAction = new DomainAction(this);
@@ -688,9 +687,10 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		}
 		// set user user icons
 		if (user.isVerified()) {
-			verifiedIcon.setVisibility(View.VISIBLE);
+			username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
+			AppStyles.setDrawableColor(username, settings.getIconColor());
 		} else {
-			verifiedIcon.setVisibility(View.GONE);
+			username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 		}
 		if (user.isBot()) {
 			botIcon.setVisibility(View.VISIBLE);
@@ -707,13 +707,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		} else {
 			lockedIcon.setVisibility(View.GONE);
 		}
-
-		// test
-		verifiedIcon.setVisibility(View.VISIBLE);
-		botIcon.setVisibility(View.VISIBLE);
-		groupIcon.setVisibility(View.VISIBLE);
-		lockedIcon.setVisibility(View.VISIBLE);
-
 		// set user location
 		if (!user.getLocation().isEmpty()) {
 			user_location.setText(user.getLocation());
