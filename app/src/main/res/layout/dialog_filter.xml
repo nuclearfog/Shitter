@@ -34,7 +34,7 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_filter_title_dialog"
 		app:layout_constraintEnd_toEndOf="parent"
-		style="@style/TextInput"/>
+		style="@style/TextInput" />
 
 	<TextView
 		android:id="@+id/dialog_filter_title_switch"
@@ -224,7 +224,7 @@
 		app:layout_constraintTop_toBottomOf="@id/dialog_filter_keywords"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toStartOf="@id/dialog_filter_timeunit"
-		style="@style/TextInput"/>
+		style="@style/TextInput" />
 
 	<Spinner
 		android:id="@+id/dialog_filter_timeunit"

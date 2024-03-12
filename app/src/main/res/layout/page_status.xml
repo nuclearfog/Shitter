@@ -42,29 +42,72 @@
 					app:layout_constraintStart_toStartOf="parent"
 					app:layout_constraintTop_toTopOf="parent" />
 
+				<ImageView
+					android:id="@+id/page_status_verified"
+					android:layout_width="@dimen/page_status_icon_size_big"
+					android:layout_height="@dimen/page_status_icon_size_big"
+					android:layout_marginStart="@dimen/page_status_textview_margin"
+					android:contentDescription="@string/profile_description_verified"
+					android:src="@drawable/verify"
+					android:scaleType="fitXY"
+					app:layout_constraintStart_toEndOf="@id/page_status_profile"
+					app:layout_constraintTop_toTopOf="@id/page_status_username"
+					app:layout_constraintBottom_toBottomOf="@id/page_status_username" />
+
 				<TextView
 					android:id="@+id/page_status_username"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
-					android:drawablePadding="@dimen/page_status_padding_drawable"
 					android:layout_marginStart="@dimen/page_status_textview_margin"
 					android:layout_marginEnd="@dimen/page_status_textview_margin"
 					android:lines="1"
-					app:layout_constraintStart_toEndOf="@id/page_status_profile"
+					app:layout_constraintStart_toEndOf="@id/page_status_verified"
 					app:layout_constraintTop_toTopOf="@id/page_status_profile"
 					app:layout_constraintBottom_toTopOf="@id/page_status_screenname"
 					app:layout_constraintEnd_toEndOf="parent"
 					app:layout_constraintVertical_chainStyle="packed" />
 
+				<ImageView
+					android:id="@+id/page_status_private"
+					android:layout_width="@dimen/page_status_icon_size_big"
+					android:layout_height="@dimen/page_status_icon_size_big"
+					android:layout_marginStart="@dimen/page_status_textview_margin"
+					android:contentDescription="@string/profile_description_locked"
+					android:src="@drawable/lock"
+					app:layout_constraintStart_toEndOf="@id/page_status_profile"
+					app:layout_constraintTop_toTopOf="@id/page_status_screenname"
+					app:layout_constraintBottom_toBottomOf="@id/page_status_screenname" />
+
+				<ImageView
+					android:id="@+id/page_status_bot"
+					android:layout_width="@dimen/page_status_icon_size_big"
+					android:layout_height="@dimen/page_status_icon_size_big"
+					android:layout_marginStart="@dimen/page_status_textview_margin"
+					android:contentDescription="@string/profile_description_bot"
+					android:src="@drawable/bot"
+					app:layout_constraintStart_toEndOf="@id/page_status_private"
+					app:layout_constraintTop_toTopOf="@id/page_status_screenname"
+					app:layout_constraintBottom_toBottomOf="@id/page_status_screenname" />
+
+				<ImageView
+					android:id="@+id/page_status_group"
+					android:layout_width="@dimen/page_status_icon_size_big"
+					android:layout_height="@dimen/page_status_icon_size_big"
+					android:layout_marginStart="@dimen/page_status_textview_margin"
+					android:contentDescription="@string/profile_description_group"
+					android:src="@drawable/group"
+					app:layout_constraintStart_toEndOf="@id/page_status_bot"
+					app:layout_constraintTop_toTopOf="@id/page_status_screenname"
+					app:layout_constraintBottom_toBottomOf="@id/page_status_screenname" />
+
 				<TextView
 					android:id="@+id/page_status_screenname"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
-					android:drawablePadding="@dimen/page_status_padding_drawable"
 					android:layout_marginStart="@dimen/page_status_textview_margin"
 					android:layout_marginEnd="@dimen/page_status_textview_margin"
 					android:lines="1"
-					app:layout_constraintStart_toEndOf="@id/page_status_profile"
+					app:layout_constraintStart_toEndOf="@id/page_status_group"
 					app:layout_constraintTop_toBottomOf="@id/page_status_username"
 					app:layout_constraintBottom_toTopOf="@id/page_status_date"
 					app:layout_constraintEnd_toEndOf="parent"
@@ -346,7 +389,8 @@
 					app:layout_constraintStart_toStartOf="parent"
 					app:layout_constraintTop_toBottomOf="@id/page_status_favorite"
 					app:layout_constraintBottom_toBottomOf="parent"
-					app:layout_constraintEnd_toEndOf="parent" />
+					app:layout_constraintEnd_toEndOf="parent"
+					tools:layout="@layout/fragment_list" />
 
 			</org.nuclearfog.twidda.ui.views.LockableConstraintLayout>
 

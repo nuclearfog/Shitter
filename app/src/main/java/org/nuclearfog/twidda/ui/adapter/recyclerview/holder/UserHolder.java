@@ -47,7 +47,7 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 	private static final int IMG_SIZE = 150;
 
 	private TextView username, screenname, followingCount, followerCount, label;
-	private ImageView profileImg, verifyIcon, lockedIcon, labelIcon;
+	private ImageView profileImg, verifyIcon, lockedIcon, botIcon, groupIcon, labelIcon;
 	private Drawable placeholder;
 
 	private GlobalSettings settings;
@@ -72,6 +72,8 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 		View delete = itemView.findViewById(R.id.item_user_delete_button);
 		label = itemView.findViewById(R.id.item_user_label);
 		labelIcon = itemView.findViewById(R.id.item_user_label_icon);
+		groupIcon = itemView.findViewById(R.id.item_user_group);
+		botIcon = itemView.findViewById(R.id.item_user_bot);
 		username = itemView.findViewById(R.id.item_user_username);
 		screenname = itemView.findViewById(R.id.item_user_screenname);
 		followingCount = itemView.findViewById(R.id.item_user_following_count);
@@ -147,6 +149,16 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 			lockedIcon.setVisibility(View.VISIBLE);
 		} else {
 			lockedIcon.setVisibility(View.GONE);
+		}
+		if (user.isBot()) {
+			botIcon.setVisibility(View.VISIBLE);
+		} else {
+			botIcon.setVisibility(View.GONE);
+		}
+		if (user.isGroup()) {
+			groupIcon.setVisibility(View.VISIBLE);
+		} else {
+			groupIcon.setVisibility(View.GONE);
 		}
 		if (user.getEmojis().length > 0 && !user.getUsername().trim().isEmpty() && settings.imagesEnabled()) {
 			Spannable usernameSpan = new SpannableString(user.getUsername());

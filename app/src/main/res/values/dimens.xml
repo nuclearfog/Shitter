@@ -41,6 +41,7 @@
 	<dimen name="page_status_cards_list_padding">5dp</dimen>
 	<dimen name="page_status_card_height">130sp</dimen>
 	<dimen name="page_status_icon_size">17sp</dimen>
+	<dimen name="page_status_icon_size_big">18sp</dimen>
 	<integer name="page_status_text_max_lines">5</integer>
 
 	<!--dimens of page_profile.xml-->
@@ -106,6 +107,7 @@
 	<!--dimens of item_user.xml-->
 	<dimen name="item_user_image_size">56sp</dimen>
 	<dimen name="item_user_layout_padding">5dp</dimen>
+	<dimen name="item_user_layout_margin">3dp</dimen>
 	<dimen name="item_user_textview_padding">5dp</dimen>
 	<dimen name="item_user_drawable_margin">5dp</dimen>
 	<dimen name="item_user_button_size">20sp</dimen>

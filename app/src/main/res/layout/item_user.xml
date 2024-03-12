@@ -102,8 +102,28 @@
 			app:layout_constraintStart_toEndOf="@id/item_user_profile"
 			app:layout_constraintTop_toTopOf="@id/item_user_screenname"
 			app:layout_constraintBottom_toBottomOf="@id/item_user_screenname"
-			app:layout_constraintEnd_toEndOf="@id/item_user_screenname"
-			app:layout_constraintHorizontal_bias="0.0"
+			tools:ignore="ContentDescription" />
+
+		<ImageView
+			android:id="@+id/item_user_bot"
+			android:layout_width="@dimen/item_user_icon_size"
+			android:layout_height="@dimen/item_user_icon_size"
+			android:layout_marginStart="@dimen/item_user_drawable_margin"
+			android:src="@drawable/bot"
+			app:layout_constraintStart_toEndOf="@id/item_user_private"
+			app:layout_constraintTop_toTopOf="@id/item_user_screenname"
+			app:layout_constraintBottom_toBottomOf="@id/item_user_screenname"
+			tools:ignore="ContentDescription" />
+
+		<ImageView
+			android:id="@+id/item_user_group"
+			android:layout_width="@dimen/item_user_icon_size"
+			android:layout_height="@dimen/item_user_icon_size"
+			android:layout_marginStart="@dimen/item_user_drawable_margin"
+			android:src="@drawable/group"
+			app:layout_constraintStart_toEndOf="@id/item_user_bot"
+			app:layout_constraintTop_toTopOf="@id/item_user_screenname"
+			app:layout_constraintBottom_toBottomOf="@id/item_user_screenname"
 			tools:ignore="ContentDescription" />
 
 		<TextView
@@ -112,9 +132,10 @@
 			android:layout_height="wrap_content"
 			android:drawablePadding="@dimen/item_user_drawable_margin"
 			android:layout_marginStart="@dimen/item_user_textview_padding"
+			android:layout_marginTop="@dimen/item_user_layout_margin"
 			android:layout_marginEnd="@dimen/item_user_textview_padding"
 			android:lines="1"
-			app:layout_constraintStart_toEndOf="@id/item_user_private"
+			app:layout_constraintStart_toEndOf="@id/item_user_group"
 			app:layout_constraintTop_toBottomOf="@id/item_user_username"
 			app:layout_constraintBottom_toTopOf="@id/item_user_following_icon"
 			app:layout_constraintEnd_toStartOf="@id/item_user_delete_button" />
@@ -127,8 +148,8 @@
 			android:layout_marginEnd="@dimen/item_user_drawable_margin"
 			android:src="@drawable/following"
 			app:layout_constraintStart_toEndOf="@id/item_user_profile"
-			app:layout_constraintTop_toBottomOf="@id/item_user_screenname"
-			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintTop_toTopOf="@id/item_user_following_count"
+			app:layout_constraintBottom_toBottomOf="@id/item_user_following_count"
 			app:layout_constraintEnd_toStartOf="@id/item_user_following_count"
 			tools:ignore="ContentDescription" />
 
@@ -136,12 +157,13 @@
 			android:id="@+id/item_user_following_count"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/item_user_layout_margin"
 			android:drawablePadding="@dimen/item_user_drawable_margin"
 			android:lines="1"
 			android:textSize="@dimen/item_user_textsize_small"
 			app:layout_constraintStart_toEndOf="@id/item_user_following_icon"
-			app:layout_constraintTop_toTopOf="@id/item_user_following_icon"
-			app:layout_constraintBottom_toBottomOf="@id/item_user_following_icon"
+			app:layout_constraintTop_toBottomOf="@id/item_user_screenname"
+			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toStartOf="@id/item_user_follower_icon" />
 
 		<ImageView
@@ -152,8 +174,8 @@
 			android:layout_marginEnd="@dimen/item_user_drawable_margin"
 			android:src="@drawable/follower"
 			app:layout_constraintStart_toEndOf="@id/item_user_following_count"
-			app:layout_constraintTop_toBottomOf="@id/item_user_screenname"
-			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintTop_toTopOf="@id/item_user_follower_count"
+			app:layout_constraintBottom_toBottomOf="@id/item_user_follower_count"
 			app:layout_constraintEnd_toStartOf="@id/item_user_follower_count"
 			tools:ignore="ContentDescription" />
 
@@ -161,13 +183,14 @@
 			android:id="@+id/item_user_follower_count"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/item_user_layout_margin"
 			android:drawablePadding="@dimen/item_user_drawable_margin"
 			android:layout_marginEnd="@dimen/item_user_textview_padding"
 			android:lines="1"
 			android:textSize="@dimen/item_user_textsize_small"
 			app:layout_constraintStart_toEndOf="@id/item_user_follower_icon"
-			app:layout_constraintTop_toTopOf="@id/item_user_follower_icon"
-			app:layout_constraintBottom_toBottomOf="@id/item_user_follower_icon"
+			app:layout_constraintTop_toBottomOf="@id/item_user_screenname"
+			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toStartOf="@id/item_user_delete_button" />
 
 		<ImageButton

@@ -164,6 +164,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private TextView status_source, created_at, status_text, screen_name, username, edited;
 	private TextView location_name, sensitive, visibility, spoiler, spoiler_hint, translate_text;
 	private Button reply_button, repost_button, like_button, reply_name, repost_name_button;
+	private View verifiedIcon, lockedIcon, groupIcon, botIcon;
 	private ImageView profile_image;
 	private Toolbar toolbar;
 	private RecyclerView card_list;
@@ -206,6 +207,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		repost_name_button = findViewById(R.id.page_status_reposter_reference);
 		translate_text = findViewById(R.id.page_status_text_translate);
 		spoiler_hint = findViewById(R.id.page_status_text_sensitive_hint);
+		verifiedIcon = findViewById(R.id.page_status_verified);
+		lockedIcon = findViewById(R.id.page_status_private);
+		groupIcon = findViewById(R.id.page_status_group);
+		botIcon = findViewById(R.id.page_status_bot);
 
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 		statusLoader = new StatusAction(this);
@@ -792,19 +797,26 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else {
 			AppStyles.setDrawableColor(like_button, settings.getIconColor());
 		}
-		// set user verified icon
+		// set user icons
 		if (author.isVerified()) {
-			username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
-			AppStyles.setDrawableColor(username, settings.getIconColor());
+			verifiedIcon.setVisibility(View.VISIBLE);
 		} else {
-			username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+			verifiedIcon.setVisibility(View.GONE);
 		}
-		// set user protected icon
 		if (author.isProtected()) {
-			screen_name.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
-			AppStyles.setDrawableColor(screen_name, settings.getIconColor());
+			lockedIcon.setVisibility(View.VISIBLE);
 		} else {
-			screen_name.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+			lockedIcon.setVisibility(View.GONE);
+		}
+		if (author.isGroup()) {
+			groupIcon.setVisibility(View.VISIBLE);
+		} else {
+			groupIcon.setVisibility(View.GONE);
+		}
+		if (author.isBot()) {
+			botIcon.setVisibility(View.VISIBLE);
+		} else {
+			botIcon.setVisibility(View.GONE);
 		}
 		// add 'translate' label
 		if (!status.getText().isEmpty() && !status.getLanguage().isEmpty() && !status.getLanguage().equals(Locale.getDefault().getLanguage())) {

@@ -74,11 +74,11 @@
 			android:layout_height="@dimen/item_status_icon_size"
 			android:layout_marginStart="@dimen/item_status_drawable_margin"
 			android:src="@drawable/verify"
+			android:contentDescription="@string/profile_description_verified"
 			app:layout_constraintStart_toEndOf="@id/item_status_profile_image"
 			app:layout_constraintTop_toTopOf="@id/item_status_author_username"
 			app:layout_constraintBottom_toBottomOf="@id/item_status_author_username"
-			app:layout_constraintEnd_toStartOf="@id/item_status_author_username"
-			tools:ignore="ContentDescription" />
+			app:layout_constraintEnd_toStartOf="@id/item_status_author_username" />
 
 		<TextView
 			android:id="@+id/item_status_author_username"
@@ -109,11 +109,35 @@
 			android:layout_height="@dimen/item_status_icon_size"
 			android:layout_marginStart="@dimen/item_status_drawable_margin"
 			android:src="@drawable/lock"
+			android:contentDescription="@string/profile_description_locked"
 			app:layout_constraintStart_toEndOf="@id/item_status_profile_image"
 			app:layout_constraintTop_toTopOf="@id/item_status_author_screenname"
 			app:layout_constraintBottom_toBottomOf="@id/item_status_author_screenname"
-			app:layout_constraintEnd_toStartOf="@id/item_status_author_screenname"
-			tools:ignore="ContentDescription" />
+			app:layout_constraintEnd_toStartOf="@id/item_status_bot_icon" />
+
+		<ImageView
+			android:id="@+id/item_status_bot_icon"
+			android:layout_width="@dimen/item_status_icon_size"
+			android:layout_height="@dimen/item_status_icon_size"
+			android:layout_marginStart="@dimen/item_status_drawable_margin"
+			android:src="@drawable/bot"
+			android:contentDescription="@string/profile_description_bot"
+			app:layout_constraintStart_toEndOf="@id/item_status_locked_icon"
+			app:layout_constraintTop_toTopOf="@id/item_status_author_screenname"
+			app:layout_constraintBottom_toBottomOf="@id/item_status_author_screenname"
+			app:layout_constraintEnd_toStartOf="@id/item_status_group_icon" />
+
+		<ImageView
+			android:id="@+id/item_status_group_icon"
+			android:layout_width="@dimen/item_status_icon_size"
+			android:layout_height="@dimen/item_status_icon_size"
+			android:layout_marginStart="@dimen/item_status_drawable_margin"
+			android:src="@drawable/group"
+			android:contentDescription="@string/profile_description_group"
+			app:layout_constraintStart_toEndOf="@id/item_status_bot_icon"
+			app:layout_constraintTop_toTopOf="@id/item_status_author_screenname"
+			app:layout_constraintBottom_toBottomOf="@id/item_status_author_screenname"
+			app:layout_constraintEnd_toStartOf="@id/item_status_author_screenname" />
 
 		<TextView
 			android:id="@+id/item_status_author_screenname"
@@ -121,7 +145,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginStart="@dimen/item_status_text_margin"
 			android:lines="1"
-			app:layout_constraintStart_toEndOf="@id/item_status_locked_icon"
+			app:layout_constraintStart_toEndOf="@id/item_status_group_icon"
 			app:layout_constraintTop_toBottomOf="@id/item_status_author_username"
 			app:layout_constraintBottom_toBottomOf="@id/item_status_profile_image"
 			app:layout_constraintEnd_toEndOf="parent" />

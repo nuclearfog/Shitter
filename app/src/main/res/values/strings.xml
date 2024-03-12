@@ -198,7 +198,7 @@
 	<string name="profile_image">Profile image</string>
 	<string name="login_pin">enter PIN</string>
 	<string name="login_verifier">login</string>
-	<string name="popup_status_text_hint">what\'s new</string>
+	<string name="popup_status_text_hint">what\'s new?</string>
 	<string name="toolbar_userlist_repost">Status reposted by</string>
 	<string name="settings_color_settings">Color settings</string>
 	<string name="settings_background">Background</string>

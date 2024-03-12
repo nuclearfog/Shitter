@@ -51,8 +51,9 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 
 	private static final int IMG_SIZE = 150;
 
-	private ImageView profile, repostUserIcon, verifiedIcon, lockedIcon, repostIcon, favoriteIcon, replyStatus, labelIcon;
+	private ImageView profile, repostUserIcon, repostIcon, favoriteIcon, replyStatus, labelIcon;
 	private TextView username, screenname, statusText, repost, favorite, reply, reposter, created, replyname, label;
+	private View verifiedIcon, lockedIcon, botIcon, groupIcon;
 	private RecyclerView iconList;
 	private Drawable placeholder;
 
@@ -84,6 +85,8 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		profile = itemView.findViewById(R.id.item_status_profile_image);
 		verifiedIcon = itemView.findViewById(R.id.item_status_verified_icon);
 		lockedIcon = itemView.findViewById(R.id.item_status_locked_icon);
+		botIcon = itemView.findViewById(R.id.item_status_bot_icon);
+		groupIcon = itemView.findViewById(R.id.item_status_group_icon);
 		repostUserIcon = itemView.findViewById(R.id.item_status_reposter_icon);
 		repostIcon = itemView.findViewById(R.id.item_status_repost_icon);
 		favoriteIcon = itemView.findViewById(R.id.item_status_favorite_icon);
@@ -207,17 +210,26 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		} else {
 			favoriteIcon.setColorFilter(settings.getIconColor());
 		}
-		// set user verified icon
+		// set user icons
 		if (author.isVerified()) {
 			verifiedIcon.setVisibility(View.VISIBLE);
 		} else {
 			verifiedIcon.setVisibility(View.GONE);
 		}
-		// set user protected icon
 		if (author.isProtected()) {
 			lockedIcon.setVisibility(View.VISIBLE);
 		} else {
 			lockedIcon.setVisibility(View.GONE);
+		}
+		if (author.isGroup()) {
+			groupIcon.setVisibility(View.VISIBLE);
+		} else {
+			groupIcon.setVisibility(View.GONE);
+		}
+		if (author.isBot()) {
+			botIcon.setVisibility(View.VISIBLE);
+		} else {
+			botIcon.setVisibility(View.GONE);
 		}
 		// set profile image
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {

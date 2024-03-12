@@ -62,7 +62,7 @@
 			android:id="@+id/page_profile_image_barrier"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			app:barrierDirection="end"/>
+			app:barrierDirection="end" />
 
 		<TextView
 			android:id="@+id/page_profile_username"
