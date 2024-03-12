@@ -249,6 +249,10 @@
 	<string name="profile_indexable">" set public posts searchable"</string>
 	<string name="profile_hide_collections">hide following/follower</string>
 	<string name="profile_status_pref">set default status preferences</string>
+	<string name="profile_description_verified">user verified</string>
+	<string name="profile_description_locked">user locked</string>
+	<string name="profile_description_bot">bot account</string>
+	<string name="profile_description_group">group account</string>
 	<string name="connection_discard">discard</string>
 	<string name="dialog_poll_title">create poll</string>
 	<string name="dialog_poll_button_create">create</string>

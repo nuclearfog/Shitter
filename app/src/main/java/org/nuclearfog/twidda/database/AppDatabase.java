@@ -1429,6 +1429,16 @@ public class AppDatabase {
 		} else {
 			flags &= ~UserPropertiesTable.MASK_USER_DISCOVERABLE;
 		}
+		if (user.isBot()) {
+			flags |= UserPropertiesTable.MASK_USER_BOT;
+		} else {
+			flags &= ~UserPropertiesTable.MASK_USER_BOT;
+		}
+		if (user.isGroup()) {
+			flags |= UserPropertiesTable.MASK_USER_GROUP;
+		} else {
+			flags &= ~UserPropertiesTable.MASK_USER_GROUP;
+		}
 		if (user.isIndexable()) {
 			flags |= UserPropertiesTable.MASK_USER_INDEXABLE;
 		} else {

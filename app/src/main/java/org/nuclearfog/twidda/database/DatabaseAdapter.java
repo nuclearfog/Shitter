@@ -1014,6 +1014,16 @@ public class DatabaseAdapter {
 		 * flag indicates that the user's information are public discoverable
 		 */
 		int MASK_USER_DISCOVERABLE = 1 << 6;
+
+		/**
+		 * flag indicates that the user is a bot
+		 */
+		int MASK_USER_BOT = 1 << 7;
+
+		/**
+		 * flag indicates that the user represents a group
+		 */
+		int MASK_USER_GROUP = 1 << 8;
 	}
 
 	/**

@@ -125,6 +125,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 	private TextView user_location, user_createdAt, user_website, description, follow_back, username, screenName;
 	private ImageView profileImage, bannerImage, toolbarBackground;
+	private View verifiedIcon, botIcon, groupIcon, lockedIcon;
 	private Button following, follower;
 
 	private ViewPager2 viewPager;
@@ -168,6 +169,10 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		follow_back = findViewById(R.id.page_profile_followback);
 		tabSelector = findViewById(R.id.page_profile_tab);
 		viewPager = findViewById(R.id.page_profile_pager);
+		groupIcon = findViewById(R.id.page_profile_group);
+		botIcon = findViewById(R.id.page_profile_bot);
+		lockedIcon = findViewById(R.id.page_profile_locked);
+		verifiedIcon = findViewById(R.id.page_profile_verified);
 
 		relationLoader = new RelationLoader(this);
 		domainAction = new DomainAction(this);
@@ -681,20 +686,34 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		} else {
 			description.setVisibility(View.GONE);
 		}
-		// set user verified icon
+		// set user user icons
 		if (user.isVerified()) {
-			username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
-			AppStyles.setDrawableColor(username, settings.getIconColor());
+			verifiedIcon.setVisibility(View.VISIBLE);
 		} else {
-			username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+			verifiedIcon.setVisibility(View.GONE);
 		}
-		// set user protected icon
+		if (user.isBot()) {
+			botIcon.setVisibility(View.VISIBLE);
+		} else {
+			botIcon.setVisibility(View.GONE);
+		}
+		if (user.isGroup()) {
+			groupIcon.setVisibility(View.VISIBLE);
+		} else {
+			groupIcon.setVisibility(View.GONE);
+		}
 		if (user.isProtected()) {
-			screenName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
-			AppStyles.setDrawableColor(screenName, settings.getIconColor());
+			lockedIcon.setVisibility(View.VISIBLE);
 		} else {
-			screenName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+			lockedIcon.setVisibility(View.GONE);
 		}
+
+		// test
+		verifiedIcon.setVisibility(View.VISIBLE);
+		botIcon.setVisibility(View.VISIBLE);
+		groupIcon.setVisibility(View.VISIBLE);
+		lockedIcon.setVisibility(View.VISIBLE);
+
 		// set user location
 		if (!user.getLocation().isEmpty()) {
 			user_location.setText(user.getLocation());

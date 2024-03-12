@@ -34,10 +34,12 @@ public class MastodonCredentials implements Credentials {
 		username = json.getString("display_name");
 		description = sourceJson.getString("note");
 		language = sourceJson.getString("language");
-		sensitive = sourceJson.getBoolean("sensitive");
-		hideCollections = sourceJson.getBoolean("hide_collections");
-		indexable = !json.getBoolean("indexable");
 		locked = json.optBoolean("locked");
+		sensitive = sourceJson.optBoolean("sensitive", false);
+		if (sourceJson.has("indexable") && !sourceJson.isNull("indexable"))
+			indexable = !sourceJson.getBoolean("indexable");
+		if (sourceJson.has("hide_collections") && !sourceJson.isNull("hide_collections"))
+			hideCollections = sourceJson.getBoolean("hide_collections");
 
 		switch (visStr) {
 			case "public":

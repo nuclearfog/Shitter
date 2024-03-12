@@ -61,38 +61,87 @@
 					android:layout_width="@dimen/profile_image_size"
 					android:layout_height="@dimen/profile_image_size"
 					android:layout_marginStart="@dimen/profile_image_padding_left"
+					android:layout_marginEnd="@dimen/profile_username_margin"
 					android:contentDescription="@string/profile_image"
 					app:layout_constraintStart_toStartOf="parent"
 					app:layout_constraintTop_toBottomOf="@id/page_profile_banner"
-					app:layout_constraintBottom_toBottomOf="@id/page_profile_banner" />
+					app:layout_constraintBottom_toBottomOf="@id/page_profile_banner"
+					app:layout_constraintEnd_toStartOf="@id/page_profile_image_barrier"/>
+
+				<androidx.constraintlayout.widget.Barrier
+					android:id="@+id/page_profile_image_barrier"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:barrierDirection="end"/>
+
+				<ImageView
+					android:id="@+id/page_profile_verified"
+					android:layout_width="@dimen/profile_icon_size"
+					android:layout_height="@dimen/profile_icon_size"
+					android:src="@drawable/verify"
+					android:scaleType="fitXY"
+					android:contentDescription="@string/profile_description_verified"
+					app:layout_constraintStart_toEndOf="@id/page_profile_image_barrier"
+					app:layout_constraintTop_toTopOf="@id/page_profile_username"
+					app:layout_constraintBottom_toBottomOf="@id/page_profile_username" />
 
 				<TextView
 					android:id="@+id/page_profile_username"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:padding="@dimen/profile_tv_background_padding"
-					android:drawablePadding="@dimen/profile_padding_drawable"
-					android:layout_marginStart="@dimen/profile_username_margin"
+					android:layout_marginStart="@dimen/profile_icon_margin"
 					android:layout_marginEnd="@dimen/profile_username_margin"
 					android:lines="1"
 					android:textSize="@dimen/profile_textsize_big"
-					app:layout_constraintStart_toEndOf="@id/page_profile_image"
+					app:layout_constraintStart_toEndOf="@id/page_profile_verified"
 					app:layout_constraintBottom_toBottomOf="@id/page_profile_banner"
 					app:layout_constraintEnd_toEndOf="parent"
 					app:layout_constraintHorizontal_bias="0.0"
 					app:layout_constrainedWidth="true" />
+
+				<ImageView
+					android:id="@+id/page_profile_locked"
+					android:layout_width="@dimen/profile_icon_size"
+					android:layout_height="@dimen/profile_icon_size"
+					android:src="@drawable/lock"
+					android:scaleType="fitXY"
+					android:contentDescription="@string/profile_description_locked"
+					app:layout_constraintStart_toEndOf="@id/page_profile_image_barrier"
+					app:layout_constraintTop_toTopOf="@id/page_profile_screenname"
+					app:layout_constraintBottom_toBottomOf="@id/page_profile_screenname" />
+
+				<ImageView
+					android:id="@+id/page_profile_bot"
+					android:layout_width="@dimen/profile_icon_size"
+					android:layout_height="@dimen/profile_icon_size"
+					android:src="@drawable/bot"
+					android:scaleType="fitXY"
+					android:contentDescription="@string/profile_description_bot"
+					app:layout_constraintStart_toEndOf="@id/page_profile_locked"
+					app:layout_constraintTop_toTopOf="@id/page_profile_screenname"
+					app:layout_constraintBottom_toBottomOf="@id/page_profile_screenname" />
+
+				<ImageView
+					android:id="@+id/page_profile_group"
+					android:layout_width="@dimen/profile_icon_size"
+					android:layout_height="@dimen/profile_icon_size"
+					android:src="@drawable/group"
+					android:scaleType="fitXY"
+					android:contentDescription="@string/profile_description_group"
+					app:layout_constraintStart_toEndOf="@id/page_profile_bot"
+					app:layout_constraintTop_toTopOf="@id/page_profile_screenname"
+					app:layout_constraintBottom_toBottomOf="@id/page_profile_screenname" />
 
 				<TextView
 					android:id="@+id/page_profile_screenname"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:padding="@dimen/profile_tv_background_padding"
-					android:drawablePadding="@dimen/profile_padding_drawable"
-					android:layout_marginStart="@dimen/profile_username_margin"
 					android:layout_marginEnd="@dimen/profile_username_margin"
 					android:lines="1"
 					android:textSize="@dimen/profile_textsize_big"
-					app:layout_constraintStart_toEndOf="@id/page_profile_image"
+					app:layout_constraintStart_toEndOf="@id/page_profile_group"
 					app:layout_constraintTop_toBottomOf="@id/page_profile_username"
 					app:layout_constraintEnd_toEndOf="@id/page_profile_followback"
 					app:layout_constraintHorizontal_bias="0.0"
@@ -112,7 +161,6 @@
 					android:textSize="@dimen/profile_textsize_big"
 					app:layout_constraintStart_toEndOf="@id/page_profile_screenname"
 					app:layout_constraintTop_toBottomOf="@id/page_profile_username"
-					app:layout_constraintEnd_toEndOf="parent"
 					app:layout_constraintHorizontal_chainStyle="packed"
 					app:layout_constrainedWidth="true" />
 
@@ -123,10 +171,9 @@
 					android:visibility="invisible"
 					android:paddingLeft="@dimen/profile_button_background_padding"
 					android:paddingRight="@dimen/profile_button_background_padding"
-					android:layout_marginStart="@dimen/profile_button_margin"
 					android:layout_marginEnd="@dimen/profile_button_margin"
 					android:textSize="@dimen/profile_textsize_big"
-					app:layout_constraintStart_toEndOf="@id/page_profile_image"
+					app:layout_constraintStart_toEndOf="@id/page_profile_image_barrier"
 					app:layout_constraintTop_toBottomOf="@id/page_profile_screenname"
 					app:layout_constraintEnd_toStartOf="@id/page_profile_follower"
 					app:layout_constraintHorizontal_weight="1"

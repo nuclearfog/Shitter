@@ -213,7 +213,7 @@ public class AppStyles {
 	 * @param color   icon color
 	 */
 	public static void setOverflowIcon(Toolbar toolbar, int color) {
-		Drawable groupIcon = ResourcesCompat.getDrawable(toolbar.getResources(), R.drawable.group, null);
+		Drawable groupIcon = ResourcesCompat.getDrawable(toolbar.getResources(), R.drawable.threedots, null);
 		setDrawableColor(groupIcon, color);
 		toolbar.setOverflowIcon(groupIcon);
 	}

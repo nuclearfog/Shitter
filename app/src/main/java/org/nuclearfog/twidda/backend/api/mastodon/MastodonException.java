@@ -54,7 +54,7 @@ public class MastodonException extends ConnectionException {
 		if (response.body() != null) {
 			try {
 				String jsonStr = response.body().string();
-				if (!jsonStr.isEmpty() && !jsonStr.startsWith("[")) {
+				if (jsonStr.startsWith("{") && jsonStr.endsWith("}")) {
 					JSONObject json = new JSONObject(jsonStr);
 					errorMessage = json.getString("error");
 					String descr = json.optString("error_description", "");

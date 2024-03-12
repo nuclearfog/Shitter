@@ -50,6 +50,7 @@
 	<dimen name="profile_tv_background_padding">2dp</dimen>
 	<dimen name="profile_tv_margin">5dp</dimen>
 	<dimen name="profile_username_margin">12dp</dimen>
+	<dimen name="profile_icon_margin">5dp</dimen>
 	<dimen name="profile_padding_drawable">5dp</dimen>
 	<dimen name="profile_button_height">20sp</dimen>
 	<dimen name="profile_button_margin">5dp</dimen>

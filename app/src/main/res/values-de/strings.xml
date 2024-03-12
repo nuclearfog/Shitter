@@ -87,6 +87,7 @@
 	<string name="profile_indexable">öffentl. Beiträge in Suche einbeziehen</string>
 	<string name="profile_hide_collections">verstecke Following/Follower</string>
 	<string name="profile_status_pref">Standardeinstellungen für Posts</string>
+	<string name="profile_description_verified">verifizierter Nutzer</string>
 	<string name="connection_discard">verwerfen</string>
 	<string name="confirm_discard">Änderungen verwerfen?</string>
 	<string name="user_data">Nutzerdaten</string>
@@ -374,4 +375,7 @@
 	<string name="menu_status_pin">an Profil anheften</string>
 	<string name="menu_status_unpin">vom Profil abheften</string>
 	<string name="error_empty_filter_expiration">bitte Filterdauer angeben</string>
+	<string name="profile_description_locked">privater Nutzer</string>
+	<string name="profile_description_bot">Bot-Account</string>
+	<string name="profile_description_group">Gruppenaccount</string>
 </resources>

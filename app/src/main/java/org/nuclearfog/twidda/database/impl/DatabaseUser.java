@@ -26,7 +26,7 @@ public class DatabaseUser implements User, UserTable, UserPropertiesTable {
 
 	private long id, createdAt;
 	private int following, follower, statusCount, favorCount;
-	private boolean isCurrentUser, isVerified, isLocked, defaultImage, indexable, discoverable;
+	private boolean isCurrentUser, isVerified, isLocked, defaultImage, indexable, discoverable, bot, group;
 	private String username = "";
 	private String screen_name = "";
 	private String description = "";
@@ -64,6 +64,8 @@ public class DatabaseUser implements User, UserTable, UserPropertiesTable {
 		defaultImage = (register & MASK_USER_DEFAULT_IMAGE) != 0;
 		discoverable = (register & MASK_USER_DISCOVERABLE) != 0;
 		indexable = (register & MASK_USER_DISCOVERABLE) != 0;
+		group = (register & MASK_USER_GROUP) != 0;
+		bot = (register & MASK_USER_BOT) != 0;
 
 		if (emojiKeys != null && !emojiKeys.isEmpty())
 			this.emojiKeys = KEY_SEPARATOR.split(emojiKeys);
@@ -178,6 +180,18 @@ public class DatabaseUser implements User, UserTable, UserPropertiesTable {
 	@Override
 	public boolean isDiscoverable() {
 		return discoverable;
+	}
+
+
+	@Override
+	public boolean isBot() {
+		return bot;
+	}
+
+
+	@Override
+	public boolean isGroup() {
+		return group;
 	}
 
 

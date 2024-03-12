@@ -90,6 +90,21 @@ public interface User extends Serializable, Comparable<User> {
 	boolean isDiscoverable();
 
 	/**
+	 * @return true if user is a bot
+	 */
+	boolean isBot();
+
+	/**
+	 * @return true if user represents a group
+	 */
+	boolean isGroup();
+
+	/**
+	 * @return true if the user is the same as the current user
+	 */
+	boolean isCurrentUser();
+
+	/**
 	 * @return number of following
 	 */
 	int getFollowing();
@@ -108,11 +123,6 @@ public interface User extends Serializable, Comparable<User> {
 	 * @return number of favorites/likes
 	 */
 	int getFavoriteCount();
-
-	/**
-	 * @return true if the user is the same as the current user
-	 */
-	boolean isCurrentUser();
 
 	/**
 	 * @return custom emojis used in the profile
