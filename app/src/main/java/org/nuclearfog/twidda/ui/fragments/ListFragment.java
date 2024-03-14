@@ -128,13 +128,15 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	 * @param enable true to enable swipe view delayed, false to stop immediately
 	 */
 	protected void setRefresh(boolean enable) {
-		isRefreshing = enable;
-		if (enable) {
-			reload.postDelayed(new RefreshDelay(this), REFRESH_DELAY_MS);
-			reload.setEnabled(false);
-		} else {
-			reload.setRefreshing(false);
-			reload.setEnabled(true);
+		if (isAdded()) {
+			isRefreshing = enable;
+			if (enable) {
+				reload.postDelayed(new RefreshDelay(this), REFRESH_DELAY_MS);
+				reload.setEnabled(false);
+			} else {
+				reload.setRefreshing(false);
+				reload.setEnabled(true);
+			}
 		}
 	}
 

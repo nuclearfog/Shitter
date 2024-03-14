@@ -259,12 +259,27 @@ public class DatabaseAdapter {
 			+ PushTable.AUTH_SECRET + " TEXT,"
 			+ PushTable.FLAGS + " INTEGER);";
 
+	/**
+	 * SQL query to create a user field table
+	 *
+	 * @since 3.5.6
+	 */
+	private static final String TALBE_FIELDS = "CREATE TABLE IF NOT EXISTS "
+			+ UserFieldTable.TABLE + "("
+			+ UserFieldTable.USER + " INTEGER,"
+			+ UserFieldTable.KEY + " TEXT NOT NULL,"
+			+ UserFieldTable.VALUE + " TEXT,"
+			+ UserFieldTable.TIMESTAMP + " INTEGER,"
+			+ "FOREIGN KEY(" + UserFieldTable.USER + ")"
+			+ "REFERENCES " + UserTable.TABLE + "(" + UserTable.ID + "));";
+
 	private static final String IDX_STATUS_NAME = "idx_status";
 	private static final String IDX_STATUS_PROPERTIES_NAME = "idx_status_properties";
 	private static final String IDX_USER_PROPERTIES_NAME = "idx_user_properties";
 	private static final String IDX_FAVORITS_NAME = "idx_favorits";
 	private static final String IDX_BOOKMARKS_NAME = "idx_bookmarks";
 	private static final String IDX_REPLIES_NAME = "idx_replies";
+	private static final String IDX_FIELDS_NAME = "idx_fields";
 
 	/**
 	 * table index for status table
@@ -307,6 +322,14 @@ public class DatabaseAdapter {
 	 */
 	private static final String INDX_REPLIES = "CREATE INDEX IF NOT EXISTS " + IDX_REPLIES_NAME
 			+ " ON " + ReplyTable.TABLE + "(" + ReplyTable.REPLY + "," + ReplyTable.ID + ");";
+
+	/**
+	 * table index for status replies table
+	 *
+	 * @since 3.5.6
+	 */
+	private static final String INDX_FIELDS = "CREATE INDEX IF NOT EXISTS " + IDX_FIELDS_NAME
+			+ " ON " + UserFieldTable.TABLE + "(" + UserFieldTable.USER + ");";
 
 	/**
 	 * add mediatable description
@@ -428,6 +451,7 @@ public class DatabaseAdapter {
 		db.execSQL("DROP TABLE IF EXISTS " + InstanceTable.TABLE);
 		db.execSQL("DROP TABLE IF EXISTS " + PushTable.TABLE);
 		db.execSQL("DROP TABLE IF EXISTS " + ReplyTable.TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + UserFieldTable.TABLE);
 		db.execSQL("DROP INDEX IF EXISTS " + IDX_STATUS_NAME);
 		db.execSQL("DROP INDEX IF EXISTS " + IDX_STATUS_PROPERTIES_NAME);
 		db.execSQL("DROP INDEX IF EXISTS " + IDX_USER_PROPERTIES_NAME);
@@ -458,6 +482,7 @@ public class DatabaseAdapter {
 		db.execSQL(TABLE_INSTANCES);
 		db.execSQL(TABLE_WEBPUSH);
 		db.execSQL(TABLE_REPLIES);
+		db.execSQL(TALBE_FIELDS);
 		// set initial version
 		if (db.getVersion() == 0) {
 			db.setVersion(DB_VERSION);
@@ -490,6 +515,7 @@ public class DatabaseAdapter {
 		db.execSQL(INDX_FAVORITE);
 		db.execSQL(INDX_BOOKMARK);
 		db.execSQL(INDX_REPLIES);
+		db.execSQL(INDX_FIELDS);
 	}
 
 	/**
@@ -1024,6 +1050,37 @@ public class DatabaseAdapter {
 		 * flag indicates that the user represents a group
 		 */
 		int MASK_USER_GROUP = 1 << 8;
+	}
+
+	/**
+	 * table for user fields
+	 */
+	public interface UserFieldTable {
+
+		/**
+		 * table name
+		 */
+		String TABLE = "userfield";
+
+		/**
+		 * user ID of the owner
+		 */
+		String USER = "field_user_id";
+
+		/**
+		 * field key name
+		 */
+		String KEY = "field_key";
+
+		/**
+		 * field value
+		 */
+		String VALUE = "field_value";
+
+		/**
+		 * field timestamp of verification or '0' if not defined
+		 */
+		String TIMESTAMP = "field_timestamp";
 	}
 
 	/**

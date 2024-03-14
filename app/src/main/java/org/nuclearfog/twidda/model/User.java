@@ -139,31 +139,4 @@ public interface User extends Serializable, Comparable<User> {
 	default int compareTo(User o) {
 		return Long.compare(o.getId(), getId());
 	}
-
-	/**
-	 * represents an user field.
-	 */
-	interface Field extends Serializable {
-
-		/**
-		 * get the key of a given field’s key-value pair.
-		 *
-		 * @return key string
-		 */
-		String getKey();
-
-		/**
-		 * get the value associated with the name key.
-		 *
-		 * @return value string
-		 */
-		String getValue();
-
-		/**
-		 * get the timestamp of the verification if any
-		 *
-		 * @return ISO 8601 Datetime or '0' if not defined
-		 */
-		long getTimestamp();
-	}
 }

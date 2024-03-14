@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.backend.utils.Tagger;
 import org.nuclearfog.twidda.backend.utils.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.model.User.Field;
+import org.nuclearfog.twidda.model.Field;
 
 /**
  * ViewHolder for {@link org.nuclearfog.twidda.ui.adapter.recyclerview.FieldAdapter}

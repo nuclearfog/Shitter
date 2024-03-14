@@ -12,6 +12,7 @@ import org.jsoup.Jsoup;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.User;
+import org.nuclearfog.twidda.model.Field;
 
 /**
  * User implementation for Mastodon API
@@ -168,7 +169,7 @@ public class MastodonUser implements User {
 
 	@Override
 	public boolean isVerified() {
-		// using getFields() instead
+		// not supported
 		return false;
 	}
 
@@ -263,47 +264,5 @@ public class MastodonUser implements User {
 	@Override
 	public String toString() {
 		return "name=\"" + getScreenname() + "\"";
-	}
-
-	/**
-	 *
-	 */
-	private static class MastodonField implements Field {
-
-		private static final long serialVersionUID = 2278113885084330065L;
-
-		private String key;
-		private String value;
-		private long timestamp = 0L;
-
-		/**
-		 * @param json fields json
-		 */
-		public MastodonField(JSONObject json) throws JSONException {
-			key = json.getString("name");
-			value = StringUtils.extractText(json.optString("value", ""));
-			String timeStr = json.optString("verified_at", "");
-			if (!timeStr.equals("null")) {
-				timestamp = StringUtils.getIsoTime(timeStr);
-			}
-		}
-
-
-		@Override
-		public String getKey() {
-			return key;
-		}
-
-
-		@Override
-		public String getValue() {
-			return value;
-		}
-
-
-		@Override
-		public long getTimestamp() {
-			return timestamp;
-		}
 	}
 }

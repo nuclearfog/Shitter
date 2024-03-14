@@ -242,7 +242,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			UserLoader.Param param = new UserLoader.Param(UserLoader.Param.ONLINE, userId);
 			userLoader.execute(param, userCallback);
 		} else {
-			UserLoader.Param param = new UserLoader.Param(UserLoader.Param.DATABASE, userId);
+			UserLoader.Param param = new UserLoader.Param(UserLoader.Param.LOCAL, userId);
 			userLoader.execute(param, userCallback);
 		}
 		if (relation == null && userId != settings.getLogin().getId()) {
@@ -562,7 +562,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	 */
 	private void setUserResult(@NonNull UserLoader.Result result) {
 		switch (result.mode) {
-			case UserLoader.Result.DATABASE:
+			case UserLoader.Result.LOCAL:
 				if (result.user != null) {
 					UserLoader.Param param = new UserLoader.Param(UserLoader.Param.ONLINE, result.user.getId());
 					userLoader.execute(param, userCallback);

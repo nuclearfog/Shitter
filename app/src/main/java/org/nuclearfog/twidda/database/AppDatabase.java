@@ -25,8 +25,10 @@ import org.nuclearfog.twidda.database.DatabaseAdapter.StatusTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.TagTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserPropertiesTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.UserFieldTable;
 import org.nuclearfog.twidda.database.impl.DatabaseAccount;
 import org.nuclearfog.twidda.database.impl.DatabaseEmoji;
+import org.nuclearfog.twidda.database.impl.DatabaseField;
 import org.nuclearfog.twidda.database.impl.DatabaseInstance;
 import org.nuclearfog.twidda.database.impl.DatabaseLocation;
 import org.nuclearfog.twidda.database.impl.DatabaseMedia;
@@ -38,6 +40,7 @@ import org.nuclearfog.twidda.database.impl.DatabaseTag;
 import org.nuclearfog.twidda.database.impl.DatabaseUser;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
+import org.nuclearfog.twidda.model.Field;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
@@ -264,6 +267,16 @@ public class AppDatabase {
 	 * selection to get a single emoji entry
 	 */
 	private static final String EMOJI_SELECT = EmojiTable.CODE + "=?";
+
+	/**
+	 * selection to get a an user field entries
+	 */
+	private static final String FIELD_SELECT = UserFieldTable.USER + "=?";
+
+	/**
+	 * selection to get an user field entry
+	 */
+	private static final String FIELD_KEY_SELECT = FIELD_SELECT + " AND " + UserFieldTable.KEY + "=?";
 
 	/**
 	 * selection to get location
@@ -633,9 +646,7 @@ public class AppDatabase {
 	public void saveEmojis(List<Emoji> emojis) {
 		synchronized (adapter) {
 			SQLiteDatabase db = adapter.getDbWrite();
-			for (Emoji emoji : emojis) {
-				saveEmoji(emoji, db);
-			}
+			saveEmojis(emojis.toArray(new Emoji[0]), db);
 			adapter.commit();
 		}
 	}
@@ -913,8 +924,10 @@ public class AppDatabase {
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.rawQuery(SINGLE_USER_QUERY, args);
 			DatabaseUser user = null;
-			if (cursor.moveToFirst())
+			if (cursor.moveToFirst()) {
 				user = new DatabaseUser(cursor, settings.getLogin());
+				setUserInformation(db, user);
+			}
 			cursor.close();
 			return user;
 		}
@@ -1196,7 +1209,7 @@ public class AppDatabase {
 	private Status getStatus(Cursor cursor, SQLiteDatabase db) {
 		Account login = settings.getLogin();
 		DatabaseStatus result = new DatabaseStatus(cursor, login);
-		DatabaseUser author = (DatabaseUser) result.getAuthor();
+		setUserInformation(db, (DatabaseUser) result.getAuthor());
 		// check if there is an embedded status
 		if (result.getEmbeddedStatusId() != NO_ID) {
 			result.setEmbeddedStatus(getStatus(result.getEmbeddedStatusId()));
@@ -1232,18 +1245,6 @@ public class AppDatabase {
 			Location location = getLocation(db, result.getLocationId());
 			if (location != null) {
 				result.addLocation(location);
-			}
-		}
-		if (author.getEmojiKeys().length > 0) {
-			List<Emoji> emojiList = new LinkedList<>();
-			for (String emojiKey : author.getEmojiKeys()) {
-				Emoji item = getEmoji(db, emojiKey);
-				if (item != null) {
-					emojiList.add(item);
-				}
-			}
-			if (!emojiList.isEmpty()) {
-				author.addEmojis(emojiList.toArray(new Emoji[0]));
 			}
 		}
 		return result;
@@ -1304,6 +1305,25 @@ public class AppDatabase {
 	}
 
 	/**
+	 * get user fields
+	 *
+	 * @param userId ID of the user to get the fields from
+	 * @return user field array or empty if not found
+	 */
+	private Field[] getFields(SQLiteDatabase db, long userId) {
+		String[] args = {Long.toString(userId)};
+		Cursor cursor = db.query(UserFieldTable.TABLE, DatabaseField.PROJECTION, FIELD_SELECT, args, null, null, null, null);
+		List<Field> result = new ArrayList<>();
+		if (cursor.moveToFirst()) {
+			do {
+				result.add(new DatabaseField(cursor));
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return result.toArray(new Field[0]);
+	}
+
+	/**
 	 * get status/message location
 	 *
 	 * @param db database read instance
@@ -1342,6 +1362,29 @@ public class AppDatabase {
 				break;
 		}
 		return notification;
+	}
+
+	/**
+	 * set additional user information
+	 *
+	 * @param user user to set additional information
+	 */
+	private void setUserInformation(SQLiteDatabase db, DatabaseUser user) {
+		// set user emojis
+		if (user.getEmojiKeys().length > 0) {
+			List<Emoji> emojiList = new LinkedList<>();
+			for (String emojiKey : user.getEmojiKeys()) {
+				Emoji item = getEmoji(db, emojiKey);
+				if (item != null) {
+					emojiList.add(item);
+				}
+			}
+			if (!emojiList.isEmpty()) {
+				user.addEmojis(emojiList.toArray(new Emoji[0]));
+			}
+		}
+		// set user fields
+		user.addFields(getFields(db, user.getId()));
 	}
 
 	/**
@@ -1409,6 +1452,7 @@ public class AppDatabase {
 	 */
 	private void saveUser(User user, SQLiteDatabase db, int mode) {
 		int flags = getUserFlags(db, user.getId());
+		ContentValues column = new ContentValues(14);
 		if (user.isVerified()) {
 			flags |= UserPropertiesTable.MASK_USER_VERIFIED;
 		} else {
@@ -1444,7 +1488,6 @@ public class AppDatabase {
 		} else {
 			flags &= ~UserPropertiesTable.MASK_USER_INDEXABLE;
 		}
-		ContentValues column = new ContentValues(14);
 		if (user.getEmojis().length > 0) {
 			StringBuilder buf = new StringBuilder();
 			saveEmojis(user.getEmojis(), db);
@@ -1454,6 +1497,8 @@ public class AppDatabase {
 			String emojiKeys = buf.deleteCharAt(buf.length() - 1).toString();
 			column.put(UserTable.EMOJI, emojiKeys);
 		}
+		saveFields(user.getFields(), user.getId(), db);
+
 		column.put(UserTable.ID, user.getId());
 		column.put(UserTable.USERNAME, user.getUsername());
 		column.put(UserTable.SCREENNAME, user.getScreenname());
@@ -1610,7 +1655,32 @@ public class AppDatabase {
 	 */
 	private void saveEmojis(Emoji[] emojis, SQLiteDatabase db) {
 		for (Emoji emoji : emojis) {
-			saveEmoji(emoji, db);
+			ContentValues column = new ContentValues(3);
+			column.put(EmojiTable.CODE, emoji.getCode());
+			column.put(EmojiTable.URL, emoji.getUrl());
+			column.put(EmojiTable.CATEGORY, emoji.getCategory());
+			db.insertWithOnConflict(EmojiTable.TABLE, "", column, SQLiteDatabase.CONFLICT_IGNORE);
+		}
+	}
+
+	/**
+	 * save user fields
+	 *
+	 * @param fields array of user fields
+	 * @param userId ID of the user
+	 */
+	private void saveFields(Field[] fields, long userId, SQLiteDatabase db) {
+		for (Field field : fields) {
+			ContentValues column = new ContentValues(4);
+			String[] args = {Long.toString(userId), field.getKey()};
+			column.put(UserFieldTable.KEY, field.getKey());
+			column.put(UserFieldTable.VALUE, field.getValue());
+			column.put(UserFieldTable.TIMESTAMP, field.getTimestamp());
+			column.put(UserFieldTable.USER, userId);
+			// delete old rows
+			db.delete(UserFieldTable.TABLE, FIELD_KEY_SELECT, args);
+			// set new entries
+			db.insertWithOnConflict(UserFieldTable.TABLE, "", column, SQLiteDatabase.CONFLICT_REPLACE);
 		}
 	}
 
@@ -1649,20 +1719,6 @@ public class AppDatabase {
 		column.put(PollTable.EXPIRATION, poll.getEndTime());
 		column.put(PollTable.OPTIONS, buf.toString());
 		db.insertWithOnConflict(PollTable.TABLE, "", column, SQLiteDatabase.CONFLICT_REPLACE);
-	}
-
-	/**
-	 * save single emoji
-	 *
-	 * @param emoji emoji to save
-	 * @param db    database write instance
-	 */
-	private void saveEmoji(Emoji emoji, SQLiteDatabase db) {
-		ContentValues column = new ContentValues(3);
-		column.put(EmojiTable.CODE, emoji.getCode());
-		column.put(EmojiTable.URL, emoji.getUrl());
-		column.put(EmojiTable.CATEGORY, emoji.getCategory());
-		db.insertWithOnConflict(EmojiTable.TABLE, "", column, SQLiteDatabase.CONFLICT_IGNORE);
 	}
 
 	/**

@@ -9,6 +9,7 @@ import org.nuclearfog.twidda.database.DatabaseAdapter.UserPropertiesTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
+import org.nuclearfog.twidda.model.Field;
 import org.nuclearfog.twidda.model.User;
 
 import java.util.regex.Pattern;
@@ -38,6 +39,7 @@ public class DatabaseUser implements User, UserTable, UserPropertiesTable {
 	private String profileBannerOrig = "";
 	private String[] emojiKeys = {};
 	private Emoji[] emojis = {};
+	private Field[] fields = {};
 
 	/**
 	 * @param cursor  database cursor containing user column
@@ -233,7 +235,7 @@ public class DatabaseUser implements User, UserTable, UserPropertiesTable {
 
 	@Override
 	public Field[] getFields() {
-		return new Field[0];// todo implement this
+		return fields;
 	}
 
 
@@ -265,6 +267,15 @@ public class DatabaseUser implements User, UserTable, UserPropertiesTable {
 	 */
 	public void addEmojis(@NonNull Emoji[] emojis) {
 		this.emojis = emojis;
+	}
+
+	/**
+	 * add user fields
+	 *
+	 * @param fields user field array
+	 */
+	public void addFields(@NonNull Field[] fields) {
+		this.fields = fields;
 	}
 
 	/**

@@ -21,6 +21,7 @@ public class ProfileAdapter extends ViewPagerAdapter {
 	private GlobalSettings settings;
 
 	private long userId = 0L;
+	private boolean isHome;
 
 	/**
 	 *
@@ -53,16 +54,16 @@ public class ProfileAdapter extends ViewPagerAdapter {
 				break;
 
 			case 2:
-				if (getItemCount() == 2) {
-					param = new Bundle();
-					param.putLong(FieldFragment.KEY_ID, userId);
-					fragment = new FieldFragment();
-					fragment.setArguments(param);
-				} else {
+				if (isHome) {
 					param = new Bundle();
 					param.putLong(StatusFragment.KEY_ID, userId);
 					param.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_FAVORIT);
 					fragment = new StatusFragment();
+					fragment.setArguments(param);
+				} else {
+					param = new Bundle();
+					param.putLong(FieldFragment.KEY_ID, userId);
+					fragment = new FieldFragment();
 					fragment.setArguments(param);
 				}
 				break;
@@ -91,8 +92,10 @@ public class ProfileAdapter extends ViewPagerAdapter {
 	public void setId(long userId) {
 		this.userId = userId;
 		if (settings.getLogin().getId() == userId) {
+			isHome = true;
 			setPageCount(5);
 		} else {
+			isHome = false;
 			setPageCount(3);
 		}
 	}

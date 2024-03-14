@@ -9,8 +9,10 @@ import org.nuclearfog.twidda.backend.utils.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.model.lists.Fields;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.FieldHolder;
 
+import java.util.Collections;
+
 /**
- * RecyclerView adapter used to show a list of {@link org.nuclearfog.twidda.model.User.Field}
+ * RecyclerView adapter used to show a list of {@link org.nuclearfog.twidda.model.Field}
  *
  * @author nuclearfog
  */
@@ -60,11 +62,12 @@ public class FieldAdapter extends Adapter<FieldHolder> implements OnTagClickList
 	/**
 	 * replace all existing items with new ones
 	 *
-	 * @param fields items to insert
+	 * @param newFields items to insert
 	 */
-	public void setItems(Fields fields) {
-		this.items.clear();
-		this.items.addAll(fields);
+	public void setItems(Fields newFields) {
+		items.clear();
+		items.addAll(newFields);
+		Collections.sort(items);
 		notifyDataSetChanged();
 	}
 

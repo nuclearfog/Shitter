@@ -34,10 +34,10 @@ public class UserLoader extends AsyncExecutor<UserLoader.Param, UserLoader.Resul
 	protected Result doInBackground(@NonNull Param param) {
 		try {
 			switch (param.mode) {
-				case Param.DATABASE:
+				case Param.LOCAL:
 					User user = db.getUser(param.id);
 					if (user != null) {
-						return new Result(Result.DATABASE, user, null);
+						return new Result(Result.LOCAL, user, null);
 					}
 					// fall through
 
@@ -59,7 +59,7 @@ public class UserLoader extends AsyncExecutor<UserLoader.Param, UserLoader.Resul
 	 */
 	public static class Param {
 
-		public static final int DATABASE = 1;
+		public static final int LOCAL = 1;
 		public static final int ONLINE = 2;
 
 		final int mode;
@@ -77,7 +77,7 @@ public class UserLoader extends AsyncExecutor<UserLoader.Param, UserLoader.Resul
 	public static class Result {
 
 		public static final int ERROR = -1;
-		public static final int DATABASE = 10;
+		public static final int LOCAL = 10;
 		public static final int ONLINE = 11;
 
 		@Nullable

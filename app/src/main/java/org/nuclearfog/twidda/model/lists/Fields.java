@@ -2,7 +2,7 @@ package org.nuclearfog.twidda.model.lists;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.model.User.Field;
+import org.nuclearfog.twidda.model.Field;
 
 import java.util.Arrays;
 import java.util.LinkedList;

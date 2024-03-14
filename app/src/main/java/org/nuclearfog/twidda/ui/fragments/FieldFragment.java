@@ -49,6 +49,10 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 				adapter.setItems((Fields) data);
 			}
 		}
+		if (adapter.isEmpty()) {
+			UserLoader.Param userParam = new UserLoader.Param(UserLoader.Param.LOCAL, id);
+			userLoader.execute(userParam, this);
+		}
 	}
 
 
@@ -56,16 +60,6 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 	public void onSaveInstanceState(@NonNull Bundle outState) {
 		outState.putSerializable(KEY_SAVE, adapter.getItems());
 		super.onSaveInstanceState(outState);
-	}
-
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		if (adapter.isEmpty()) {
-			load();
-			setRefresh(true);
-		}
 	}
 
 
@@ -89,7 +83,8 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 
 	@Override
 	protected void onReload() {
-		load();
+		UserLoader.Param userParam = new UserLoader.Param(UserLoader.Param.ONLINE, id);
+		userLoader.execute(userParam, this);
 	}
 
 
@@ -99,33 +94,22 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 		adapter.clear();
 		setRefresh(true);
 		userLoader = new UserLoader(requireContext());
-		load();
+		UserLoader.Param userParam = new UserLoader.Param(UserLoader.Param.LOCAL, id);
+		userLoader.execute(userParam, this);
 	}
 
 
 	@Override
 	public void onResult(@NonNull UserLoader.Result result) {
-		if (result.mode == UserLoader.Result.ONLINE) {
-			if (result.user != null) {
-				Fields fields = new Fields(result.user.getFields());
-				adapter.setItems(fields);
-			} else {
-				adapter.clear();
-			}
-		} else if (result.mode == UserLoader.Result.ERROR) {
+		if (result.user != null) {
+			Fields fields = new Fields(result.user.getFields());
+			adapter.setItems(fields);
+		} else {
 			Context context = getContext();
 			if (context != null) {
 				ErrorUtils.showErrorMessage(context, result.exception);
 			}
 		}
 		setRefresh(false);
-	}
-
-	/**
-	 *
-	 */
-	private void load() {
-		UserLoader.Param userParam = new UserLoader.Param(UserLoader.Param.ONLINE, id);
-		userLoader.execute(userParam, this);
 	}
 }
