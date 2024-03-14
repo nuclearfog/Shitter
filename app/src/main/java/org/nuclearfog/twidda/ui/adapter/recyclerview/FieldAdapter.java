@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import org.nuclearfog.twidda.backend.utils.Tagger.OnTagClickListener;
+import org.nuclearfog.twidda.model.Emoji;
+import org.nuclearfog.twidda.model.lists.Emojis;
 import org.nuclearfog.twidda.model.lists.Fields;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.FieldHolder;
 
@@ -21,6 +23,7 @@ public class FieldAdapter extends Adapter<FieldHolder> implements OnTagClickList
 	private OnLinkClickListener listener;
 
 	private Fields items = new Fields();
+	private Emojis emojis = new Emojis();
 
 	/**
 	 *
@@ -39,7 +42,7 @@ public class FieldAdapter extends Adapter<FieldHolder> implements OnTagClickList
 
 	@Override
 	public void onBindViewHolder(@NonNull FieldHolder holder, int position) {
-		holder.setContent(items.get(position));
+		holder.setContent(items.get(position), emojis.toArray(new Emoji[0]));
 	}
 
 
@@ -63,10 +66,13 @@ public class FieldAdapter extends Adapter<FieldHolder> implements OnTagClickList
 	 * replace all existing items with new ones
 	 *
 	 * @param newFields items to insert
+	 * @param newEmojis emoji list used by all fields
 	 */
-	public void setItems(Fields newFields) {
+	public void setItems(Fields newFields, Emojis newEmojis) {
 		items.clear();
 		items.addAll(newFields);
+		emojis.clear();
+		emojis.addAll(newEmojis);
 		Collections.sort(items);
 		notifyDataSetChanged();
 	}
@@ -93,6 +99,13 @@ public class FieldAdapter extends Adapter<FieldHolder> implements OnTagClickList
 	 */
 	public Fields getItems() {
 		return new Fields(items);
+	}
+
+	/**
+	 *
+	 */
+	public Emojis getEmojis() {
+		return emojis;
 	}
 
 	/**

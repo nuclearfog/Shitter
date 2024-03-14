@@ -4,13 +4,13 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.model.Field;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 
 /**
  * @author nuclearfog
  */
-public class Fields extends LinkedList<Field> {
+public class Fields extends ArrayList<Field> {
 
 	private static final long serialVersionUID = -1117517407497703438L;
 
