@@ -652,6 +652,8 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		follower.setVisibility(View.VISIBLE);
 		user_createdAt.setVisibility(View.VISIBLE);
 		screenName.setText(user.getScreenname());
+		// set user join date
+		user_createdAt.setText(SimpleDateFormat.getDateInstance().format(user.getTimestamp()));
 		// set status count
 		if (user.getStatusCount() >= 0) {
 			tabSelector.setLabel(0, StringUtils.NUMBER_FORMAT.format(user.getStatusCount()));
@@ -665,22 +667,28 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			tabSelector.setLabel(1, "");
 		}
 		// set username and emojis
-		if (!user.getUsername().trim().isEmpty() && user.getEmojis().length > 0) {
+		if (!user.getUsername().trim().isEmpty()) {
 			Spannable usernameSpan = new SpannableString(user.getUsername());
-			usernameSpan = EmojiUtils.removeTags(usernameSpan);
-			username.setText(usernameSpan);
-		} else {
-			username.setText(user.getUsername());
-		}
-		// set user join date
-		user_createdAt.setText(SimpleDateFormat.getDateInstance().format(user.getTimestamp()));
-		// set user description
-		if (!user.getDescription().isEmpty()) {
-			Spannable descriptionSpan = Tagger.makeTextWithLinks(user.getDescription(), settings.getHighlightColor(), this);
-			if (user.getEmojis().length > 0) {
-				descriptionSpan = EmojiUtils.removeTags(descriptionSpan);
+			if (settings.imagesEnabled() && user.getEmojis().length > 0) {
+				TextEmojiLoader.Param param = new TextEmojiLoader.Param(user.getEmojis(), usernameSpan, getResources().getDimensionPixelSize(R.dimen.profile_icon_size));
+				emojiLoader.execute(param, usernameUpdate);
+				username.setText(EmojiUtils.removeTags(usernameSpan));
+			} else {
+				username.setText(usernameSpan);
 			}
-			description.setText(descriptionSpan);
+		} else {
+			username.setText("");
+		}
+		// set user description
+		if (!user.getDescription().trim().isEmpty()) {
+			Spannable descriptionSpan = Tagger.makeTextWithLinks(user.getDescription(), settings.getHighlightColor(), this);
+			if (settings.imagesEnabled() && user.getEmojis().length > 0) {
+				TextEmojiLoader.Param param = new TextEmojiLoader.Param(user.getEmojis(), descriptionSpan, getResources().getDimensionPixelSize(R.dimen.profile_icon_size));
+				emojiLoader.execute(param, userDescriptionUpdate);
+				description.setText(EmojiUtils.removeTags(descriptionSpan));
+			} else {
+				description.setText(descriptionSpan);
+			}
 			description.setVisibility(View.VISIBLE);
 		} else {
 			description.setVisibility(View.GONE);
@@ -745,19 +753,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			}
 		} else {
 			profileImage.setImageDrawable(placeholder);
-		}
-		// initialize emoji loading for username/description
-		if (settings.imagesEnabled() && user.getEmojis().length > 0) {
-			if (!user.getUsername().isEmpty()) {
-				SpannableString usernameSpan = new SpannableString(user.getUsername());
-				TextEmojiLoader.Param param = new TextEmojiLoader.Param(user.getEmojis(), usernameSpan, getResources().getDimensionPixelSize(R.dimen.profile_icon_size));
-				emojiLoader.execute(param, usernameUpdate);
-			}
-			if (!user.getDescription().trim().isEmpty()) {
-				Spannable descriptionSpan = new SpannableString(user.getDescription());
-				TextEmojiLoader.Param param = new TextEmojiLoader.Param(user.getEmojis(), descriptionSpan, getResources().getDimensionPixelSize(R.dimen.profile_icon_size));
-				emojiLoader.execute(param, userDescriptionUpdate);
-			}
 		}
 	}
 

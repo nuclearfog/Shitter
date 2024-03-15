@@ -73,10 +73,21 @@ public class TextEmojiLoader extends AsyncExecutor<TextEmojiLoader.Param, TextEm
 		final long id;
 		final int size;
 
+		/**
+		 * @param emojis    array of emojis
+		 * @param spannable spannable string containing emoji tags
+		 * @param size      icon size of the emoji picture
+		 */
 		public Param(Emoji[] emojis, Spannable spannable, int size) {
 			this(0L, emojis, spannable, size);
 		}
 
+		/**
+		 * @param id        ID used to identify task (used if multiple tasks are running at the samt time)
+		 * @param emojis    array of emojis
+		 * @param spannable spannable string containing emoji tags
+		 * @param size      icon size of the emoji picture
+		 */
 		public Param(long id, Emoji[] emojis, Spannable spannable, int size) {
 			this.emojis = emojis;
 			this.spannable = spannable;
@@ -95,6 +106,11 @@ public class TextEmojiLoader extends AsyncExecutor<TextEmojiLoader.Param, TextEm
 		public final Spannable spannable;
 		public final long id;
 
+		/**
+		 * @param id         ID of the task
+		 * @param spannable  spannable string containing emoji tags
+		 * @param images     a map containing emoji tags and images
+		 */
 		Result(long id, Spannable spannable, @Nullable Map<String, Bitmap> images) {
 			this.images = images;
 			this.spannable = spannable;

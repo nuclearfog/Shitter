@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.ui.adapter.recyclerview.holder;
 
 import android.graphics.Color;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,7 @@ import java.util.Random;
  *
  * @author nuclearfog
  */
-public class FieldHolder extends ViewHolder implements AsyncCallback<TextEmojiLoader.Result> {
+public class FieldHolder extends ViewHolder {
 
 	private static final Random RND = new Random();
 
@@ -41,6 +42,9 @@ public class FieldHolder extends ViewHolder implements AsyncCallback<TextEmojiLo
 	private TextEmojiLoader emojiLoader;
 	private GlobalSettings settings;
 	private OnTagClickListener listener;
+
+	private AsyncCallback<TextEmojiLoader.Result> resultValue = this::onValueResult;
+	private AsyncCallback<TextEmojiLoader.Result> resultKey = this::onKeyResult;
 
 	private long tagId = RND.nextLong();
 
@@ -64,9 +68,20 @@ public class FieldHolder extends ViewHolder implements AsyncCallback<TextEmojiLo
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 	}
 
+	/**
+	 * set emojis of the key text
+	 */
+	private void onKeyResult(@NonNull TextEmojiLoader.Result result) {
+		if (result.id == tagId) {
+			Spannable spannable = EmojiUtils.addEmojis(key.getContext(), result.spannable, result.images);
+			key.setText(spannable);
+		}
+	}
 
-	@Override
-	public void onResult(@NonNull TextEmojiLoader.Result result) {
+	/**
+	 * set emojis of the value text
+	 */
+	private void onValueResult(@NonNull TextEmojiLoader.Result result) {
 		if (result.id == tagId) {
 			Spannable spannable = EmojiUtils.addEmojis(value.getContext(), result.spannable, result.images);
 			value.setText(spannable);
@@ -77,7 +92,7 @@ public class FieldHolder extends ViewHolder implements AsyncCallback<TextEmojiLo
 	 * set view content
 	 */
 	public void setContent(Field field, Emoji[] emojis) {
-		key.setText(field.getKey());
+		Spannable keySpan = new SpannableString(field.getKey());
 		Spannable valueSpan = Tagger.makeTextWithLinks(field.getValue(), settings.getHighlightColor(), listener);
 		if (field.getTimestamp() != 0L) {
 			verified.setVisibility(View.VISIBLE);
@@ -87,12 +102,18 @@ public class FieldHolder extends ViewHolder implements AsyncCallback<TextEmojiLo
 			verified.setVisibility(View.GONE);
 			time.setVisibility(View.GONE);
 		}
-		if (emojis.length > 0) {
+		if (emojis.length > 0 && settings.imagesEnabled()) {
+			// set emojis of the value field
 			TextEmojiLoader.Param param = new TextEmojiLoader.Param(tagId, emojis, valueSpan, value.getResources().getDimensionPixelSize(R.dimen.item_field_emoji_size));
-			emojiLoader.execute(param, this);
+			emojiLoader.execute(param, resultValue);
 			value.setText(EmojiUtils.removeTags(valueSpan));
+			// set emojis of the key field
+			param = new TextEmojiLoader.Param(tagId, emojis, keySpan, value.getResources().getDimensionPixelSize(R.dimen.item_field_emoji_size));
+			emojiLoader.execute(param, resultKey);
+			key.setText(EmojiUtils.removeTags(keySpan));
 		} else {
 			value.setText(valueSpan);
+			key.setText(keySpan);
 		}
 	}
 }
