@@ -38,7 +38,8 @@ public class InfoDialog extends DialogFragment {
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.dialog_app_info, container, false);
 		TextView appInfo = view.findViewById(R.id.settings_app_info);
-		appInfo.setText(" V");
+		appInfo.setText(R.string.app_name);
+		appInfo.append(" v");
 		appInfo.append(BuildConfig.VERSION_NAME);
 		AppStyles.setTheme((ViewGroup) view);
 		return view;
