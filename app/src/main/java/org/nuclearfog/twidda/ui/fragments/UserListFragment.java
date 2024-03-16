@@ -173,23 +173,16 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 	@Override
 	public void onResult(@NonNull UserlistLoader.Result result) {
-		switch (result.mode) {
-			case UserlistLoader.Result.MEMBERSHIP:
-			case UserlistLoader.Result.OWNERSHIP:
-				if (result.userlists != null) {
-					adapter.addItems(result.userlists, result.index);
-				}
-				break;
-
-			case UserlistLoader.Result.ERROR:
-				Context context = getContext();
-				if (context != null) {
-					ErrorUtils.showErrorMessage(context, result.exception);
-				}
-				adapter.disableLoading();
-				break;
-		}
 		setRefresh(false);
+		if (result.userlists != null) {
+			adapter.addItems(result.userlists, result.index);
+		} else {
+			adapter.disableLoading();
+			Context context = getContext();
+			if (context != null) {
+				ErrorUtils.showErrorMessage(context, result.exception);
+			}
+		}
 	}
 
 	/**

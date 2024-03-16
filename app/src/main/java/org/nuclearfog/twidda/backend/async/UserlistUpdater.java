@@ -50,14 +50,18 @@ public class UserlistUpdater extends AsyncExecutor<UserListUpdate, UserlistUpdat
 		public static final int UPDATED = 2;
 		public static final int ERROR = -1;
 
-		public final int mode;
+		public final int action;
 		@Nullable
 		public final UserList userlist;
 		@Nullable
 		public final ConnectionException exception;
 
-		Result(int mode, @Nullable UserList userlist, @Nullable ConnectionException exception) {
-			this.mode = mode;
+		/**
+		 * @param action   action performed on userlist
+		 * @param userlist updated userlist
+		 */
+		Result(int action, @Nullable UserList userlist, @Nullable ConnectionException exception) {
+			this.action = action;
 			this.userlist = userlist;
 			this.exception = exception;
 		}

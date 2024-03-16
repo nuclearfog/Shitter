@@ -164,7 +164,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	public void onStart() {
 		super.onStart();
 		if (adapter.isEmpty()) {
-			load(StatusLoader.Param.NO_ID, StatusLoader.Param.NO_ID, CLEAR_LIST);
+			load(0, 0, CLEAR_LIST);
 			setRefresh(true);
 		}
 	}
@@ -204,7 +204,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 		adapter = new StatusAdapter(this, settings.chronologicalTimelineEnabled());
 		setAdapter(adapter, settings.chronologicalTimelineEnabled());
 		statusLoader = new StatusLoader(requireContext());
-		load(StatusLoader.Param.NO_ID, StatusLoader.Param.NO_ID, CLEAR_LIST);
+		load(0, 0, CLEAR_LIST);
 		setRefresh(true);
 	}
 
@@ -212,9 +212,9 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	@Override
 	protected void onReload() {
 		if (isReversed()) {
-			load(StatusLoader.Param.NO_ID, adapter.getTopItemId(), adapter.getItemCount() - 1);
+			load(0, adapter.getTopItemId(), adapter.getItemCount() - 1);
 		} else {
-			load(adapter.getTopItemId(), StatusLoader.Param.NO_ID, 0);
+			load(adapter.getTopItemId(), 0, 0);
 		}
 	}
 

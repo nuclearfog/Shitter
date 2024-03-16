@@ -35,8 +35,8 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.DomainAction;
-import org.nuclearfog.twidda.backend.async.RelationLoader;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
+import org.nuclearfog.twidda.backend.async.UserAction;
 import org.nuclearfog.twidda.backend.async.UserLoader;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -109,7 +109,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	private static final int IMAGE_PLACEHOLDER_COLOR = 0x2F000000;
 
 	private AsyncCallback<DomainAction.Result> domainCallback = this::setDomainResult;
-	private AsyncCallback<RelationLoader.Result> relationCallback = this::setRelationResult;
+	private AsyncCallback<UserAction.Result> relationCallback = this::setRelationResult;
 	private AsyncCallback<UserLoader.Result> userCallback = this::setUserResult;
 	private AsyncCallback<TextEmojiLoader.Result> usernameUpdate = this::onUsernameUpdate;
 	private AsyncCallback<TextEmojiLoader.Result> userDescriptionUpdate = this::onUserDescriptionUpdate;
@@ -119,7 +119,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	private Picasso picasso;
 
 	private DomainAction domainAction;
-	private RelationLoader relationLoader;
+	private UserAction userAction;
 	private UserLoader userLoader;
 	private TextEmojiLoader emojiLoader;
 
@@ -173,7 +173,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		botIcon = findViewById(R.id.page_profile_bot);
 		lockedIcon = findViewById(R.id.page_profile_locked);
 
-		relationLoader = new RelationLoader(this);
+		userAction = new UserAction(this);
 		domainAction = new DomainAction(this);
 		userLoader = new UserLoader(this);
 		emojiLoader = new TextEmojiLoader(this);
@@ -246,8 +246,8 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			userLoader.execute(param, userCallback);
 		}
 		if (relation == null && userId != settings.getLogin().getId()) {
-			RelationLoader.Param param = new RelationLoader.Param(userId, RelationLoader.Param.LOAD);
-			relationLoader.execute(param, relationCallback);
+			UserAction.Param param = new UserAction.Param(userId, UserAction.Param.LOAD);
+			userAction.execute(param, relationCallback);
 		}
 		if (userId != settings.getLogin().getId()) {
 			tabSelector.addTabIcons(R.array.profile_tab_icons);
@@ -279,7 +279,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 	@Override
 	protected void onDestroy() {
-		relationLoader.cancel();
+		userAction.cancel();
 		userLoader.cancel();
 		emojiLoader.cancel();
 		domainAction.cancel();
@@ -361,9 +361,9 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		else if (item.getItemId() == R.id.profile_follow) {
 			if (relation != null && user != null) {
 				if (!relation.isFollowing()) {
-					if (relationLoader.isIdle()) {
-						RelationLoader.Param param = new RelationLoader.Param(user.getId(), RelationLoader.Param.FOLLOW);
-						relationLoader.execute(param, relationCallback);
+					if (userAction.isIdle()) {
+						UserAction.Param param = new UserAction.Param(user.getId(), UserAction.Param.FOLLOW);
+						userAction.execute(param, relationCallback);
 					}
 				} else {
 					ConfirmDialog.show(this, ConfirmDialog.PROFILE_UNFOLLOW, null);
@@ -375,9 +375,9 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		else if (item.getItemId() == R.id.profile_mute) {
 			if (relation != null && user != null) {
 				if (relation.isMuted()) {
-					if (relationLoader.isIdle()) {
-						RelationLoader.Param param = new RelationLoader.Param(user.getId(), RelationLoader.Param.UNMUTE);
-						relationLoader.execute(param, relationCallback);
+					if (userAction.isIdle()) {
+						UserAction.Param param = new UserAction.Param(user.getId(), UserAction.Param.UNMUTE);
+						userAction.execute(param, relationCallback);
 					}
 				} else {
 					ConfirmDialog.show(this, ConfirmDialog.PROFILE_MUTE, null);
@@ -389,9 +389,9 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		else if (item.getItemId() == R.id.profile_block) {
 			if (relation != null && user != null) {
 				if (relation.isBlocked()) {
-					if (relationLoader.isIdle()) {
-						RelationLoader.Param param = new RelationLoader.Param(user.getId(), RelationLoader.Param.UNBLOCK);
-						relationLoader.execute(param, relationCallback);
+					if (userAction.isIdle()) {
+						UserAction.Param param = new UserAction.Param(user.getId(), UserAction.Param.UNBLOCK);
+						userAction.execute(param, relationCallback);
 					}
 				} else {
 					ConfirmDialog.show(this, ConfirmDialog.PROFILE_BLOCK, null);
@@ -509,18 +509,18 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		if (user != null) {
 			// confirmed unfollowing user
 			if (type == ConfirmDialog.PROFILE_UNFOLLOW) {
-				RelationLoader.Param param = new RelationLoader.Param(user.getId(), RelationLoader.Param.UNFOLLOW);
-				relationLoader.execute(param, relationCallback);
+				UserAction.Param param = new UserAction.Param(user.getId(), UserAction.Param.UNFOLLOW);
+				userAction.execute(param, relationCallback);
 			}
 			// confirmed blocking user
 			else if (type == ConfirmDialog.PROFILE_BLOCK) {
-				RelationLoader.Param param = new RelationLoader.Param(user.getId(), RelationLoader.Param.BLOCK);
-				relationLoader.execute(param, relationCallback);
+				UserAction.Param param = new UserAction.Param(user.getId(), UserAction.Param.BLOCK);
+				userAction.execute(param, relationCallback);
 			}
 			// confirmed muting user
 			else if (type == ConfirmDialog.PROFILE_MUTE) {
-				RelationLoader.Param param = new RelationLoader.Param(user.getId(), RelationLoader.Param.MUTE);
-				relationLoader.execute(param, relationCallback);
+				UserAction.Param param = new UserAction.Param(user.getId(), UserAction.Param.MUTE);
+				userAction.execute(param, relationCallback);
 			}
 			// confirmed domain block
 			else if (type == ConfirmDialog.DOMAIN_BLOCK_ADD) {
@@ -591,33 +591,33 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	 *
 	 * @param result relation result from async executor
 	 */
-	private void setRelationResult(@NonNull RelationLoader.Result result) {
-		switch (result.mode) {
-			case RelationLoader.Result.BLOCK:
+	private void setRelationResult(@NonNull UserAction.Result result) {
+		switch (result.action) {
+			case UserAction.Result.BLOCK:
 				Toast.makeText(getApplicationContext(), R.string.info_blocked, Toast.LENGTH_SHORT).show();
 				break;
 
-			case RelationLoader.Result.UNBLOCK:
+			case UserAction.Result.UNBLOCK:
 				Toast.makeText(getApplicationContext(), R.string.info_user_unblocked, Toast.LENGTH_SHORT).show();
 				break;
 
-			case RelationLoader.Result.MUTE:
+			case UserAction.Result.MUTE:
 				Toast.makeText(getApplicationContext(), R.string.info_user_muted, Toast.LENGTH_SHORT).show();
 				break;
 
-			case RelationLoader.Result.UNMUTE:
+			case UserAction.Result.UNMUTE:
 				Toast.makeText(getApplicationContext(), R.string.info_user_unmuted, Toast.LENGTH_SHORT).show();
 				break;
 
-			case RelationLoader.Result.FOLLOW:
+			case UserAction.Result.FOLLOW:
 				Toast.makeText(getApplicationContext(), R.string.info_followed, Toast.LENGTH_SHORT).show();
 				break;
 
-			case RelationLoader.Result.UNFOLLOW:
+			case UserAction.Result.UNFOLLOW:
 				Toast.makeText(getApplicationContext(), R.string.info_unfollowed, Toast.LENGTH_SHORT).show();
 				break;
 
-			case RelationLoader.Result.ERROR:
+			case UserAction.Result.ERROR:
 				ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 				break;
 		}

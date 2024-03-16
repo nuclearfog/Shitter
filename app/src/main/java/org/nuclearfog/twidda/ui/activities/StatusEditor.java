@@ -200,7 +200,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	protected void onResume() {
 		super.onResume();
 		if (statusUpdate.getInstance() == null) {
-			InstanceLoader.Param param = new InstanceLoader.Param(InstanceLoader.Param.OFFLINE);
+			InstanceLoader.Param param = new InstanceLoader.Param(InstanceLoader.Param.LOAD_LOCAL);
 			instanceLoader.execute(param, instanceResult);
 		}
 		if (settings.getLogin().getConfiguration().locationSupported()) {

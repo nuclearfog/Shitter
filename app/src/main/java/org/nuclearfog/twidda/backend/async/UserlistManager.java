@@ -30,7 +30,7 @@ public class UserlistManager extends AsyncExecutor<UserlistManager.Param, Userli
 	@Override
 	protected Result doInBackground(@NonNull Param param) {
 		try {
-			switch (param.mode) {
+			switch (param.action) {
 				case Param.ADD:
 					connection.addUserToList(param.id, param.username);
 					return new Result(Result.ADD_USER, param.username, null);
@@ -55,13 +55,18 @@ public class UserlistManager extends AsyncExecutor<UserlistManager.Param, Userli
 		public static final int ADD = 1;
 		public static final int REMOVE = 2;
 
-		final int mode;
+		final int action;
 		final long id;
 		final String username;
 
-		public Param(int mode, long id, String username) {
+		/**
+		 * @param action   action used for specific userlist
+		 * @param id       ID of the userlist
+		 * @param username name of the user to add/remove from list
+		 */
+		public Param(int action, long id, String username) {
 			this.id = id;
-			this.mode = mode;
+			this.action = action;
 			this.username = username;
 		}
 	}
@@ -75,13 +80,18 @@ public class UserlistManager extends AsyncExecutor<UserlistManager.Param, Userli
 		public static final int ADD_USER = 3;
 		public static final int DEL_USER = 4;
 
-		public final int mode;
+		public final int action;
 		public final String name;
 		@Nullable
 		public final ConnectionException exception;
 
-		Result(int mode, String name, @Nullable ConnectionException exception) {
-			this.mode = mode;
+		/**
+		 * @param action    action used for specific userlist
+		 * @param name      name of the user to add/remove from list
+		 * @param exception not null if an error occured
+		 */
+		Result(int action, String name, @Nullable ConnectionException exception) {
+			this.action = action;
 			this.name = name;
 			this.exception = exception;
 		}

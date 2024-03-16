@@ -1121,13 +1121,13 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Poll votePoll(Poll poll, int[] selection) throws ConnectionException {
+	public Poll votePoll(long id, int[] selection) throws ConnectionException {
 		List<String> params = new ArrayList<>();
 		for (int choice : selection) {
 			params.add("choices[]=" + choice);
 		}
 		try {
-			Response response = post(ENDPOINT_POLL + poll.getId() + "/votes", params);
+			Response response = post(ENDPOINT_POLL + id + "/votes", params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());

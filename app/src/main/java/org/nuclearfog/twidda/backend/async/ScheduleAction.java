@@ -28,10 +28,10 @@ public class ScheduleAction extends AsyncExecutor<ScheduleAction.Param, Schedule
 	@Override
 	protected Result doInBackground(@NonNull Param param) {
 		try {
-			if (param.mode == Param.UPDATE) {
+			if (param.action == Param.UPDATE) {
 				ScheduledStatus status = connection.updateScheduledStatus(param.id, param.time);
 				return new Result(Result.UPDATE, status.getId(), status, null);
-			} else if (param.mode == Param.REMOVE) {
+			} else if (param.action == Param.REMOVE) {
 				connection.cancelScheduledStatus(param.id);
 				return new Result(Result.REMOVE, param.id, null, null);
 			}
@@ -49,11 +49,16 @@ public class ScheduleAction extends AsyncExecutor<ScheduleAction.Param, Schedule
 		public static final int UPDATE = 1;
 		public static final int REMOVE = 2;
 
-		final int mode;
+		final int action;
 		final long id, time;
 
-		public Param(int mode, long id, long time) {
-			this.mode = mode;
+		/**
+		 * @param action action to perform on existing scheduled status {@link #UPDATE,#REMOVE}
+		 * @param id     if of the status schedule
+		 * @param time   new schedule time used with {@link #UPDATE}
+		 */
+		public Param(int action, long id, long time) {
+			this.action = action;
 			this.time = time;
 			this.id = id;
 		}
@@ -68,16 +73,21 @@ public class ScheduleAction extends AsyncExecutor<ScheduleAction.Param, Schedule
 		public static final int REMOVE = 11;
 		public static final int ERROR = -1;
 
-		public final int mode;
+		public final int action;
 		public final long id;
 		@Nullable
 		public final ScheduledStatus status;
 		@Nullable
 		public final ConnectionException exception;
 
-		Result(int mode, long id, @Nullable ScheduledStatus status, @Nullable ConnectionException exception) {
+		/**
+		 * @param action performed action
+		 * @param id     ID of the scheduled status
+		 * @param status updated status schedule
+		 */
+		Result(int action, long id, @Nullable ScheduledStatus status, @Nullable ConnectionException exception) {
 			this.id = id;
-			this.mode = mode;
+			this.action = action;
 			this.status = status;
 			this.exception = exception;
 		}

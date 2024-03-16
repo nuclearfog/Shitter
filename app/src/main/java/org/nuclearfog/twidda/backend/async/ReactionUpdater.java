@@ -29,7 +29,7 @@ public class ReactionUpdater extends AsyncExecutor<ReactionUpdater.Param, Reacti
 	@Override
 	protected Result doInBackground(@NonNull Param param) {
 		try {
-			switch (param.mode) {
+			switch (param.action) {
 				case Param.ADD:
 					connection.addReaction(param.id, param.code);
 					return new Result(Result.ADD, param.id, null);
@@ -52,12 +52,17 @@ public class ReactionUpdater extends AsyncExecutor<ReactionUpdater.Param, Reacti
 		public static final int ADD = 1;
 		public static final int REMOVE = 2;
 
-		final int mode;
+		final int action;
 		final long id;
 		final String code;
 
-		public Param(int mode, long id, String code) {
-			this.mode = mode;
+		/**
+		 * @param action action to perform on announcement {@link #ADD,#REMOVE}
+		 * @param id     ID of the announcement
+		 * @param code   reaction emoji code
+		 */
+		public Param(int action, long id, String code) {
+			this.action = action;
 			this.id = id;
 			this.code = code;
 		}
@@ -72,13 +77,17 @@ public class ReactionUpdater extends AsyncExecutor<ReactionUpdater.Param, Reacti
 		public static final int ADD = 10;
 		public static final int REMOVE = 11;
 
-		public final int mode;
+		public final int action;
 		public final long id;
 		@Nullable
 		public final ConnectionException exception;
 
-		Result(int mode, long id, @Nullable ConnectionException exception) {
-			this.mode = mode;
+		/**
+		 * @param action action performed on an announcement
+		 * @param id     ID of the announcement
+		 */
+		Result(int action, long id, @Nullable ConnectionException exception) {
+			this.action = action;
 			this.id = id;
 			this.exception = exception;
 		}

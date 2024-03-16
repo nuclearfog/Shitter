@@ -42,8 +42,6 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	 */
 	private static final String KEY_DATA = "notification-data";
 
-	private static final long NO_ID = -1L;
-
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 	private AsyncCallback<NotificationAction.Result> notificationActionCallback = this::onDismiss;
 	private AsyncCallback<NotificationLoader.Result> notificationLoaderCallback = this::onNotificationResult;
@@ -88,7 +86,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	public void onStart() {
 		super.onStart();
 		if (adapter.isEmpty()) {
-			load(NotificationLoader.Param.NO_ID, NotificationLoader.Param.NO_ID, 0);
+			load(0L, 0L, 0);
 			setRefresh(true);
 		}
 	}
@@ -106,9 +104,9 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	@Override
 	protected void onReload() {
 		if (isReversed()) {
-			load(NO_ID, adapter.getTopItemId(), adapter.getItemCount());
+			load(0, adapter.getTopItemId(), adapter.getItemCount());
 		} else {
-			load(adapter.getTopItemId(), NO_ID, 0);
+			load(adapter.getTopItemId(), 0, 0);
 		}
 	}
 
@@ -120,7 +118,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		notificationLoader = new NotificationLoader(requireContext());
 		notificationAction = new NotificationAction(requireContext());
 		followAction = new FollowRequestAction(requireContext());
-		load(NO_ID, NO_ID, 0);
+		load(0, 0, 0);
 		setRefresh(true);
 	}
 
@@ -244,9 +242,9 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	 * called by {@link NotificationAction} to take action on a selected notification
 	 */
 	private void onDismiss(@NonNull NotificationAction.Result result) {
-		if (result.mode == NotificationAction.Result.DISMISS) {
+		if (result.action == NotificationAction.Result.DISMISS) {
 			adapter.removeItem(result.id);
-		} else if (result.mode == NotificationAction.Result.ERROR) {
+		} else if (result.action == NotificationAction.Result.ERROR) {
 			Context context = getContext();
 			if (context != null) {
 				ErrorUtils.showErrorMessage(context, result.exception);

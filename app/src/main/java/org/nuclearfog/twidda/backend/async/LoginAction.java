@@ -43,8 +43,8 @@ public class LoginAction extends AsyncExecutor<LoginAction.Param, LoginAction.Re
 	protected Result doInBackground(@NonNull Param param) {
 		Connection connection = manager.getConnection(param.configuration);
 		try {
-			switch (param.mode) {
-				case Param.MODE_REQUEST:
+			switch (param.action) {
+				case Param.REQUEST:
 					if (settings.isLoggedIn()) {
 						Account login = settings.getLogin();
 						database.saveLogin(login);
@@ -52,7 +52,7 @@ public class LoginAction extends AsyncExecutor<LoginAction.Param, LoginAction.Re
 					ConnectionResult result = connection.getAuthorisationLink(param.connection);
 					return new Result(Result.MODE_REQUEST, null, result, null);
 
-				case Param.MODE_LOGIN:
+				case Param.LOGIN:
 					// login with pin and access token
 					Account account = connection.loginApp(param.connection, param.code);
 					// get instance information
@@ -81,18 +81,24 @@ public class LoginAction extends AsyncExecutor<LoginAction.Param, LoginAction.Re
 	 */
 	public static class Param {
 
-		public static final int MODE_REQUEST = 1;
-		public static final int MODE_LOGIN = 2;
+		public static final int REQUEST = 1;
+		public static final int LOGIN = 2;
 
 		final ConnectionUpdate connection;
 		final Configuration configuration;
 		final String code;
-		final int mode;
+		final int action;
 
-		public Param(int mode, Configuration configuration, ConnectionUpdate connection, String code) {
+		/**
+		 * @param action        action to perform {@link #REQUEST,#LOGIN}
+		 * @param configuration API configuration to use
+		 * @param connection    connection preferences
+		 * @param code          pin code used to login
+		 */
+		public Param(int action, Configuration configuration, ConnectionUpdate connection, String code) {
 			this.connection = connection;
 			this.configuration = configuration;
-			this.mode = mode;
+			this.action = action;
 			this.code = code;
 		}
 	}
@@ -106,7 +112,7 @@ public class LoginAction extends AsyncExecutor<LoginAction.Param, LoginAction.Re
 		public static final int MODE_REQUEST = 3;
 		public static final int MODE_LOGIN = 4;
 
-		public final int mode;
+		public final int action;
 		@Nullable
 		public final ConnectionException exception;
 		@Nullable
@@ -114,11 +120,16 @@ public class LoginAction extends AsyncExecutor<LoginAction.Param, LoginAction.Re
 		@Nullable
 		public final Account account;
 
-		Result(int mode, @Nullable Account accout, @Nullable ConnectionResult connection, @Nullable ConnectionException exception) {
+		/**
+		 * @param action     performed action
+		 * @param account    login information
+		 * @param connection used connection preferences
+		 */
+		Result(int action, @Nullable Account account, @Nullable ConnectionResult connection, @Nullable ConnectionException exception) {
 			this.connection = connection;
 			this.exception = exception;
-			this.account = accout;
-			this.mode = mode;
+			this.account = account;
+			this.action = action;
 		}
 	}
 }

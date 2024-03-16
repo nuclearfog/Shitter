@@ -65,6 +65,10 @@ public class UserLoader extends AsyncExecutor<UserLoader.Param, UserLoader.Resul
 		final int mode;
 		final long id;
 
+		/**
+		 * @param mode source where to fetch user information {@link #LOCAL,#ONLINE}
+		 * @param id   user ID
+		 */
 		public Param(int mode, long id) {
 			this.mode = mode;
 			this.id = id;

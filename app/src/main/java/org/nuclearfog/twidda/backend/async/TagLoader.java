@@ -35,7 +35,7 @@ public class TagLoader extends AsyncExecutor<TagLoader.Param, TagLoader.Result> 
 	@Override
 	protected Result doInBackground(@NonNull Param param) {
 		try {
-			switch (param.mode) {
+			switch (param.type) {
 				case Param.POPULAR_OFFLINE:
 					Tags tags = db.getTrends();
 					if (!tags.isEmpty()) {
@@ -87,12 +87,18 @@ public class TagLoader extends AsyncExecutor<TagLoader.Param, TagLoader.Result> 
 		public static final long NO_CURSOR = 0L;
 
 		final String trend;
-		final int mode;
+		final int type;
 		final int index;
 		final long cursor;
 
-		public Param(int mode, int index, String trend, long cursor) {
-			this.mode = mode;
+		/**
+		 * @param type   type of trend/tag list {@link #POPULAR_OFFLINE,#POPULAR_ONLINE,#SEARCH,#FOLLOWING,#FEATURING,#SUGGESTIONS}
+		 * @param index  index where to isnert the new items in the list/adapter
+		 * @param trend  trend list
+		 * @param cursor cursor used to parse the results
+		 */
+		public Param(int type, int index, String trend, long cursor) {
+			this.type = type;
 			this.trend = trend;
 			this.index = index;
 			this.cursor = cursor;
@@ -111,18 +117,24 @@ public class TagLoader extends AsyncExecutor<TagLoader.Param, TagLoader.Result> 
 		public static final int FEATURING = 23;
 		public static final int SUGGESTIONS = 24;
 
-		public final int mode;
+		public final int type;
 		public final int index;
 		@Nullable
 		public final Tags tags;
 		@Nullable
 		public final ConnectionException exception;
 
-		Result(int mode, @Nullable Tags tags, int index, @Nullable ConnectionException exception) {
+		/**
+		 * @param type      type of trend/tag list {@link #POPULAR,#SEARCH,#FOLLOWING,#FEATURING,#SUGGESTIONS}
+		 * @param tags      tag/trend items
+		 * @param index     index where to isnert the new items in the list/adapter
+		 * @param exception not null if an error occured
+		 */
+		Result(int type, @Nullable Tags tags, int index, @Nullable ConnectionException exception) {
 			this.tags = tags;
 			this.exception = exception;
 			this.index = index;
-			this.mode = mode;
+			this.type = type;
 		}
 	}
 }

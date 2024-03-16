@@ -13,12 +13,12 @@ import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 
 /**
- * This background task loads profile information about an user and take actions
+ * Ascync loader to load/update user relationships
  *
  * @author nuclearfog
  * @see ProfileActivity
  */
-public class RelationLoader extends AsyncExecutor<RelationLoader.Param, RelationLoader.Result> {
+public class UserAction extends AsyncExecutor<UserAction.Param, UserAction.Result> {
 
 	private Connection connection;
 	private AppDatabase db;
@@ -26,7 +26,7 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.Param, Relation
 	/**
 	 *
 	 */
-	public RelationLoader(Context context) {
+	public UserAction(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
 		db = new AppDatabase(context);
 	}
@@ -35,23 +35,23 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.Param, Relation
 	@Override
 	protected Result doInBackground(@NonNull Param param) {
 		try {
-			switch (param.mode) {
+			switch (param.action) {
 				case Param.LOAD:
 					Relation relation = connection.getUserRelationship(param.id);
-					return new Result(Result.LOAD, relation);
+					return new Result(Result.LOAD, relation, null);
 
 				case Param.FOLLOW:
 					relation = connection.followUser(param.id);
-					return new Result(Result.FOLLOW, relation);
+					return new Result(Result.FOLLOW, relation, null);
 
 				case Param.UNFOLLOW:
 					relation = connection.unfollowUser(param.id);
-					return new Result(Result.UNFOLLOW, relation);
+					return new Result(Result.UNFOLLOW, relation, null);
 
 				case Param.BLOCK:
 					relation = connection.blockUser(param.id);
 					db.muteUser(param.id, true);
-					return new Result(Result.BLOCK, relation);
+					return new Result(Result.BLOCK, relation, null);
 
 				case Param.UNBLOCK:
 					relation = connection.unblockUser(param.id);
@@ -59,12 +59,12 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.Param, Relation
 					if (!relation.isMuted()) {
 						db.muteUser(param.id, false);
 					}
-					return new Result(Result.UNBLOCK, relation);
+					return new Result(Result.UNBLOCK, relation, null);
 
 				case Param.MUTE:
 					relation = connection.muteUser(param.id);
 					db.muteUser(param.id, true);
-					return new Result(Result.MUTE, relation);
+					return new Result(Result.MUTE, relation, null);
 
 				case Param.UNMUTE:
 					relation = connection.unmuteUser(param.id);
@@ -72,7 +72,7 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.Param, Relation
 					if (!relation.isBlocked()) {
 						db.muteUser(param.id, false);
 					}
-					return new Result(Result.UNMUTE, relation);
+					return new Result(Result.UNMUTE, relation, null);
 
 				default:
 					return null;
@@ -96,11 +96,15 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.Param, Relation
 		public static final int UNMUTE = 7;
 
 		final long id;
-		final int mode;
+		final int action;
 
-		public Param(long id, int mode) {
+		/**
+		 * @param id     user ID
+		 * @param action action to perform on the user {@link #FOLLOW,#UNFOLLOW,#BLOCK,#UNBLOCK,#MUTE,#UNMUTE}
+		 */
+		public Param(long id, int action) {
 			this.id = id;
-			this.mode = mode;
+			this.action = action;
 		}
 	}
 
@@ -118,20 +122,20 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.Param, Relation
 		public static final int UNMUTE = 14;
 		public static final int ERROR = -1;
 
-		public final int mode;
+		public final int action;
 		@Nullable
 		public final Relation relation;
 		@Nullable
 		public final ConnectionException exception;
 
-		Result(int mode, Relation relation) {
-			this(mode, relation, null);
-		}
-
-		Result(int mode, @Nullable Relation relation, @Nullable ConnectionException exception) {
+		/**
+		 * @param action   action performed on user
+		 * @param relation updated relationship
+		 */
+		Result(int action, @Nullable Relation relation, @Nullable ConnectionException exception) {
 			this.relation = relation;
 			this.exception = exception;
-			this.mode = mode;
+			this.action = action;
 		}
 	}
 }

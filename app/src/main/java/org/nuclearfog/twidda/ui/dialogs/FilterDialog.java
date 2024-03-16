@@ -224,7 +224,7 @@ public class FilterDialog extends DialogFragment implements OnClickListener, OnC
 	@Override
 	public void onResult(@NonNull StatusFilterAction.Result result) {
 		Context context = getContext();
-		if (result.mode == StatusFilterAction.Result.UPDATE) {
+		if (result.action == StatusFilterAction.Result.UPDATE) {
 			if (context != null)
 				Toast.makeText(context, R.string.info_filter_created, Toast.LENGTH_SHORT).show();
 			if (getParentFragment() instanceof FilterDialogCallback)
@@ -232,7 +232,7 @@ public class FilterDialog extends DialogFragment implements OnClickListener, OnC
 			else if (result.filter != null && getActivity() instanceof FilterDialogCallback)
 				((FilterDialogCallback) getActivity()).onFilterUpdated(result.filter);
 			dismiss();
-		} else if (result.mode == StatusFilterAction.Result.ERROR) {
+		} else if (result.action == StatusFilterAction.Result.ERROR) {
 			if (context != null) {
 				ErrorUtils.showErrorMessage(context, result.exception);
 			}

@@ -31,20 +31,20 @@ public class UserlistLoader extends AsyncExecutor<UserlistLoader.Param, Userlist
 	@Override
 	protected Result doInBackground(@NonNull Param param) {
 		try {
-			switch (param.mode) {
+			switch (param.type) {
 				case Param.OWNERSHIP:
 					UserLists userlists = connection.getUserlistOwnerships(param.id, param.cursor);
-					return new Result(Result.OWNERSHIP, param.index, userlists, null);
+					return new Result(param.index, userlists, null);
 
 				case Param.MEMBERSHIP:
 					userlists = connection.getUserlistMemberships(param.id, param.cursor);
-					return new Result(Result.MEMBERSHIP, param.index, userlists, null);
+					return new Result(param.index, userlists, null);
 
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			return new Result(Result.ERROR, param.index, null, exception);
+			return new Result(param.index, null, exception);
 		}
 	}
 
@@ -58,11 +58,17 @@ public class UserlistLoader extends AsyncExecutor<UserlistLoader.Param, Userlist
 		public static final int OWNERSHIP = 1;
 		public static final int MEMBERSHIP = 2;
 
-		final int mode, index;
+		final int type, index;
 		final long id, cursor;
 
-		public Param(int mode, int index, long id, long cursor) {
-			this.mode = mode;
+		/**
+		 * @param type   type of userlsits to load
+		 * @param index  index where to insert new items in the list/adapter
+		 * @param id     userlist ID
+		 * @param cursor cursor to parse the results
+		 */
+		public Param(int type, int index, long id, long cursor) {
+			this.type = type;
 			this.id = id;
 			this.index = index;
 			this.cursor = cursor;
@@ -74,20 +80,20 @@ public class UserlistLoader extends AsyncExecutor<UserlistLoader.Param, Userlist
 	 */
 	public static class Result {
 
-		public static final int ERROR = -1;
-		public static final int OWNERSHIP = 3;
-		public static final int MEMBERSHIP = 4;
-
-		public final int mode, index;
+		public final int index;
 		@Nullable
 		public final UserLists userlists;
 		@Nullable
 		public final ConnectionException exception;
 
-		Result(int mode, int index, @Nullable UserLists userlists, @Nullable ConnectionException exception) {
+		/**
+		 * @param index     index where to insert new items in the list/adapter
+		 * @param userlists result or null if an error occured
+		 * @param exception if not null an error occured
+		 */
+		Result(int index, @Nullable UserLists userlists, @Nullable ConnectionException exception) {
 			this.userlists = userlists;
 			this.exception = exception;
-			this.mode = mode;
 			this.index = index;
 		}
 	}

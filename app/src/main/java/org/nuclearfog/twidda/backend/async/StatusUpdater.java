@@ -65,6 +65,9 @@ public class StatusUpdater extends AsyncExecutor<StatusUpdate, StatusUpdater.Res
 		@Nullable
 		public final ConnectionException exception;
 
+		/**
+		 * @param status updated status or null if an error occured
+		 */
 		Result(@Nullable Status status, @Nullable ConnectionException exception) {
 			this.status = status;
 			this.exception = exception;

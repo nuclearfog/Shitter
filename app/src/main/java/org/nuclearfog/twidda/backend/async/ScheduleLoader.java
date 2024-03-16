@@ -17,6 +17,9 @@ public class ScheduleLoader extends AsyncExecutor<ScheduleLoader.Param, Schedule
 
 	private Connection connection;
 
+	/**
+	 *
+	 */
 	public ScheduleLoader(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
 	}
@@ -39,6 +42,11 @@ public class ScheduleLoader extends AsyncExecutor<ScheduleLoader.Param, Schedule
 		final long minId, maxId;
 		final int index;
 
+		/**
+		 * @param minId minumum ID or '0' if not set (lower IDs will be filtered out)
+		 * @param maxId maximum ID or '0' if not set (higher IDs will be filtered out)
+		 * @param index index where to insert the new items in the list/adapter
+		 */
 		public Param(long minId, long maxId, int index) {
 			this.minId = minId;
 			this.maxId = maxId;
@@ -56,6 +64,11 @@ public class ScheduleLoader extends AsyncExecutor<ScheduleLoader.Param, Schedule
 		@Nullable
 		public final ConnectionException exception;
 
+		/**
+		 * @param statuses  list of scheduled posts or null if an error occured
+		 * @param index     index where to insert the new items in the list/adapter
+		 * @param exception not null if an error occured
+		 */
 		Result(@Nullable ScheduledStatuses statuses, int index, @Nullable ConnectionException exception) {
 			this.statuses = statuses;
 			this.exception = exception;

@@ -277,7 +277,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			// set notification data
 			else if (serialized instanceof Notification) {
 				Notification notification = (Notification) serialized;
-				NotificationAction.Param notificationParam = new NotificationAction.Param(NotificationAction.Param.ONLINE, notification.getId());
+				NotificationAction.Param notificationParam = new NotificationAction.Param(NotificationAction.Param.LOAD_ONLINE, notification.getId());
 				notificationLoader.execute(notificationParam, notificationCallback);
 				if (notification.getStatus() != null) {
 					setNotification(notification);
@@ -294,7 +294,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			// get notification data using notification ID
 			else if (notificationId != 0L) {
 				replyUsername = savedInstanceState.getString(KEY_NAME);
-				NotificationAction.Param notificationParam = new NotificationAction.Param(NotificationAction.Param.ONLINE, notificationId);
+				NotificationAction.Param notificationParam = new NotificationAction.Param(NotificationAction.Param.LOAD_ONLINE, notificationId);
 				notificationLoader.execute(notificationParam, notificationCallback);
 			}
 			String tag = replyUsername + ":" + statusId;
@@ -752,7 +752,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onVoteClick(Poll poll, int[] selection) {
 		if (pollLoader.isIdle()) {
-			PollAction.Param param = new PollAction.Param(PollAction.Param.VOTE, poll, selection);
+			PollAction.Param param = new PollAction.Param(PollAction.Param.VOTE, poll.getId(), selection);
 			pollLoader.execute(param, pollResult);
 		}
 	}
@@ -962,7 +962,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		if (result.status != null) {
 			setStatus(result.status);
 		}
-		switch (result.mode) {
+		switch (result.action) {
 			case StatusAction.Result.DATABASE:
 				if (result.status != null) {
 					StatusAction.Param param = new StatusAction.Param(StatusAction.Param.ONLINE, result.status.getId());
@@ -1055,15 +1055,15 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 * @param result notification containing status information
 	 */
 	private void onNotificationResult(@NonNull NotificationAction.Result result) {
-		switch (result.mode) {
-			case NotificationAction.Result.DATABASE:
+		switch (result.action) {
+			case NotificationAction.Result.LOAD_LOCAL:
 				if (result.notification != null) {
-					NotificationAction.Param param = new NotificationAction.Param(NotificationAction.Param.ONLINE, result.notification.getId());
+					NotificationAction.Param param = new NotificationAction.Param(NotificationAction.Param.LOAD_ONLINE, result.notification.getId());
 					notificationLoader.execute(param, notificationCallback);
 				}
 				// fall through
 
-			case NotificationAction.Result.ONLINE:
+			case NotificationAction.Result.LOAD_ONLINE:
 				if (result.notification != null && result.notification.getStatus() != null) {
 					notification = result.notification;
 					setStatus(result.notification.getStatus());
@@ -1100,7 +1100,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 * @param result poll result
 	 */
 	private void onPollResult(@NonNull PollAction.Result result) {
-		switch (result.mode) {
+		switch (result.action) {
 			case PollAction.Result.LOAD:
 				if (result.poll != null) {
 					adapter.updatePoll(result.poll);

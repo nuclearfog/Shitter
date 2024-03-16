@@ -296,7 +296,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	 * callback for userlist changes
 	 */
 	private void updateUsers(UserlistManager.Result result) {
-		if (result.mode == UserlistManager.Result.DEL_USER) {
+		if (result.action == UserlistManager.Result.DEL_USER) {
 			Context context = getContext();
 			if (selectedUser != null && context != null) {
 				String info = getString(R.string.info_user_removed, selectedUser.getScreenname());

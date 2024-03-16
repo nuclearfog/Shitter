@@ -35,7 +35,7 @@ public class StatusAction extends AsyncExecutor<StatusAction.Param, StatusAction
 	@Override
 	protected Result doInBackground(@NonNull Param param) {
 		try {
-			switch (param.mode) {
+			switch (param.action) {
 				case Param.DATABASE:
 					Status status = db.getStatus(param.id);
 					if (status != null) {
@@ -139,11 +139,11 @@ public class StatusAction extends AsyncExecutor<StatusAction.Param, StatusAction
 		public static final int UNPIN = 12;
 		public static final int DELETE = 13;
 
-		final int mode;
+		final int action;
 		final long id;
 
-		public Param(int mode, long id) {
-			this.mode = mode;
+		public Param(int action, long id) {
+			this.action = action;
 			this.id = id;
 		}
 	}
@@ -168,18 +168,18 @@ public class StatusAction extends AsyncExecutor<StatusAction.Param, StatusAction
 		public static final int UNPIN = 23;
 		public static final int DELETE = 24;
 
-		public final int mode;
+		public final int action;
 		@Nullable
 		public final Status status;
 		@Nullable
 		public final ConnectionException exception;
 
-		Result(int mode, Status status) {
-			this(mode, status, null);
+		Result(int action, Status status) {
+			this(action, status, null);
 		}
 
-		Result(int mode, @Nullable Status status, @Nullable ConnectionException exception) {
-			this.mode = mode;
+		Result(int action, @Nullable Status status, @Nullable ConnectionException exception) {
+			this.action = action;
 			this.status = status;
 			this.exception = exception;
 		}

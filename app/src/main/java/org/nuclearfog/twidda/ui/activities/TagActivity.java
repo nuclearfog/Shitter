@@ -118,7 +118,7 @@ public class TagActivity extends AppCompatActivity implements OnQueryTextListene
 
 	@Override
 	public void onResult(@NonNull TagAction.Result result) {
-		switch (result.mode) {
+		switch (result.action) {
 			case TagAction.Result.FEATURE:
 				Toast.makeText(getApplicationContext(), R.string.info_tag_featured, Toast.LENGTH_SHORT).show();
 				adapter.notifySettingsChanged();

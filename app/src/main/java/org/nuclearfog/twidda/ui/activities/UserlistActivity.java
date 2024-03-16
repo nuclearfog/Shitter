@@ -134,17 +134,6 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-		if (userList != null) {
-			// update list information
-			UserlistAction.Param param = new UserlistAction.Param(UserlistAction.Param.LOAD, userList.getId());
-			listLoaderAsync.execute(param, userlistSet);
-		}
-	}
-
-
-	@Override
 	protected void onDestroy() {
 		listLoaderAsync.cancel();
 		super.onDestroy();
@@ -261,7 +250,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 	 * update userlist member
 	 */
 	private void updateList(@NonNull UserlistManager.Result result) {
-		switch (result.mode) {
+		switch (result.action) {
 			case UserlistManager.Result.ADD_USER:
 				String name;
 				if (!result.name.startsWith("@"))
@@ -283,35 +272,21 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 	 * update userlist content
 	 */
 	private void setList(@NonNull UserlistAction.Result result) {
-		switch (result.mode) {
-			case UserlistAction.Result.LOAD:
-				if (result.userlist != null) {
-					toolbar.setTitle(result.userlist.getTitle());
-					invalidateOptionsMenu();
-				}
-				break;
-
-			case UserlistAction.Result.DELETE:
+		if (result.action == UserlistAction.Result.DELETE) {
+			Intent intent = new Intent();
+			intent.putExtra(KEY_ID, result.id);
+			setResult(RETURN_LIST_REMOVED, intent);
+			Toast.makeText(getApplicationContext(), R.string.info_list_removed, Toast.LENGTH_SHORT).show();
+			finish();
+		} else if (result.action == UserlistAction.Result.ERROR) {
+			ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
+			if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
+				// List does not exist
 				Intent intent = new Intent();
 				intent.putExtra(KEY_ID, result.id);
 				setResult(RETURN_LIST_REMOVED, intent);
-				Toast.makeText(getApplicationContext(), R.string.info_list_removed, Toast.LENGTH_SHORT).show();
 				finish();
-				break;
-
-			case UserlistAction.Result.ERROR:
-				ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
-				if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
-					// List does not exist
-					intent = new Intent();
-					intent.putExtra(KEY_ID, result.id);
-					setResult(RETURN_LIST_REMOVED, intent);
-					finish();
-				}
-				break;
-		}
-		if (result.userlist != null) {
-			this.userList = result.userlist;
+			}
 		}
 	}
 }

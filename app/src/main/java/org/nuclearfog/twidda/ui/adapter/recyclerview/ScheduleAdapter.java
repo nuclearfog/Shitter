@@ -28,6 +28,7 @@ public class ScheduleAdapter extends Adapter<ViewHolder> implements OnHolderClic
 
 
 	private OnScheduleClickListener listener;
+	private boolean chronological;
 
 	private ScheduledStatuses items = new ScheduledStatuses();
 	private int loadingIndex = NO_LOADING;
@@ -35,8 +36,9 @@ public class ScheduleAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	/**
 	 * @param listener item click listener
 	 */
-	public ScheduleAdapter(OnScheduleClickListener listener) {
+	public ScheduleAdapter(OnScheduleClickListener listener, boolean chronological) {
 		this.listener = listener;
+		this.chronological = chronological;
 	}
 
 
@@ -142,20 +144,41 @@ public class ScheduleAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	 */
 	public void addItems(ScheduledStatuses newItems, int index) {
 		disableLoading();
-		if (newItems.size() > MIN_COUNT) {
-			if (items.isEmpty() || items.get(index) != null) {
-				// Add placeholder
-				items.add(index, null);
-				notifyItemInserted(index);
+		if (chronological) {
+			if (!newItems.isEmpty()) {
+				if (index + 1 == items.size()) {
+					items.addAll(newItems);
+					notifyItemRangeInserted(index + 1, newItems.size());
+				} else {
+					items.addAll(index, newItems);
+					notifyItemRangeInserted(index, newItems.size());
+				}
+				if (items.peekFirst() != null) {
+					// Add new placeholder to bottom
+					items.addFirst(null);
+					notifyItemInserted(0);
+				}
+			} else if (index > 0 && index < items.size() && items.get(index) == null) {
+				// remove placeholder
+				items.remove(index);
+				notifyItemRemoved(index);
 			}
-		} else if (!items.isEmpty() && items.get(index) == null) {
-			// remove placeholder
-			items.remove(index);
-			notifyItemRemoved(index);
-		}
-		if (!newItems.isEmpty()) {
-			items.addAll(index, newItems);
-			notifyItemRangeInserted(index, newItems.size());
+		} else {
+			if (newItems.size() > MIN_COUNT) {
+				if (items.isEmpty() || items.get(index) != null) {
+					// Add placeholder
+					items.add(index, null);
+					notifyItemInserted(index);
+				}
+			} else if (!items.isEmpty() && items.get(index) == null) {
+				// remove placeholder
+				items.remove(index);
+				notifyItemRemoved(index);
+			}
+			if (!newItems.isEmpty()) {
+				items.addAll(index, newItems);
+				notifyItemRangeInserted(index, newItems.size());
+			}
 		}
 	}
 
@@ -163,10 +186,13 @@ public class ScheduleAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	 *
 	 */
 	public void setItems(ScheduledStatuses newItems) {
-		items.clear();
-		items.addAll(newItems);
-		if (newItems.size() > MIN_COUNT) {
-			items.add(null);
+		items.replaceAll(newItems);
+		if (chronological || items.size() > MIN_COUNT) {
+			if (chronological && items.peekFirst() != null) {
+				items.add(0, null);
+			} else if (items.peekLast() != null) {
+				items.add(null);
+			}
 		}
 		notifyDataSetChanged();
 	}
@@ -229,7 +255,11 @@ public class ScheduleAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	 *
 	 */
 	public long getTopItemId() {
-		ScheduledStatus item = items.peekFirst();
+		ScheduledStatus item;
+		if (chronological)
+			item = items.peekLast();
+		else
+			item = items.peekFirst();
 		if (item != null)
 			return item.getId();
 		return 0L;

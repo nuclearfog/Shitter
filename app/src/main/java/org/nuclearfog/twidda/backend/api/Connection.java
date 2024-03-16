@@ -701,11 +701,11 @@ public interface Connection {
 	/**
 	 * send a vote to a poll
 	 *
-	 * @param poll      poll tovote
+	 * @param id        ID of the poll
 	 * @param selection selected poll choices
 	 * @return updated poll
 	 */
-	Poll votePoll(Poll poll, int[] selection) throws ConnectionException;
+	Poll votePoll(long id, int[] selection) throws ConnectionException;
 
 	/**
 	 * returns used filter

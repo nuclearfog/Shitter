@@ -53,6 +53,9 @@ public class PushUpdater extends AsyncExecutor<PushUpdate, PushUpdater.Result> {
 		public final WebPush push;
 		public final ConnectionException exception;
 
+		/**
+		 * @param push updated push information
+		 */
 		Result(WebPush push, ConnectionException exception) {
 			this.push = push;
 			this.exception = exception;

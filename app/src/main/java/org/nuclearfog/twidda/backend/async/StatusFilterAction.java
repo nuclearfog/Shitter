@@ -31,7 +31,7 @@ public class StatusFilterAction extends AsyncExecutor<StatusFilterAction.Param, 
 	@Override
 	protected Result doInBackground(@NonNull Param param) {
 		try {
-			switch (param.mode) {
+			switch (param.action) {
 				case Param.UPDATE:
 					if (param.update != null) {
 						Filter filter = connection.updateFilter(param.update);
@@ -61,10 +61,15 @@ public class StatusFilterAction extends AsyncExecutor<StatusFilterAction.Param, 
 
 		@Nullable final FilterUpdate update;
 		final long id;
-		final int mode;
+		final int action;
 
-		public Param(int mode, long id, @Nullable FilterUpdate update) {
-			this.mode = mode;
+		/**
+		 * @param action action to perform on a filter {@link #UPDATE,#DELETE}
+		 * @param id     ID of the filter. used with {@link #DELETE}
+		 * @param update filter information to update. used with {@link #UPDATE}
+		 */
+		public Param(int action, long id, @Nullable FilterUpdate update) {
+			this.action = action;
 			this.id = id;
 			this.update = update;
 		}
@@ -84,10 +89,15 @@ public class StatusFilterAction extends AsyncExecutor<StatusFilterAction.Param, 
 		@Nullable
 		public final ConnectionException exception;
 		public final long id;
-		public final int mode;
+		public final int action;
 
-		Result(int mode, long id, @Nullable Filter filter, @Nullable ConnectionException exception) {
-			this.mode = mode;
+		/**
+		 * @param action applied action {@link #DELETE,#UPDATE} or {@link #ERROR} if an error occured
+		 * @param id     updated filter ID
+		 * @param filter updated filter or null if deleted
+		 */
+		Result(int action, long id, @Nullable Filter filter, @Nullable ConnectionException exception) {
+			this.action = action;
 			this.id = id;
 			this.filter = filter;
 			this.exception = exception;

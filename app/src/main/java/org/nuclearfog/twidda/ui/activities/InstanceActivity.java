@@ -105,7 +105,7 @@ public class InstanceActivity extends AppCompatActivity implements OnClickListen
 	protected void onStart() {
 		super.onStart();
 		if (instance == null) {
-			InstanceLoader.Param param = new InstanceLoader.Param(InstanceLoader.Param.ONLINE);
+			InstanceLoader.Param param = new InstanceLoader.Param(InstanceLoader.Param.LOAD_ONLINE);
 			instanceLoader.execute(param, instanceResult);
 		}
 	}

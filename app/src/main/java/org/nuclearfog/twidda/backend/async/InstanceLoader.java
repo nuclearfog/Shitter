@@ -41,12 +41,12 @@ public class InstanceLoader extends AsyncExecutor<InstanceLoader.Param, Instance
 		try {
 			Instance instance;
 			switch (param.mode) {
-				case Param.OFFLINE:
+				case Param.LOAD_LOCAL:
 					instance = db.getInstance();
 					if (instance != null && instance.getTimestamp() <= MAX_TIME_DIFF)
 						return new Result(instance, null);
 
-				case Param.ONLINE:
+				case Param.LOAD_ONLINE:
 					instance = connection.getInformation();
 					db.saveInstance(instance);
 					return new Result(instance, null);
@@ -62,11 +62,14 @@ public class InstanceLoader extends AsyncExecutor<InstanceLoader.Param, Instance
 	 */
 	public static class Param {
 
-		public static final int OFFLINE = 1;
-		public static final int ONLINE = 2;
+		public static final int LOAD_LOCAL = 1;
+		public static final int LOAD_ONLINE = 2;
 
 		final int mode;
 
+		/**
+		 * @param mode source of instance information {@link #LOAD_ONLINE,#LOAD_LOCAL}
+		 */
 		public Param(int mode) {
 			this.mode = mode;
 		}
@@ -82,6 +85,9 @@ public class InstanceLoader extends AsyncExecutor<InstanceLoader.Param, Instance
 		@Nullable
 		public final ConnectionException exception;
 
+		/**
+		 * @param instance instance information update
+		 */
 		public Result(@Nullable Instance instance, @Nullable ConnectionException exception) {
 			this.instance = instance;
 			this.exception = exception;

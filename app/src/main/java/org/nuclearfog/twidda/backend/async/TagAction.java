@@ -30,7 +30,7 @@ public class TagAction extends AsyncExecutor<TagAction.Param, TagAction.Result> 
 	@Override
 	protected Result doInBackground(@NonNull Param param) {
 		try {
-			switch (param.mode) {
+			switch (param.action) {
 				case Param.LOAD:
 					Tag result = connection.showTag(param.name);
 					return new Result(Result.LOAD, result, null);
@@ -50,13 +50,11 @@ public class TagAction extends AsyncExecutor<TagAction.Param, TagAction.Result> 
 				case Param.UNFEATURE:
 					result = connection.unfeatureTag(param.id);
 					return new Result(Result.UNFEATURE, result, null);
-
-				default:
-					return null;
 			}
 		} catch (ConnectionException exception) {
 			return new Result(Result.ERROR, null, exception);
 		}
+		return null;
 	}
 
 	/**
@@ -71,18 +69,25 @@ public class TagAction extends AsyncExecutor<TagAction.Param, TagAction.Result> 
 		public static final int UNFEATURE = 5;
 
 		final String name;
-		final int mode;
+		final int action;
 		final long id;
 
-		public Param(int mode, String name) {
-			this.name = name;
-			this.mode = mode;
-			id = 0L;
+		/**
+		 * @param action action to apply on a tag
+		 * @param name   name of the tag
+		 */
+		public Param(int action, String name) {
+			this(action, name, 0L);
 		}
 
-		public Param(int mode, String name, long id) {
+		/**
+		 * @param action action to apply on a tag
+		 * @param name   name of the tag
+		 * @param id     tag ID or '0' if not set
+		 */
+		public Param(int action, String name, long id) {
 			this.name = name;
-			this.mode = mode;
+			this.action = action;
 			this.id = id;
 		}
 	}
@@ -103,12 +108,16 @@ public class TagAction extends AsyncExecutor<TagAction.Param, TagAction.Result> 
 		public final ConnectionException exception;
 		@Nullable
 		public final Tag tag;
-		public final int mode;
+		public final int action;
 
-		Result(int mode, @Nullable Tag tag, @Nullable ConnectionException exception) {
+		/**
+		 * @param action action applied on the tag
+		 * @param tag    updated tag or null if an error occured
+		 */
+		Result(int action, @Nullable Tag tag, @Nullable ConnectionException exception) {
 			this.exception = exception;
 			this.tag = tag;
-			this.mode = mode;
+			this.action = action;
 		}
 	}
 }

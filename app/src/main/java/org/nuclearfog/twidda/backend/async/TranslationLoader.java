@@ -42,6 +42,9 @@ public class TranslationLoader extends AsyncExecutor<TranslationLoader.Param, Tr
 	public static class Param {
 		final long id;
 
+		/**
+		 * @param id status ID to translate
+		 */
 		public Param(long id) {
 			this.id = id;
 		}
@@ -57,6 +60,10 @@ public class TranslationLoader extends AsyncExecutor<TranslationLoader.Param, Tr
 		@Nullable
 		public final ConnectionException exception;
 
+		/**
+		 * @param translation translation of the status of null if an error occured
+		 * @param exception   not null if an error occured
+		 */
 		Result(@Nullable Translation translation, @Nullable ConnectionException exception) {
 			this.translation = translation;
 			this.exception = exception;

@@ -14,11 +14,15 @@ public class ScheduledStatuses extends LinkedList<ScheduledStatus> {
 
 	private static final long serialVersionUID = 9015646013535818699L;
 
-
+	/**
+	 *
+	 */
 	public ScheduledStatuses() {
 	}
 
-
+	/**
+	 *
+	 */
 	public ScheduledStatuses(ScheduledStatuses scheduledStatuses) {
 		addAll(scheduledStatuses);
 	}
@@ -28,6 +32,16 @@ public class ScheduledStatuses extends LinkedList<ScheduledStatus> {
 	@Nullable
 	public ScheduledStatus get(int index) {
 		return super.get(index);
+	}
+
+	/**
+	 * replace all items with new ones
+	 *
+	 * @param statuses new items to insert
+	 */
+	public void replaceAll(ScheduledStatuses statuses) {
+		clear();
+		addAll(statuses);
 	}
 
 

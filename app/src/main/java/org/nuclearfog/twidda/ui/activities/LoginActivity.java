@@ -230,7 +230,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 			// generate Mastodon login
 			if (hostSelector.getSelectedItemPosition() == IDX_MASTODON) {
 				Toast.makeText(getApplicationContext(), R.string.info_open_mastodon_login, Toast.LENGTH_LONG).show();
-				LoginAction.Param param = new LoginAction.Param(LoginAction.Param.MODE_REQUEST, connection.getApiType(), connection, "");
+				LoginAction.Param param = new LoginAction.Param(LoginAction.Param.REQUEST, connection.getApiType(), connection, "");
 				loginAsync.execute(param, this);
 			}
 		}
@@ -246,7 +246,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 			// login to mastodon
 			else if (hostSelector.getSelectedItemPosition() == IDX_MASTODON) {
 				Toast.makeText(getApplicationContext(), R.string.info_login_to_mastodon, Toast.LENGTH_LONG).show();
-				LoginAction.Param param = new LoginAction.Param(LoginAction.Param.MODE_LOGIN, connection.getApiType(), connection, code);
+				LoginAction.Param param = new LoginAction.Param(LoginAction.Param.LOGIN, connection.getApiType(), connection, code);
 				loginAsync.execute(param, this);
 			}
 		}
@@ -283,7 +283,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 	@Override
 	public void onResult(@NonNull LoginAction.Result result) {
-		switch (result.mode) {
+		switch (result.action) {
 			case LoginAction.Result.MODE_LOGIN:
 				Intent intent = new Intent();
 				intent.putExtra(RETURN_ACCOUNT, result.account);

@@ -187,19 +187,19 @@ public class UserlistDialog extends DialogFragment implements OnClickListener, O
 	@Override
 	public void onResult(@NonNull UserlistUpdater.Result result) {
 		Context context = getContext();
-		if (result.mode == UserlistUpdater.Result.CREATED) {
+		if (result.action == UserlistUpdater.Result.CREATED) {
 			if (context != null)
 				Toast.makeText(context, R.string.info_list_created, Toast.LENGTH_SHORT).show();
 			if (getActivity() instanceof UserlistUpdatedCallback)
 				((UserlistUpdatedCallback) getActivity()).onUserlistUpdate(result.userlist);
 			dismiss();
-		} else if (result.mode == UserlistUpdater.Result.UPDATED) {
+		} else if (result.action == UserlistUpdater.Result.UPDATED) {
 			if (context != null)
 				Toast.makeText(context, R.string.info_list_updated, Toast.LENGTH_SHORT).show();
 			if (getActivity() instanceof UserlistUpdatedCallback)
 				((UserlistUpdatedCallback) getActivity()).onUserlistUpdate(result.userlist);
 			dismiss();
-		} else if (result.mode == UserlistUpdater.Result.ERROR) {
+		} else if (result.action == UserlistUpdater.Result.ERROR) {
 			if (context != null) {
 				ErrorUtils.showErrorMessage(context, result.exception);
 			}

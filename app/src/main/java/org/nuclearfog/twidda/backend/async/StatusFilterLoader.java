@@ -47,6 +47,9 @@ public class StatusFilterLoader extends AsyncExecutor<Void, StatusFilterLoader.R
 		@Nullable
 		public final ConnectionException exception;
 
+		/**
+		 * @param filters status filter list or null if an error occured
+		 */
 		Result(@Nullable Filters filters, @Nullable ConnectionException exception) {
 			this.filters = filters;
 			this.exception = exception;

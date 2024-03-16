@@ -53,8 +53,8 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 		super.onViewCreated(view, savedInstanceState);
 		scheduleLoader = new ScheduleLoader(requireContext());
 		scheduleAction = new ScheduleAction(requireContext());
-		adapter = new ScheduleAdapter(this);
-		setAdapter(adapter, false);
+		adapter = new ScheduleAdapter(this, settings.chronologicalTimelineEnabled());
+		setAdapter(adapter, settings.chronologicalTimelineEnabled());
 
 		if (savedInstanceState != null) {
 			Object data = savedInstanceState.getSerializable(KEY_SAVE);
@@ -92,13 +92,18 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 
 	@Override
 	protected void onReload() {
-		load(adapter.getTopItemId(), 0L, 0);
+		if (isReversed()) {
+			load(0, adapter.getTopItemId(), adapter.getItemCount() - 1);
+		} else {
+			load(adapter.getTopItemId(), 0, 0);
+		}
 	}
 
 
 	@Override
 	protected void onReset() {
-		adapter.clear();
+		adapter = new ScheduleAdapter(this, settings.chronologicalTimelineEnabled());
+		setAdapter(adapter, settings.chronologicalTimelineEnabled());
 		scheduleLoader = new ScheduleLoader(requireContext());
 		scheduleAction = new ScheduleAction(requireContext());
 		load(0L, 0L, CLEAR_LIST);
@@ -204,15 +209,15 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 	private void onActionResult(ScheduleAction.Result result) {
 		Context context = getContext();
 		if (context != null) {
-			if (result.mode == ScheduleAction.Result.REMOVE) {
+			if (result.action == ScheduleAction.Result.REMOVE) {
 				adapter.removeItem(result.id);
 				Toast.makeText(context, R.string.info_schedule_removed, Toast.LENGTH_SHORT).show();
-			} else if (result.mode == ScheduleAction.Result.UPDATE) {
+			} else if (result.action == ScheduleAction.Result.UPDATE) {
 				if (result.status != null) {
 					adapter.updateItem(result.status);
 					Toast.makeText(context, R.string.info_schedule_updated, Toast.LENGTH_SHORT).show();
 				}
-			} else if (result.mode == ScheduleAction.Result.ERROR) {
+			} else if (result.action == ScheduleAction.Result.ERROR) {
 				ErrorUtils.showErrorMessage(context, result.exception);
 			}
 		}

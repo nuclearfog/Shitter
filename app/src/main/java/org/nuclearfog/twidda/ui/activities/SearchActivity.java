@@ -265,7 +265,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 			this.tag = result.tag;
 			invalidateMenu();
 		}
-		switch (result.mode) {
+		switch (result.action) {
 			case TagAction.Result.FOLLOW:
 				Toast.makeText(getApplicationContext(), R.string.info_tag_followed, Toast.LENGTH_SHORT).show();
 				break;

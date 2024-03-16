@@ -107,6 +107,13 @@ public class UsersLoader extends AsyncExecutor<UsersLoader.Param, UsersLoader.Re
 		final String search;
 		final long id, cursor;
 
+		/**
+		 * @param type   type of user list to load {@link #FOLLOWS,#FRIENDS,#REPOST,#FAVORIT,#SEARCH,#SUBSCRIBER,#LISTMEMBER,#BLOCK,#MUTE,#REQUEST_IN,#REQUEST_OUT}
+		 * @param index  index where to insert the new user items
+		 * @param id     user ID if type is {@link #FOLLOWS,#FRIENDS}, status ID if type is {@link #REPOST,#FAVORIT}, list Id if type is {@link #SUBSCRIBER,#LISTMEMBER} or unused
+		 * @param cursor cursor value used to parse the results
+		 * @param search search string used when type is {@link #SEARCH}
+		 */
 		public Param(int type, int index, long id, long cursor, String search) {
 			this.type = type;
 			this.index = index;
@@ -127,6 +134,11 @@ public class UsersLoader extends AsyncExecutor<UsersLoader.Param, UsersLoader.Re
 		public final ConnectionException exception;
 		public final int index;
 
+		/**
+		 * @param users     user items from result
+		 * @param index     index where to insert the new user items
+		 * @param exception not null if an error occured
+		 */
 		Result(@Nullable Users users, int index, @Nullable ConnectionException exception) {
 			this.users = users;
 			this.index = index;

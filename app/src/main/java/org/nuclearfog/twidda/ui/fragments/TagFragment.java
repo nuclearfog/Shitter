@@ -235,13 +235,13 @@ public class TagFragment extends ListFragment implements OnTagClickListener, Act
 	private void onTagActionResult(@NonNull TagAction.Result result) {
 		Context context = getContext();
 		if (context != null) {
-			if (result.mode == TagAction.Result.UNFEATURE) {
+			if (result.action == TagAction.Result.UNFEATURE) {
 				Toast.makeText(context, R.string.info_tag_unfeatured, Toast.LENGTH_SHORT).show();
 				adapter.removeItem(result.tag);
-			} else if (result.mode == TagAction.Result.UNFOLLOW) {
+			} else if (result.action == TagAction.Result.UNFOLLOW) {
 				Toast.makeText(context, R.string.info_tag_unfollowed, Toast.LENGTH_SHORT).show();
 				adapter.removeItem(result.tag);
-			} else if (result.mode == TagAction.Result.ERROR) {
+			} else if (result.action == TagAction.Result.ERROR) {
 				ErrorUtils.showErrorMessage(context, result.exception);
 			}
 		}
@@ -251,14 +251,14 @@ public class TagFragment extends ListFragment implements OnTagClickListener, Act
 	 * callback for {@link TagLoader}
 	 */
 	private void onTagLoaderResult(@NonNull TagLoader.Result result) {
-		if (result.mode == TagLoader.Result.ERROR) {
+		if (result.tags != null) {
+			adapter.addItems(result.tags, result.index);
+		} else {
+			adapter.disableLoading();
 			Context context = getContext();
 			if (context != null) {
 				ErrorUtils.showErrorMessage(context, result.exception);
 			}
-			adapter.disableLoading();
-		} else {
-			adapter.addItems(result.tags, result.index);
 		}
 		setRefresh(false);
 	}

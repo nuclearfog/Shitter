@@ -33,16 +33,16 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Param, 
 	@Override
 	protected Result doInBackground(@NonNull Param param) {
 		try {
-			switch (param.mode) {
-				case Param.DATABASE:
+			switch (param.action) {
+				case Param.LOAD_LOCAL:
 					Notification result = db.getNotification(param.id);
 					if (result != null) {
-						return new Result(Result.DATABASE, param.id, result, null);
+						return new Result(Result.LOAD_LOCAL, param.id, result, null);
 					}
 
-				case Param.ONLINE:
+				case Param.LOAD_ONLINE:
 					result = connection.getNotification(param.id);
-					return new Result(Result.ONLINE, param.id, result, null);
+					return new Result(Result.LOAD_ONLINE, param.id, result, null);
 
 				case Param.DISMISS:
 					connection.dismissNotification(param.id);
@@ -65,15 +65,19 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Param, 
 	 */
 	public static class Param {
 
-		public static final int DATABASE = 1;
-		public static final int ONLINE = 2;
+		public static final int LOAD_LOCAL = 1;
+		public static final int LOAD_ONLINE = 2;
 		public static final int DISMISS = 3;
 
-		final int mode;
+		final int action;
 		final long id;
 
-		public Param(int mode, long id) {
-			this.mode = mode;
+		/**
+		 * @param action action to perform on notification {@link #LOAD_LOCAL,#LOAD_ONLINE,#DISMISS}
+		 * @param id     ID of the notification
+		 */
+		public Param(int action, long id) {
+			this.action = action;
 			this.id = id;
 		}
 	}
@@ -84,21 +88,26 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Param, 
 	public static class Result {
 
 		public static final int ERROR = -1;
-		public static final int DATABASE = 3;
-		public static final int ONLINE = 4;
-		public static final int DISMISS = 5;
+		public static final int LOAD_LOCAL = 10;
+		public static final int LOAD_ONLINE = 11;
+		public static final int DISMISS = 12;
 
 		@Nullable
 		public final Notification notification;
 		@Nullable
 		public final ConnectionException exception;
-		public final int mode;
+		public final int action;
 		public final long id;
 
-		Result(int mode, long id, @Nullable Notification notification, @Nullable ConnectionException exception) {
+		/**
+		 * @param action       action performed on the notification
+		 * @param id           ID of the notification
+		 * @param notification updated notification or null if an error occured
+		 */
+		Result(int action, long id, @Nullable Notification notification, @Nullable ConnectionException exception) {
 			this.exception = exception;
 			this.notification = notification;
-			this.mode = mode;
+			this.action = action;
 			this.id = id;
 		}
 	}

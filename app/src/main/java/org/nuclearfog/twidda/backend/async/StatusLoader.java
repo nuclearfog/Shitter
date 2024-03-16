@@ -37,7 +37,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 			Statuses statuses;
 			switch (param.type) {
 				case Param.HOME:
-					if (param.minId == Param.NO_ID && param.maxId == Param.NO_ID) {
+					if (param.minId == 0L && param.maxId == 0L) {
 						statuses = db.getHomeTimeline();
 						if (statuses.isEmpty()) {
 							statuses = connection.getHomeTimeline(0L, 0L);
@@ -45,14 +45,14 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 						}
 					} else {
 						statuses = connection.getHomeTimeline(param.minId, param.maxId);
-						if (param.maxId == Param.NO_ID) {
+						if (param.maxId == 0L) {
 							db.saveHomeTimeline(statuses);
 						}
 					}
 					return new Result(statuses, param.pos, null);
 
 				case Param.USER:
-					if (param.minId == Param.NO_ID && param.maxId == Param.NO_ID) {
+					if (param.minId == 0L && param.maxId == 0L) {
 						statuses = db.getUserTimeline(param.id);
 						if (statuses.isEmpty()) {
 							statuses = connection.getUserTimeline(param.id, 0L, 0L, false);
@@ -60,14 +60,14 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 						}
 					} else {
 						statuses = connection.getUserTimeline(param.id, param.minId, param.maxId, false);
-						if (param.maxId == Param.NO_ID) {
+						if (param.maxId == 0L) {
 							db.saveUserTimeline(statuses);
 						}
 					}
 					return new Result(statuses, param.pos, null);
 
 				case Param.USER_REPLIES:
-					if (param.minId == Param.NO_ID && param.maxId == Param.NO_ID) {
+					if (param.minId == 0L && param.maxId == 0L) {
 						statuses = db.getUserReplies(param.id);
 						if (statuses.isEmpty()) {
 							statuses = connection.getUserTimeline(param.id, 0L, 0L, true);
@@ -75,14 +75,14 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 						}
 					} else {
 						statuses = connection.getUserTimeline(param.id, param.minId, param.maxId, true);
-						if (param.maxId == Param.NO_ID) {
+						if (param.maxId == 0L) {
 							db.saveUserReplies(statuses);
 						}
 					}
 					return new Result(statuses, param.pos, null);
 
 				case Param.FAVORIT:
-					if (param.minId == Param.NO_ID && param.maxId == Param.NO_ID) {
+					if (param.minId == 0L && param.maxId == 0L) {
 						statuses = db.getUserFavorites(param.id);
 						if (statuses.isEmpty()) {
 							statuses = connection.getUserFavorits(param.id, 0L, 0L);
@@ -90,7 +90,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 						}
 					} else {
 						statuses = connection.getUserFavorits(param.id, 0L, param.maxId);
-						if (param.maxId == Param.NO_ID) {
+						if (param.maxId == 0L) {
 							db.saveFavoriteTimeline(statuses, param.id);
 							return new Result(statuses, Result.CLEAR, null);
 						}
@@ -98,7 +98,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 					return new Result(statuses, param.pos, null);
 
 				case Param.BOOKMARKS:
-					if (param.minId == Param.NO_ID && param.maxId == Param.NO_ID) {
+					if (param.minId == 0L && param.maxId == 0L) {
 						statuses = db.getUserBookmarks(param.id);
 						if (statuses.isEmpty()) {
 							statuses = connection.getUserBookmarks(0L, 0L);
@@ -106,7 +106,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 						}
 					} else {
 						statuses = connection.getUserBookmarks(0L, param.maxId);
-						if (param.maxId == Param.NO_ID) {
+						if (param.maxId == 0L) {
 							db.saveBookmarkTimeline(statuses, param.id);
 							return new Result(statuses, Result.CLEAR, null);
 						}
@@ -114,7 +114,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 					return new Result(statuses, param.pos, null);
 
 				case Param.REPLIES:
-					if (param.minId == Param.NO_ID && param.maxId == Param.NO_ID) {
+					if (param.minId == 0L && param.maxId == 0L) {
 						statuses = db.getReplies(param.id);
 						if (statuses.isEmpty()) {
 							statuses = connection.getStatusReplies(param.id, 0L, 0L);
@@ -124,7 +124,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 						}
 					} else {
 						statuses = connection.getStatusReplies(param.id, param.minId, param.maxId);
-						if (param.maxId == Param.NO_ID && db.containsStatus(param.id)) {
+						if (param.maxId == 0L && db.containsStatus(param.id)) {
 							db.saveReplies(param.id, statuses);
 						}
 					}
@@ -155,8 +155,6 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 	 */
 	public static class Param {
 
-		public static final long NO_ID = 0L;
-
 		public static final int HOME = 1;
 		public static final int USER = 2;
 		public static final int USER_REPLIES = 3;
@@ -171,6 +169,14 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 		final int type, pos;
 		final long id, minId, maxId;
 
+		/**
+		 * @param type   type of timeline to load {@link #HOME,#USER,#USER_REPLIES,#FAVORIT,#REPLIES,#SEARCH,#USERLIST,#PUBLIC,#BOOKMARKS}
+		 * @param id     user ID if type is {@link #USER,#USER_REPLIES}, userlist ID if type is {@link #USERLIST}, status ID if type is {@link #REPLIES} or otherwise unused
+		 * @param minId  minimum status ID (lower IDs will be excluded)
+		 * @param maxId  maximum status ID (higher IDs will be excluded)
+		 * @param pos    index where to insert the new statuses in the list/adapter
+		 * @param search search string used with {@link #SEARCH}
+		 */
 		public Param(int type, long id, long minId, long maxId, int pos, String search) {
 			this.type = type;
 			this.id = id;
@@ -194,6 +200,11 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 		@Nullable
 		public final ConnectionException exception;
 
+		/**
+		 * @param statuses  list of statuses, null if an error occured
+		 * @param position  index where to insert the status in the list/adapter
+		 * @param exception not null if an error occured
+		 */
 		Result(@Nullable Statuses statuses, int position, @Nullable ConnectionException exception) {
 			this.statuses = statuses;
 			this.position = position;

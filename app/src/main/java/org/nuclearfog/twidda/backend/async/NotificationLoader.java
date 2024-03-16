@@ -75,7 +75,6 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Param, 
 	 */
 	public static class Param {
 
-		public static final long NO_ID = 0L;
 		public static final int LOAD_ALL = 1;
 		public static final int LOAD_UNREAD = 2;
 
@@ -83,6 +82,12 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Param, 
 		final long minId, maxId;
 		final int mode;
 
+		/**
+		 * @param mode     type of notification to load {@link #LOAD_ALL,#LOAD_UNREAD}
+		 * @param position index where to insert the new notifications in the list/adapter
+		 * @param minId    minimum ID of the notification or '0' to disable limitation
+		 * @param maxId    maximum ID of the notification or '0' to disable limitation
+		 */
 		public Param(int mode, int position, long minId, long maxId) {
 			this.position = position;
 			this.minId = minId;
@@ -102,6 +107,11 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Param, 
 		@Nullable
 		public final ConnectionException exception;
 
+		/**
+		 * @param notifications notification list
+		 * @param position  index where to insert the new notifications in the list/adapter
+		 * @param exception exception if an error occurs while loading
+		 */
 		Result(@Nullable Notifications notifications, int position, @Nullable ConnectionException exception) {
 			this.notifications = notifications;
 			this.exception = exception;

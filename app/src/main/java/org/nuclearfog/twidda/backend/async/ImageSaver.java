@@ -41,6 +41,10 @@ public class ImageSaver extends AsyncExecutor<ImageSaver.Param, Boolean> {
 		final InputStream inputStream;
 		final OutputStream outputStream;
 
+		/**
+		 * @param inputStream  input stream of the source media file
+		 * @param outputStream output stream of the destiny file
+		 */
 		public Param(InputStream inputStream, OutputStream outputStream) {
 			this.inputStream = inputStream;
 			this.outputStream = outputStream;

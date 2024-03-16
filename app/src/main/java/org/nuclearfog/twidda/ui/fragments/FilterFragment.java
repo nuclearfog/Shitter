@@ -158,13 +158,13 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 	 *
 	 */
 	private void onFilterRemoved(StatusFilterAction.Result result) {
-		if (result.mode == StatusFilterAction.Result.DELETE) {
+		if (result.action == StatusFilterAction.Result.DELETE) {
 			adapter.removeItem(result.id);
 			Context context = getContext();
 			if (context != null) {
 				Toast.makeText(context, R.string.info_filter_removed, Toast.LENGTH_SHORT).show();
 			}
-		} else if (result.mode == StatusFilterAction.Result.ERROR) {
+		} else if (result.action == StatusFilterAction.Result.ERROR) {
 			Context context = getContext();
 			if (context != null) {
 				ErrorUtils.showErrorMessage(context, result.exception);

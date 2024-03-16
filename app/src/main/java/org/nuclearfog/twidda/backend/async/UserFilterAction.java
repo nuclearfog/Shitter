@@ -35,7 +35,7 @@ public class UserFilterAction extends AsyncExecutor<UserFilterAction.Param, User
 	@Override
 	protected Result doInBackground(@NonNull Param param) {
 		try {
-			switch (param.mode) {
+			switch (param.action) {
 				case Param.MUTE_USER:
 					Relation relation = connection.muteUser(param.name);
 					db.muteUser(relation.getId(), true);
@@ -68,10 +68,14 @@ public class UserFilterAction extends AsyncExecutor<UserFilterAction.Param, User
 		public static final int BLOCK_DOMAIN = 4;
 
 		final String name;
-		final int mode;
+		final int action;
 
-		public Param(int mode, String name) {
-			this.mode = mode;
+		/**
+		 * @param action action to apply on user {@link #MUTE_USER,#BLOCK_USER,#BLOCK_DOMAIN}
+		 * @param name   name of user
+		 */
+		public Param(int action, String name) {
+			this.action = action;
 			this.name = name;
 		}
 	}
@@ -86,12 +90,16 @@ public class UserFilterAction extends AsyncExecutor<UserFilterAction.Param, User
 		public static final int BLOCK_USER = 7;
 		public static final int BLOCK_DOMAIN = 8;
 
-		public final int mode;
+		public final int action;
 		@Nullable
 		public final ConnectionException exception;
 
-		Result(int mode, @Nullable ConnectionException exception) {
-			this.mode = mode;
+		/**
+		 * @param action    action to apply on user {@link #MUTE_USER,#BLOCK_USER,#BLOCK_DOMAIN}
+		 * @param exception not null if an error occured
+		 */
+		Result(int action, @Nullable ConnectionException exception) {
+			this.action = action;
 			this.exception = exception;
 		}
 	}

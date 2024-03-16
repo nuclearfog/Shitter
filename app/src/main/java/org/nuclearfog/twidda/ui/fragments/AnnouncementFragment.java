@@ -175,7 +175,7 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 	 */
 	private void onReactionResult(ReactionUpdater.Result result) {
 		Context context = getContext();
-		switch (result.mode) {
+		switch (result.action) {
 			case ReactionUpdater.Result.ADD:
 				if (context != null)
 					Toast.makeText(context, R.string.info_reaction_added, Toast.LENGTH_SHORT).show();
