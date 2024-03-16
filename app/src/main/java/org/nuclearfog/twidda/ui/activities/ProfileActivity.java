@@ -525,7 +525,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			// confirmed domain block
 			else if (type == ConfirmDialog.DOMAIN_BLOCK_ADD) {
 				String url = Uri.parse(user.getProfileUrl()).getHost();
-				DomainAction.Param param = new DomainAction.Param(DomainAction.Param.MODE_BLOCK, url);
+				DomainAction.Param param = new DomainAction.Param(DomainAction.Param.BLOCK, url);
 				domainAction.execute(param, domainCallback);
 			}
 		}
@@ -631,9 +631,9 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	 * set domain block result
 	 */
 	private void setDomainResult(DomainAction.Result result) {
-		if (result.mode == DomainAction.Result.MODE_BLOCK) {
+		if (result.action == DomainAction.Result.BLOCK) {
 			Toast.makeText(getApplicationContext(), R.string.info_domain_blocked, Toast.LENGTH_SHORT).show();
-		} else if (result.mode == DomainAction.Result.ERROR) {
+		} else if (result.action == DomainAction.Result.ERROR) {
 			ErrorUtils.showErrorMessage(this, result.exception);
 		}
 	}

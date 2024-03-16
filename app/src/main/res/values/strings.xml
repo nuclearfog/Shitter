@@ -303,6 +303,7 @@
 	<string name="status_spoiler_hint">Tap to view</string>
 	<string name="login_info">4 steps to login</string>
 	<string name="userlist_enter_title">enter list title</string>
+	<string name="userlist_reply_policy">reply policy:</string>
 	<string name="userlist_exclusive">exclude members from home feed</string>
 	<string name="userlist_create">create list</string>
 	<string name="userlist_update">update</string>

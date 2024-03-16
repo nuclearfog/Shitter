@@ -237,14 +237,6 @@ public class ScheduleAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	}
 
 	/**
-	 *
-	 */
-	public void clear() {
-		items.clear();
-		notifyDataSetChanged();
-	}
-
-	/**
 	 * @return true if adapter doesn't contain any items
 	 */
 	public boolean isEmpty() {

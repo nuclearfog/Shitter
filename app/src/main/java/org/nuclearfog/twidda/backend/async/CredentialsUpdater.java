@@ -54,6 +54,9 @@ public class CredentialsUpdater extends AsyncExecutor<UserUpdate, CredentialsUpd
 		@Nullable
 		public final ConnectionException exception;
 
+		/**
+		 * @param user updated information from the current user or null if an error occured
+		 */
 		Result(@Nullable User user, @Nullable ConnectionException exception) {
 			this.user = user;
 			this.exception = exception;

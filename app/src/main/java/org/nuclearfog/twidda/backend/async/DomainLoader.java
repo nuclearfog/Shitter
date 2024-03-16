@@ -42,11 +42,13 @@ public class DomainLoader extends AsyncExecutor<DomainLoader.Param, DomainLoader
 	 */
 	public static class Param {
 
-		public static final long NO_CURSOR = 0L;
-
 		final long cursor;
 		final int index;
 
+		/**
+		 * @param cursor list cursor or '0' to start at the beginning of the domain list
+		 * @param index  index where to insert new items in the list/adapter
+		 */
 		public Param(long cursor, int index) {
 			this.cursor = cursor;
 			this.index = index;
@@ -64,6 +66,10 @@ public class DomainLoader extends AsyncExecutor<DomainLoader.Param, DomainLoader
 		@Nullable
 		public final ConnectionException exception;
 
+		/**
+		 * @param domains   list of domains or null if an error occured
+		 * @param index     index where to insert new items in the list/adapter
+		 */
 		Result(@Nullable Domains domains, int index, @Nullable ConnectionException exception) {
 			this.domains = domains;
 			this.index = index;

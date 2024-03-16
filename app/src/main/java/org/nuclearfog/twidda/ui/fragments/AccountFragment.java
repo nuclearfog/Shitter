@@ -156,9 +156,9 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	 *
 	 */
 	private void onActionResult(AccountAction.Result result) {
-		if (result.mode == AccountAction.Result.REMOVE) {
+		if (result.action == AccountAction.Result.REMOVE) {
 			adapter.removeItem(result.account);
-		} else if (result.mode == AccountAction.Result.SELECT) {
+		} else if (result.action == AccountAction.Result.SELECT) {
 			Context context = getContext();
 			if (context != null) {
 				if (settings.pushEnabled()) {

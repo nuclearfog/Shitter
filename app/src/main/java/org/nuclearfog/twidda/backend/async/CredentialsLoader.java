@@ -57,6 +57,10 @@ public class CredentialsLoader extends AsyncExecutor<Void, CredentialsLoader.Res
 		@Nullable
 		public final ConnectionException exception;
 
+		/**
+		 * @param user        current user's information or null if an error occured
+		 * @param credentials current user's credentials or null if an error occured
+		 */
 		public Result(@Nullable User user, @Nullable Credentials credentials, @Nullable ConnectionException exception) {
 			this.exception = exception;
 			this.credentials = credentials;

@@ -882,7 +882,7 @@ public class Mastodon implements Connection {
 		try {
 			List<String> params = new ArrayList<>();
 			if (minId != 0L)
-				params.add("since_id=" + minId);
+				params.add("min_id=" + minId);
 			if (maxId != 0L)
 				params.add("max_id=" + maxId);
 			params.add("limit=" + settings.getListSize());
@@ -1399,7 +1399,7 @@ public class Mastodon implements Connection {
 	public Notifications getNotifications(long minId, long maxId) throws ConnectionException {
 		List<String> params = new ArrayList<>();
 		if (minId != 0L)
-			params.add("since_id=" + minId);
+			params.add("min_id=" + minId);
 		if (maxId != 0L)
 			params.add("max_id=" + maxId);
 		params.add("limit=" + settings.getListSize());

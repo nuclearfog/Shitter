@@ -30,7 +30,7 @@ public class AccountAction extends AsyncExecutor<AccountAction.Param, AccountAct
 
 	@Override
 	protected Result doInBackground(@NonNull Param param) {
-		switch (param.mode) {
+		switch (param.action) {
 			case Param.SELECT:
 				database.resetDatabase();
 				WebPush webPush = database.getWebPush(param.account);
@@ -60,10 +60,14 @@ public class AccountAction extends AsyncExecutor<AccountAction.Param, AccountAct
 		public static final int REMOVE = 2;
 
 		final Account account;
-		final int mode;
+		final int action;
 
-		public Param(int mode, Account account) {
-			this.mode = mode;
+		/**
+		 * @param action  action to apply on selected account {@link #SELECT,#REMOVE}
+		 * @param account account with login information
+		 */
+		public Param(int action, Account account) {
+			this.action = action;
 			this.account = account;
 		}
 	}
@@ -74,13 +78,17 @@ public class AccountAction extends AsyncExecutor<AccountAction.Param, AccountAct
 	public static class Result {
 
 		public static final int SELECT = 10;
-		public static final int REMOVE = 20;
+		public static final int REMOVE = 11;
 
 		public final Account account;
-		public final int mode;
+		public final int action;
 
-		Result(int mode, Account account) {
-			this.mode = mode;
+		/**
+		 * @param action  action applied on selected account {@link #SELECT,#REMOVE}
+		 * @param account account with login information
+		 */
+		Result(int action, Account account) {
+			this.action = action;
 			this.account = account;
 		}
 	}

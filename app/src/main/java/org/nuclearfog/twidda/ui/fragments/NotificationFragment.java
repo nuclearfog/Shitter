@@ -229,10 +229,10 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	private void onFollowRequestResult(FollowRequestAction.Result result) {
 		Context context = getContext();
 		if (context != null) {
-			if (result.mode == FollowRequestAction.Result.ACCEPT) {
+			if (result.action == FollowRequestAction.Result.ACCEPT) {
 				Toast.makeText(context, R.string.info_follow_request_accepted, Toast.LENGTH_SHORT).show();
 				adapter.removeItem(result.notification_id);
-			} else if (result.mode == FollowRequestAction.Result.ERROR) {
+			} else if (result.action == FollowRequestAction.Result.ERROR) {
 				ErrorUtils.showErrorMessage(context, result.exception);
 			}
 		}

@@ -66,7 +66,7 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 	public void onStart() {
 		super.onStart();
 		if (adapter.isEmpty()) {
-			load(DomainAdapter.NO_INDEX, DomainLoader.Param.NO_CURSOR);
+			load(DomainAdapter.NO_INDEX, 0L);
 			setRefresh(true);
 		}
 	}
@@ -82,7 +82,7 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 
 	@Override
 	protected void onReload() {
-		load(DomainAdapter.NO_INDEX, DomainLoader.Param.NO_CURSOR);
+		load(DomainAdapter.NO_INDEX, 0L);
 	}
 
 
@@ -91,7 +91,7 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 		adapter.clear();
 		domainLoader = new DomainLoader(requireContext());
 		domainAction = new DomainAction(requireContext());
-		load(DomainAdapter.NO_INDEX, DomainLoader.Param.NO_CURSOR);
+		load(DomainAdapter.NO_INDEX, 0L);
 		setRefresh(true);
 	}
 
@@ -119,7 +119,7 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 	@Override
 	public void onConfirm(int type) {
 		if (type == ConfirmDialog.DOMAIN_BLOCK_REMOVE) {
-			DomainAction.Param param = new DomainAction.Param(DomainAction.Param.MODE_UNBLOCK, selectedDomain);
+			DomainAction.Param param = new DomainAction.Param(DomainAction.Param.UNBLOCK, selectedDomain);
 			domainAction.execute(param, domainResult);
 		}
 	}
@@ -154,13 +154,13 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 	 *
 	 */
 	private void onDomainResult(DomainAction.Result result) {
-		if (result.mode == DomainAction.Result.MODE_UNBLOCK) {
+		if (result.action == DomainAction.Result.UNBLOCK) {
 			Context context = getContext();
 			if (result.domain != null && context != null) {
 				adapter.removeItem(result.domain);
 				Toast.makeText(context, R.string.info_domain_removed, Toast.LENGTH_SHORT).show();
 			}
-		} else if (result.mode == DomainAction.Result.ERROR) {
+		} else if (result.action == DomainAction.Result.ERROR) {
 			adapter.disableLoading();
 			Context context = getContext();
 			if (context != null) {

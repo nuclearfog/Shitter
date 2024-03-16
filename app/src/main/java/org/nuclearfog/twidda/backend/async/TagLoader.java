@@ -39,36 +39,36 @@ public class TagLoader extends AsyncExecutor<TagLoader.Param, TagLoader.Result> 
 				case Param.POPULAR_OFFLINE:
 					Tags tags = db.getTrends();
 					if (!tags.isEmpty()) {
-						return new Result(Result.POPULAR, tags, param.index, null);
+						return new Result(tags, param.index, null);
 					}
 					// fall through
 
 				case Param.POPULAR_ONLINE:
 					tags = connection.getTags();
 					db.saveTrends(tags);
-					return new Result(Result.POPULAR, tags, param.index, null);
+					return new Result(tags, param.index, null);
 
 				case Param.SEARCH:
 					tags = connection.searchTags(param.trend);
-					return new Result(Result.SEARCH, tags, param.index, null);
+					return new Result(tags, param.index, null);
 
 				case Param.FOLLOWING:
 					tags = connection.showTagFollowing(param.cursor);
-					return new Result(Result.FOLLOWING, tags, param.index, null);
+					return new Result(tags, param.index, null);
 
 				case Param.FEATURING:
 					tags = connection.showTagFeaturing();
-					return new Result(Result.FEATURING, tags, param.index, null);
+					return new Result(tags, param.index, null);
 
 				case Param.SUGGESTIONS:
 					tags = connection.showTagSuggestions();
-					return new Result(Result.SUGGESTIONS, tags, param.index, null);
+					return new Result(tags, param.index, null);
 
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			return new Result(Result.ERROR, null, param.index, exception);
+			return new Result(null, param.index, exception);
 		}
 	}
 
@@ -110,14 +110,6 @@ public class TagLoader extends AsyncExecutor<TagLoader.Param, TagLoader.Result> 
 	 */
 	public static class Result {
 
-		public static final int ERROR = -1;
-		public static final int POPULAR = 20;
-		public static final int SEARCH = 21;
-		public static final int FOLLOWING = 22;
-		public static final int FEATURING = 23;
-		public static final int SUGGESTIONS = 24;
-
-		public final int type;
 		public final int index;
 		@Nullable
 		public final Tags tags;
@@ -125,16 +117,14 @@ public class TagLoader extends AsyncExecutor<TagLoader.Param, TagLoader.Result> 
 		public final ConnectionException exception;
 
 		/**
-		 * @param type      type of trend/tag list {@link #POPULAR,#SEARCH,#FOLLOWING,#FEATURING,#SUGGESTIONS}
 		 * @param tags      tag/trend items
 		 * @param index     index where to isnert the new items in the list/adapter
 		 * @param exception not null if an error occured
 		 */
-		Result(int type, @Nullable Tags tags, int index, @Nullable ConnectionException exception) {
+		Result(@Nullable Tags tags, int index, @Nullable ConnectionException exception) {
 			this.tags = tags;
 			this.exception = exception;
 			this.index = index;
-			this.type = type;
 		}
 	}
 }

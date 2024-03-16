@@ -29,7 +29,7 @@ public class DatabaseAction extends AsyncExecutor<DatabaseAction.Param, Database
 	@Override
 	protected Result doInBackground(@NonNull Param param) {
 		try {
-			switch (param.mode) {
+			switch (param.action) {
 				case Param.DELETE:
 					db.resetDatabase();
 					return new Result(Result.DELETE);
@@ -54,10 +54,13 @@ public class DatabaseAction extends AsyncExecutor<DatabaseAction.Param, Database
 		public static final int DELETE = 1;
 		public static final int LOGOUT = 2;
 
-		final int mode;
+		final int action;
 
-		public Param(int mode) {
-			this.mode = mode;
+		/**
+		 * @param action action performed on the app database {@link #DELETE,#LOGOUT}
+		 */
+		public Param(int action) {
+			this.action = action;
 		}
 	}
 
@@ -70,10 +73,13 @@ public class DatabaseAction extends AsyncExecutor<DatabaseAction.Param, Database
 		public static final int DELETE = 10;
 		public static final int LOGOUT = 11;
 
-		public final int mode;
+		public final int action;
 
-		Result(int mode) {
-			this.mode = mode;
+		/**
+		 * @param action action performed on the database {@link #DELETE,#LOGOUT} or {@link #ERROR} if an error occured
+		 */
+		Result(int action) {
+			this.action = action;
 		}
 	}
 }

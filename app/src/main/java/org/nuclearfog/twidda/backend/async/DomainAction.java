@@ -29,14 +29,14 @@ public class DomainAction extends AsyncExecutor<DomainAction.Param, DomainAction
 	@Override
 	protected Result doInBackground(@NonNull Param param) {
 		try {
-			switch (param.mode) {
-				case Param.MODE_BLOCK:
+			switch (param.action) {
+				case Param.BLOCK:
 					connection.blockDomain(param.domain);
-					return new Result(Result.MODE_BLOCK, param.domain, null);
+					return new Result(Result.BLOCK, param.domain, null);
 
-				case Param.MODE_UNBLOCK:
+				case Param.UNBLOCK:
 					connection.unblockDomain(param.domain);
-					return new Result(Result.MODE_UNBLOCK, param.domain, null);
+					return new Result(Result.UNBLOCK, param.domain, null);
 
 				default:
 					return null;
@@ -51,14 +51,18 @@ public class DomainAction extends AsyncExecutor<DomainAction.Param, DomainAction
 	 */
 	public static class Param {
 
-		public static final int MODE_BLOCK = 2;
-		public static final int MODE_UNBLOCK = 3;
+		public static final int BLOCK = 2;
+		public static final int UNBLOCK = 3;
 
 		final String domain;
-		final int mode;
+		final int action;
 
-		public Param(int mode, String domain) {
-			this.mode = mode;
+		/**
+		 * @param action action performed on instance domain {@link #BLOCK,#UNBLOCK}
+		 * @param domain instance domain name
+		 */
+		public Param(int action, String domain) {
+			this.action = action;
 			this.domain = domain;
 		}
 	}
@@ -69,19 +73,23 @@ public class DomainAction extends AsyncExecutor<DomainAction.Param, DomainAction
 	public static class Result {
 
 		public static final int ERROR = -1;
-		public static final int MODE_BLOCK = 5;
-		public static final int MODE_UNBLOCK = 6;
+		public static final int BLOCK = 5;
+		public static final int UNBLOCK = 6;
 
-		public final int mode;
+		public final int action;
 		@Nullable
 		public final ConnectionException exception;
 		@Nullable
 		public final String domain;
 
-		Result(int mode, @Nullable String domain, @Nullable ConnectionException exception) {
+		/**
+		 * @param action    action performed on a domain instance {@link #BLOCK,#UNBLOCK}
+		 * @param domain    instance domain name
+		 */
+		Result(int action, @Nullable String domain, @Nullable ConnectionException exception) {
 			this.domain = domain;
 			this.exception = exception;
-			this.mode = mode;
+			this.action = action;
 		}
 	}
 }

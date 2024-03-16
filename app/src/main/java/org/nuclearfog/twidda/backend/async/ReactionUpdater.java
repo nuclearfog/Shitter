@@ -32,14 +32,14 @@ public class ReactionUpdater extends AsyncExecutor<ReactionUpdater.Param, Reacti
 			switch (param.action) {
 				case Param.ADD:
 					connection.addReaction(param.id, param.code);
-					return new Result(Result.ADD, param.id, null);
+					return new Result(Result.ADD, null);
 
 				case Param.REMOVE:
 					connection.removeReaction(param.id, param.code);
-					return new Result(Result.REMOVE, param.id, null);
+					return new Result(Result.REMOVE, null);
 			}
 		} catch (ConnectionException exception) {
-			return new Result(Result.ERROR, param.id, exception);
+			return new Result(Result.ERROR, exception);
 		}
 		return null;
 	}
@@ -78,17 +78,14 @@ public class ReactionUpdater extends AsyncExecutor<ReactionUpdater.Param, Reacti
 		public static final int REMOVE = 11;
 
 		public final int action;
-		public final long id;
 		@Nullable
 		public final ConnectionException exception;
 
 		/**
 		 * @param action action performed on an announcement
-		 * @param id     ID of the announcement
 		 */
-		Result(int action, long id, @Nullable ConnectionException exception) {
+		Result(int action, @Nullable ConnectionException exception) {
 			this.action = action;
-			this.id = id;
 			this.exception = exception;
 		}
 	}

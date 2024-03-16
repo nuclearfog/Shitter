@@ -74,13 +74,17 @@ public class ImageDownloader extends AsyncExecutor<ImageDownloader.Param, ImageD
 	}
 
 	/**
-	 * Async request class to send information required to execute the task
+	 *
 	 */
 	public static class Param {
 
 		final Uri uri;
 		final File cacheFolder;
 
+		/**
+		 * @param uri         online url of the image
+		 * @param cacheFolder local folder to cache the image
+		 */
 		public Param(Uri uri, File cacheFolder) {
 			this.cacheFolder = cacheFolder;
 			this.uri = uri;
@@ -88,7 +92,7 @@ public class ImageDownloader extends AsyncExecutor<ImageDownloader.Param, ImageD
 	}
 
 	/**
-	 * Async result class
+	 *
 	 */
 	public static class Result {
 
@@ -97,6 +101,9 @@ public class ImageDownloader extends AsyncExecutor<ImageDownloader.Param, ImageD
 		@Nullable
 		public final ConnectionException exception;
 
+		/**
+		 * @param uri local path of the cached image or null if an error occured
+		 */
 		Result(@Nullable Uri uri, @Nullable ConnectionException exception) {
 			this.exception = exception;
 			this.uri = uri;

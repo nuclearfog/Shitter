@@ -109,7 +109,7 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 	@Override
 	public void onConfirm(int type) {
 		if (type == ConfirmDialog.ANNOUNCEMENT_DISMISS) {
-			AnnouncementAction.Param param = new AnnouncementAction.Param(AnnouncementAction.Param.MODE_DISMISS, selectedId);
+			AnnouncementAction.Param param = new AnnouncementAction.Param(AnnouncementAction.Param.DISMISS, selectedId);
 			announcementAction.execute(param, announcementResult);
 		}
 	}
@@ -156,14 +156,14 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 	 */
 	private void onAnnouncementResult(AnnouncementAction.Result result) {
 		Context context = getContext();
-		switch (result.mode) {
-			case AnnouncementAction.Result.MODE_DISMISS:
+		switch (result.action) {
+			case AnnouncementAction.Result.DISMISS:
 				if (context != null)
 					Toast.makeText(context, R.string.info_announcement_dismissed, Toast.LENGTH_SHORT).show();
 				adapter.removeItem(selectedId);
 				break;
 
-			case AnnouncementAction.Result.MODE_ERROR:
+			case AnnouncementAction.Result.ERROR:
 				if (context != null)
 					ErrorUtils.showErrorMessage(context, result.exception);
 				break;

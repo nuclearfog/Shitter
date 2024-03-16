@@ -41,11 +41,15 @@ public class AnnouncementLoader extends AsyncExecutor<Void, AnnouncementLoader.R
 	 *
 	 */
 	public static class Result {
+
 		@Nullable
 		public final Announcements announcements;
 		@Nullable
 		public final ConnectionException exception;
 
+		/**
+		 * @param announcements a list of announcements of the instance server or null if an error occured
+		 */
 		public Result(@Nullable Announcements announcements, @Nullable ConnectionException exception) {
 			this.announcements = announcements;
 			this.exception = exception;

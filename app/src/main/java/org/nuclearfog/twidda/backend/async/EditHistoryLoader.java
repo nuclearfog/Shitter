@@ -47,6 +47,9 @@ public class EditHistoryLoader extends AsyncExecutor<Long, EditHistoryLoader.Res
 		@Nullable
 		public final ConnectionException exception;
 
+		/**
+		 * @param history a list of previous versions of a status or null if an error occured
+		 */
 		Result(@Nullable StatusEditHistory history, @Nullable ConnectionException exception) {
 			this.history = history;
 			this.exception = exception;

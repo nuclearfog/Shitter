@@ -576,7 +576,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	 * called from {@link DatabaseAction}
 	 */
 	private void onDatabaseResult(@NonNull DatabaseAction.Result result) {
-		switch (result.mode) {
+		switch (result.action) {
 			case DatabaseAction.Result.DELETE:
 				Toast.makeText(getApplicationContext(), R.string.info_database_cleared, Toast.LENGTH_SHORT).show();
 				break;
