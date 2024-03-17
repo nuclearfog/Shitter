@@ -2,7 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
-	<!--todo implement information dialog-->
 	<item
 		android:id="@+id/menu_instance_info"
 		android:title="@string/menu_instance_info"

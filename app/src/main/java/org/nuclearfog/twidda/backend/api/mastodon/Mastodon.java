@@ -995,11 +995,11 @@ public class Mastodon implements Connection {
 	public UserList updateUserlist(UserListUpdate update) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		params.add("title=" + StringUtils.encode(update.getTitle()));
-		if (update.getPolicy() == UserList.LIST)
+		if (update.getPolicy() == UserList.REPLIES_MEMBER)
 			params.add("replies_policy=list");
-		else if (update.getPolicy() == UserList.FOLLOWED)
+		else if (update.getPolicy() == UserList.REPLIES_FOLLOWING)
 			params.add("replies_policy=followed");
-		else if (update.getPolicy() == UserList.NONE)
+		else if (update.getPolicy() == UserList.REPLIES_NONE)
 			params.add("replies_policy=none");
 		if (update.isExclusive())
 			params.add("exclusive=true");

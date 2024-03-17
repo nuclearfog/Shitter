@@ -78,7 +78,7 @@ public class MastodonTag implements Tag {
 
 
 	@Override
-	public boolean following() {
+	public boolean isFollowed() {
 		return following;
 	}
 

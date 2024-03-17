@@ -104,11 +104,11 @@ public class UserlistDialog extends DialogFragment implements OnClickListener, O
 		}
 		title_input.setText(userlist.getTitle());
 		exclusive.setChecked(userlist.isExclusive());
-		if (userlist.getPolicy() == UserList.NONE) {
+		if (userlist.getPolicy() == UserList.REPLIES_NONE) {
 			policy.setSelection(0);
-		} else if (userlist.getPolicy() == UserList.FOLLOWED) {
+		} else if (userlist.getPolicy() == UserList.REPLIES_FOLLOWING) {
 			policy.setSelection(1);
-		} else if (userlist.getPolicy() == UserList.LIST) {
+		} else if (userlist.getPolicy() == UserList.REPLIES_MEMBER) {
 			policy.setSelection(2);
 		}
 		apply.setOnClickListener(this);
@@ -161,11 +161,11 @@ public class UserlistDialog extends DialogFragment implements OnClickListener, O
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		if (parent.getId() == R.id.dialog_userlist_replies_selector) {
 			if (position == 0) {
-				userlist.setPolicy(UserList.NONE);
+				userlist.setPolicy(UserList.REPLIES_NONE);
 			} else if (position == 1) {
-				userlist.setPolicy(UserList.FOLLOWED);
+				userlist.setPolicy(UserList.REPLIES_FOLLOWING);
 			} else if (position == 2) {
-				userlist.setPolicy(UserList.LIST);
+				userlist.setPolicy(UserList.REPLIES_MEMBER);
 			}
 		}
 	}

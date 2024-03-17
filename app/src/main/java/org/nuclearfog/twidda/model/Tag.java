@@ -35,7 +35,7 @@ public interface Tag extends Serializable, Comparable<Tag> {
 	/**
 	 * @return true if current user follows tag
 	 */
-	boolean following();
+	boolean isFollowed();
 
 
 	@Override

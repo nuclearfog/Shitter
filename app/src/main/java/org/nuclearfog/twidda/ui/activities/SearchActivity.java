@@ -173,7 +173,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 		MenuItem tag_item = menu.findItem(R.id.search_tag);
 		// set menu option depending on trend follow status
 		if (tag != null) {
-			if (tag.following()) {
+			if (tag.isFollowed()) {
 				tag_item.setTitle(R.string.menu_tag_unfollow);
 			} else {
 				tag_item.setTitle(R.string.menu_tag_follow);
@@ -211,7 +211,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 		else if (item.getItemId() == R.id.search_tag) {
 			if (tag != null && tagAction.isIdle()) {
 				TagAction.Param param;
-				if (tag.following())
+				if (tag.isFollowed())
 					param = new TagAction.Param(TagAction.Param.UNFOLLOW, tag.getName());
 				else
 					param = new TagAction.Param(TagAction.Param.FOLLOW, tag.getName());

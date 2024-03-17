@@ -165,7 +165,7 @@ public class TagFragment extends ListFragment implements OnTagClickListener, Act
 				if (data instanceof Tag) {
 					Tag update = (Tag) data;
 					// remove tag if unfollowed
-					if (mode == MODE_FOLLOW && !update.following()) {
+					if (mode == MODE_FOLLOW && !update.isFollowed()) {
 						adapter.removeItem(update);
 					}
 				}

@@ -459,7 +459,7 @@ public class AppDatabase {
 				db.delete(ReplyTable.TABLE, REPLY_SELECT, new String[]{Long.toString(id)});
 				int i = 0;
 				for (Status status : statuses) {
-					ContentValues column = new ContentValues(3);
+					ContentValues column = new ContentValues();
 					column.put(ReplyTable.REPLY, id);
 					column.put(ReplyTable.ID, status.getId());
 					column.put(ReplyTable.ORDER, i++);
@@ -479,7 +479,7 @@ public class AppDatabase {
 			if (!notifications.isEmpty()) {
 				SQLiteDatabase db = adapter.getDbWrite();
 				for (Notification notification : notifications) {
-					ContentValues column = new ContentValues(6);
+					ContentValues column = new ContentValues();
 					column.put(NotificationTable.ID, notification.getId());
 					column.put(NotificationTable.TIME, notification.getTimestamp());
 					column.put(NotificationTable.TYPE, notification.getType());
@@ -509,12 +509,14 @@ public class AppDatabase {
 			SQLiteDatabase db = adapter.getDbWrite();
 			db.delete(TagTable.TABLE, TREND_SELECT, args);
 			for (Tag tag : tags) {
-				ContentValues column = new ContentValues(4);
+				int flags = tag.isFollowed() ? DatabaseTag.FLAG_FOLLOWED : 0;
+				ContentValues column = new ContentValues();
 				column.put(TagTable.LOCATION, tag.getLocationId());
 				column.put(TagTable.VOL, tag.getPopularity());
 				column.put(TagTable.TAG_NAME, tag.getName());
 				column.put(TagTable.INDEX, tag.getRank());
 				column.put(TagTable.ID, tag.getId());
+				column.put(TagTable.FLAGS, flags);
 				db.insert(TagTable.TABLE, "", column);
 			}
 			adapter.commit();
@@ -570,7 +572,7 @@ public class AppDatabase {
 			String[] accountArgs = {Long.toString(account.getId()), account.getHostname()};
 			db.delete(AccountTable.TABLE, ACCOUNT_SELECTION, accountArgs);
 			// insert/update login
-			ContentValues column = new ContentValues(11);
+			ContentValues column = new ContentValues();
 			column.put(AccountTable.ID, account.getId());
 			column.put(AccountTable.DATE, account.getTimestamp());
 			column.put(AccountTable.HOSTNAME, account.getHostname());
@@ -598,7 +600,7 @@ public class AppDatabase {
 			// delete login entry if exists
 			String[] accountArgs = {Long.toString(user.getId()), settings.getLogin().getHostname()};
 			// update login columns
-			ContentValues column = new ContentValues(2);
+			ContentValues column = new ContentValues();
 			column.put(AccountTable.IMAGE, user.getProfileImageThumbnailUrl());
 			column.put(AccountTable.USERNAME, user.getScreenname());
 			db.update(AccountTable.TABLE, column, ACCOUNT_SELECTION, accountArgs);
@@ -972,7 +974,7 @@ public class AppDatabase {
 			} else {
 				flags &= ~StatusPropertiesTable.MASK_STATUS_HIDDEN;
 			}
-			ContentValues column = new ContentValues(1);
+			ContentValues column = new ContentValues();
 			column.put(StatusPropertiesTable.FLAGS, flags);
 			db.update(StatusPropertiesTable.TABLE, column, STATUS_REG_SELECT, args);
 			adapter.commit();
@@ -1452,7 +1454,7 @@ public class AppDatabase {
 	 */
 	private void saveUser(User user, SQLiteDatabase db, int mode) {
 		int flags = getUserFlags(db, user.getId());
-		ContentValues column = new ContentValues(14);
+		ContentValues column = new ContentValues();
 		if (user.isVerified()) {
 			flags |= UserPropertiesTable.MASK_USER_VERIFIED;
 		} else {
@@ -1579,7 +1581,7 @@ public class AppDatabase {
 			default:
 				flags &= ~StatusPropertiesTable.MASK_STATUS_VISIBILITY_DIRECT;
 		}
-		ContentValues column = new ContentValues(22);
+		ContentValues column = new ContentValues();
 		column.put(StatusTable.ID, status.getId());
 		column.put(StatusTable.USER, user.getId());
 		column.put(StatusTable.TIME, status.getTimestamp());
@@ -1638,7 +1640,7 @@ public class AppDatabase {
 	 */
 	private void saveMedia(Media[] medias, SQLiteDatabase db) {
 		for (Media media : medias) {
-			ContentValues column = new ContentValues(4);
+			ContentValues column = new ContentValues();
 			column.put(MediaTable.KEY, media.getKey());
 			column.put(MediaTable.URL, media.getUrl());
 			column.put(MediaTable.PREVIEW, media.getPreviewUrl());
@@ -1655,7 +1657,7 @@ public class AppDatabase {
 	 */
 	private void saveEmojis(Emoji[] emojis, SQLiteDatabase db) {
 		for (Emoji emoji : emojis) {
-			ContentValues column = new ContentValues(3);
+			ContentValues column = new ContentValues();
 			column.put(EmojiTable.CODE, emoji.getCode());
 			column.put(EmojiTable.URL, emoji.getUrl());
 			column.put(EmojiTable.CATEGORY, emoji.getCategory());
@@ -1671,7 +1673,7 @@ public class AppDatabase {
 	 */
 	private void saveFields(Field[] fields, long userId, SQLiteDatabase db) {
 		for (Field field : fields) {
-			ContentValues column = new ContentValues(4);
+			ContentValues column = new ContentValues();
 			String[] args = {Long.toString(userId), field.getKey()};
 			column.put(UserFieldTable.KEY, field.getKey());
 			column.put(UserFieldTable.VALUE, field.getValue());
@@ -1691,7 +1693,7 @@ public class AppDatabase {
 	 * @param db       database write instance
 	 */
 	private void saveLocation(Location location, SQLiteDatabase db) {
-		ContentValues column = new ContentValues(5);
+		ContentValues column = new ContentValues();
 		column.put(LocationTable.ID, location.getId());
 		column.put(LocationTable.FULLNAME, location.getFullName());
 		column.put(LocationTable.COORDINATES, location.getCoordinates());
@@ -1707,7 +1709,7 @@ public class AppDatabase {
 	 * @param db   database instance
 	 */
 	private void savePoll(Poll poll, SQLiteDatabase db) {
-		ContentValues column = new ContentValues(4);
+		ContentValues column = new ContentValues();
 		StringBuilder buf = new StringBuilder();
 		for (PollOption option : poll.getOptions()) {
 			buf.append(option.getTitle()).append(';');
@@ -1731,7 +1733,7 @@ public class AppDatabase {
 	private void saveStatusFlags(SQLiteDatabase db, Status status, int flags) {
 		String[] args = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
 
-		ContentValues column = new ContentValues(4);
+		ContentValues column = new ContentValues();
 		column.put(StatusPropertiesTable.FLAGS, flags);
 		column.put(StatusPropertiesTable.REPOST_ID, status.getRepostId());
 		column.put(StatusPropertiesTable.STATUS, status.getId());
@@ -1754,7 +1756,7 @@ public class AppDatabase {
 	private void saveUserFlags(SQLiteDatabase db, long id, int flags) {
 		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
-		ContentValues column = new ContentValues(3);
+		ContentValues column = new ContentValues();
 		column.put(UserPropertiesTable.USER, id);
 		column.put(UserPropertiesTable.OWNER, settings.getLogin().getId());
 		column.put(UserPropertiesTable.REGISTER, flags);
@@ -1774,7 +1776,7 @@ public class AppDatabase {
 	 * @param db       database instance
 	 */
 	private void saveFavorite(long statusId, long ownerId, SQLiteDatabase db) {
-		ContentValues column = new ContentValues(2);
+		ContentValues column = new ContentValues();
 		column.put(FavoriteTable.ID, statusId);
 		column.put(FavoriteTable.OWNER, ownerId);
 		db.insertWithOnConflict(FavoriteTable.TABLE, "", column, SQLiteDatabase.CONFLICT_REPLACE);
@@ -1788,7 +1790,7 @@ public class AppDatabase {
 	 * @param db       database instance
 	 */
 	private void saveBookmark(long statusId, long ownerId, SQLiteDatabase db) {
-		ContentValues column = new ContentValues(2);
+		ContentValues column = new ContentValues();
 		column.put(BookmarkTable.ID, statusId);
 		column.put(BookmarkTable.OWNER, ownerId);
 		db.insertWithOnConflict(BookmarkTable.TABLE, "", column, SQLiteDatabase.CONFLICT_REPLACE);
@@ -1801,7 +1803,7 @@ public class AppDatabase {
 	 * @param db       database instance
 	 */
 	private void saveInstance(Instance instance, SQLiteDatabase db) {
-		ContentValues column = new ContentValues(21);
+		ContentValues column = new ContentValues();
 		int flags = 0;
 		if (instance.isTranslationSupported())
 			flags |= DatabaseInstance.MASK_TRANSLATION;

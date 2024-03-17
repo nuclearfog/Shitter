@@ -26,7 +26,7 @@ public class UserListUpdate implements Serializable {
 	public UserListUpdate() {
 		listId = 0L;
 		title = "";
-		policy = UserList.NONE;
+		policy = UserList.REPLIES_NONE;
 		isExclusive = false;
 	}
 
@@ -37,7 +37,7 @@ public class UserListUpdate implements Serializable {
 		listId = list.getId();
 		title = list.getTitle();
 		policy = list.getReplyPolicy();
-		isExclusive = false; // todo implement this
+		isExclusive = list.isExclusive();
 	}
 
 	/**
@@ -68,18 +68,18 @@ public class UserListUpdate implements Serializable {
 	}
 
 	/**
-	 * set userlist policy
+	 * set userlist reply policy
 	 *
-	 * @param policy values from {@link UserList#NONE,UserList#FOLLOWED,UserList#LIST}
+	 * @param policy values from {@link UserList#REPLIES_NONE ,UserList#REPLIES_FOLLOWING ,UserList#REPLIES_MEMBER}
 	 */
 	public void setPolicy(int policy) {
 		this.policy = policy;
 	}
 
 	/**
-	 * get userlist policy
+	 * get userlist reply policy
 	 *
-	 * @return policy values from {@link UserList#NONE,UserList#FOLLOWED,UserList#LIST}
+	 * @return policy values from {@link UserList#REPLIES_NONE ,UserList#REPLIES_FOLLOWING ,UserList#REPLIES_MEMBER}
 	 */
 	public int getPolicy() {
 		return policy;

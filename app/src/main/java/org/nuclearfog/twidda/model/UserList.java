@@ -9,11 +9,20 @@ import java.io.Serializable;
  */
 public interface UserList extends Serializable, Comparable<UserList> {
 
-	int NONE = 0;
+	/**
+	 * Show replies to no one
+	 */
+	int REPLIES_NONE = 0;
 
-	int FOLLOWED = 1;
+	/**
+	 * Show replies to any followed user
+	 */
+	int REPLIES_FOLLOWING = 1;
 
-	int LIST = 2;
+	/**
+	 * Show replies to members of the list
+	 */
+	int REPLIES_MEMBER = 2;
 
 	/**
 	 * @return ID of the user list
@@ -26,9 +35,14 @@ public interface UserList extends Serializable, Comparable<UserList> {
 	String getTitle();
 
 	/**
-	 * @return Which replies should be shown in the list {@link #NONE,#FOLLOWED,#LIST}
+	 * @return Which replies should be shown in the list {@link #REPLIES_NONE ,#FOLLOWED,#LIST}
 	 */
 	int getReplyPolicy();
+
+	/**
+	 * @return true if members of this list are excluded from the home timeline
+	 */
+	boolean isExclusive();
 
 
 	@Override

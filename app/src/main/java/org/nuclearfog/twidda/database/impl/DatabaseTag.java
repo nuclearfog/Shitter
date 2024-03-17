@@ -18,15 +18,16 @@ public class DatabaseTag implements Tag, TagTable {
 	private static final long serialVersionUID = 1799880502954768985L;
 
 	/**
-	 * SQLite columns
+	 * Table columns
 	 */
-	public static final String[] COLUMNS = {TAG_NAME, VOL, INDEX, LOCATION, ID};
+	public static final String[] COLUMNS = {TAG_NAME, VOL, INDEX, LOCATION, ID, FLAGS};
 
 	private String name = "";
 	private int popularity;
 	private int rank;
 	private long id;
 	private long locationId;
+	private boolean followed;
 
 	/**
 	 * @param cursor database cursor using this {@link #COLUMNS} projection
@@ -37,8 +38,11 @@ public class DatabaseTag implements Tag, TagTable {
 		rank = cursor.getInt(2);
 		locationId = cursor.getLong(3);
 		id = cursor.getLong(4);
-		if (name != null)
+		int flags = cursor.getInt(5);
+		followed = (flags & FLAG_FOLLOWED) != 0;
+		if (name != null) {
 			this.name = name;
+		}
 	}
 
 
@@ -73,8 +77,8 @@ public class DatabaseTag implements Tag, TagTable {
 
 
 	@Override
-	public boolean following() {
-		return false; // todo implement this
+	public boolean isFollowed() {
+		return followed;
 	}
 
 

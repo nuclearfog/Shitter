@@ -20,6 +20,7 @@ public class MastodonList implements UserList {
 	private long id;
 	private String title;
 	private int policy;
+	private boolean isExclusive;
 
 	/**
 	 * @param json userlist json object
@@ -28,18 +29,19 @@ public class MastodonList implements UserList {
 		String idStr = json.getString("id");
 		String policyStr = json.optString("replies_policy", "");
 		title = json.getString("title");
+		isExclusive = json.optBoolean("exclusive", false);
 
 		switch (policyStr) {
 			case "followed":
-				policy = FOLLOWED;
+				policy = REPLIES_FOLLOWING;
 				break;
 
 			case "list":
-				policy = LIST;
+				policy = REPLIES_MEMBER;
 				break;
 
 			default:
-				policy = NONE;
+				policy = REPLIES_NONE;
 				break;
 		}
 		try {
@@ -65,6 +67,12 @@ public class MastodonList implements UserList {
 	@Override
 	public int getReplyPolicy() {
 		return policy;
+	}
+
+
+	@Override
+	public boolean isExclusive() {
+		return isExclusive;
 	}
 
 

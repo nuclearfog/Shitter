@@ -21,7 +21,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 24;
+	private static final int DB_VERSION = 25;
 
 	/**
 	 * database file name
@@ -89,6 +89,7 @@ public class DatabaseAdapter {
 			+ TagTable.LOCATION + " INTEGER,"
 			+ TagTable.INDEX + " INTEGER,"
 			+ TagTable.VOL + " INTEGER,"
+			+ TagTable.FLAGS + " INTEGER,"
 			+ TagTable.TAG_NAME + " TEXT NOT NULL);";
 
 	/**
@@ -353,6 +354,13 @@ public class DatabaseAdapter {
 	private static final String UPDATE_TAG_ADD_ID = "ALTER TABLE " + TagTable.TABLE + " ADD " + TagTable.ID + " INTEGER;";
 
 	/**
+	 * add mediatable description
+	 *
+	 * @since 3.5.8
+	 */
+	private static final String UPDATE_TAG_ADD_FLAGS = "ALTER TABLE " + TagTable.TABLE + " ADD " + TagTable.FLAGS + " INTEGER;";
+
+	/**
 	 * singleton instance
 	 */
 	private static DatabaseAdapter instance;
@@ -501,10 +509,14 @@ public class DatabaseAdapter {
 				db.execSQL(UPDATE_TAG_ADD_ID);
 				db.setVersion(21);
 			}
-			if (db.getVersion() < DB_VERSION) {
+			if (db.getVersion() < 24) {
 				// recreate table
 				db.delete(BookmarkTable.TABLE, null, null);
 				db.execSQL(TABLE_BOOKMARKS);
+				db.setVersion(24);
+			}
+			if (db.getVersion() < DB_VERSION) {
+				db.execSQL(UPDATE_TAG_ADD_FLAGS);
 				db.setVersion(DB_VERSION);
 			}
 		}
@@ -808,6 +820,16 @@ public class DatabaseAdapter {
 		 * popularity count
 		 */
 		String VOL = "activity";
+
+		/**
+		 * status flags
+		 */
+		String FLAGS = "tag_flags";
+
+		/**
+		 * indicates that a tag is followed by the current user
+		 */
+		int FLAG_FOLLOWED = 1;
 	}
 
 	/**
