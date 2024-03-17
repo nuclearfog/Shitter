@@ -236,7 +236,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 			AppStyles.setMenuIconColor(m, settings.getIconColor());
 			return true;
 		}
-		return super.onCreateOptionsMenu(m);
+		return true;
 	}
 
 

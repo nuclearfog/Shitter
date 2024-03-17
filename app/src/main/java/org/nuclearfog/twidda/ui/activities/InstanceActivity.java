@@ -127,7 +127,8 @@ public class InstanceActivity extends AppCompatActivity implements OnClickListen
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		menu.findItem(R.id.menu_instance_show_all_announcements).setChecked(settings.showAllAnnouncements());
+		MenuItem announcements = menu.findItem(R.id.menu_instance_show_all_announcements);
+		announcements.setChecked(settings.showAllAnnouncements());
 		return true;
 	}
 
@@ -144,8 +145,9 @@ public class InstanceActivity extends AppCompatActivity implements OnClickListen
 			settings.setShowAllAnnouncements(isChecked);
 			item.setChecked(isChecked);
 			viewModel.notify(ListFragment.NOTIFY_CHANGED);
+			return true;
 		}
-		return super.onOptionsItemSelected(item);
+		return false;
 	}
 
 

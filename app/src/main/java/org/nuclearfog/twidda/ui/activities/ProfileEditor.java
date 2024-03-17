@@ -245,7 +245,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 			updateUser();
 			return true;
 		}
-		return super.onOptionsItemSelected(item);
+		return false;
 	}
 
 
@@ -294,7 +294,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 			StatusPreferenceUpdate statusPref = userUpdate.getStatusPreference();
 			if (statusPref == null)
 				statusPref = new StatusPreferenceUpdate();
-			StatusPreferenceDialog.show(this, statusPref, false);
+			StatusPreferenceDialog.show(this, statusPref, StatusPreferenceDialog.PROFILE_EDIT);
 		}
 	}
 

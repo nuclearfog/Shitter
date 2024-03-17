@@ -61,7 +61,7 @@ public class FilterActivity extends AppCompatActivity implements FilterDialogCal
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.filter, menu);
-		return super.onCreateOptionsMenu(menu);
+		return true;
 	}
 
 
@@ -71,7 +71,7 @@ public class FilterActivity extends AppCompatActivity implements FilterDialogCal
 			FilterDialog.show(this);
 			return true;
 		}
-		return super.onOptionsItemSelected(item);
+		return false;
 	}
 
 

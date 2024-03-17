@@ -111,7 +111,7 @@ public class AccountActivity extends AppCompatActivity implements ActivityResult
 			activityResultLauncher.launch(loginIntent);
 			return true;
 		}
-		return super.onOptionsItemSelected(item);
+		return false;
 	}
 
 

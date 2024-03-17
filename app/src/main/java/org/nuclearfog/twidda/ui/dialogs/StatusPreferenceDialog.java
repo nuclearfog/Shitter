@@ -56,7 +56,22 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 	 * Bundle key to enable extra settings of the configuration
 	 * value type is boolean
 	 */
-	private static final String KEY_EXT = "pref-extended";
+	private static final String KEY_MODE = "pref-extended";
+
+	/**
+	 * enable features used to post a status
+	 */
+	public static final int STATUS_POST = 0;
+
+	/**
+	 * enable features used to edit a status
+	 */
+	public static final int STATUS_EDIT = 1;
+
+	/**
+	 * enable features to update the user profile
+	 */
+	public static final int PROFILE_EDIT = 2;
 
 	// index of the visibility spinner list (see R.array.visibility)
 	private static final int IDX_VISIBILITY_DEFAULT = 0;
@@ -69,7 +84,7 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 
 	private String[] languageCodes = {};
 	private StatusPreferenceUpdate prefUpdate = new StatusPreferenceUpdate();
-	private boolean enable_extras = false;
+	private int mode;
 
 	/**
 	 *
@@ -101,15 +116,18 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 		if (savedInstanceState == null)
 			savedInstanceState = getArguments();
 		if (savedInstanceState != null) {
-			enable_extras = savedInstanceState.getBoolean(KEY_EXT);
-			Object data = savedInstanceState.getSerializable(KEY_PREF);
-			if (data instanceof StatusPreferenceUpdate) {
-				prefUpdate = (StatusPreferenceUpdate) data;
-			}
-			if (!enable_extras) {
-				scheduleText.setVisibility(View.GONE);
-				timePicker.setVisibility(View.GONE);
-				statusSpoiler.setVisibility(View.GONE);
+			mode = savedInstanceState.getInt(KEY_MODE);
+			prefUpdate = (StatusPreferenceUpdate) savedInstanceState.getSerializable(KEY_PREF);
+			switch (mode) {
+				case PROFILE_EDIT:
+					scheduleText.setVisibility(View.GONE);
+					timePicker.setVisibility(View.GONE);
+					statusSpoiler.setVisibility(View.GONE);
+					// fall through
+				case STATUS_EDIT:
+					scheduleText.setVisibility(View.GONE);
+					timePicker.setVisibility(View.GONE);
+					break;
 			}
 		}
 		sensitiveCheck.setCheckedImmediately(prefUpdate.isSensitive());
@@ -169,7 +187,7 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle outState) {
 		outState.putSerializable(KEY_PREF, prefUpdate);
-		outState.putSerializable(KEY_EXT, enable_extras);
+		outState.putSerializable(KEY_MODE, mode);
 		super.onSaveInstanceState(outState);
 	}
 
@@ -255,15 +273,15 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 	/**
 	 * show status preference dialog
 	 *
-	 * @param enableExtras true to enable extra features (used for status)
+	 * @param mode mode to show features depending on usage
 	 */
-	public static void show(FragmentActivity activity, StatusPreferenceUpdate update, boolean enableExtras) {
+	public static void show(FragmentActivity activity, StatusPreferenceUpdate update, int mode) {
 		Fragment dialogFragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
 		if (dialogFragment == null) {
 			StatusPreferenceDialog dialog = new StatusPreferenceDialog();
 			Bundle param = new Bundle();
 			param.putSerializable(KEY_PREF, update);
-			param.putBoolean(KEY_EXT, enableExtras);
+			param.putInt(KEY_MODE, mode);
 			dialog.setArguments(param);
 			dialog.show(activity.getSupportFragmentManager(), TAG);
 		}
@@ -274,6 +292,11 @@ public class StatusPreferenceDialog extends DialogFragment implements OnCheckedC
 	 */
 	public interface PreferenceSetCallback {
 
+		/**
+		 * called to set/update status preference
+		 *
+		 * @param update updated status preference
+		 */
 		void onPreferenceSet(StatusPreferenceUpdate update);
 	}
 }

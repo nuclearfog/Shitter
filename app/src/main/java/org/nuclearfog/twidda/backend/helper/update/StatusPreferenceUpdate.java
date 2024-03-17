@@ -70,7 +70,9 @@ public class StatusPreferenceUpdate implements Serializable {
 	}
 
 	/**
-	 * @param lang default lanugage of a status (language code)
+	 * set language information
+	 *
+	 * @param lang ISO 639 Part 1 two-letter language code or empty
 	 */
 	public void setLanguage(@NonNull String lang) {
 		this.lang = lang;

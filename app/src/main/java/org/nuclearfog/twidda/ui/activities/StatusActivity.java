@@ -362,7 +362,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.status, m);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
-		return super.onCreateOptionsMenu(m);
+		return true;
 	}
 
 
@@ -425,68 +425,69 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		if (status != null) {
-			Status status = this.status;
-			if (status.getEmbeddedStatus() != null)
-				status = status.getEmbeddedStatus();
-			// add/remove bookmark
-			if (item.getItemId() == R.id.menu_status_bookmark) {
-				if (statusLoader.isIdle()) {
-					Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
-					int mode = status.isBookmarked() ? StatusAction.Param.UNBOOKMARK : StatusAction.Param.BOOKMARK;
-					StatusAction.Param param = new StatusAction.Param(mode, status.getId());
-					statusLoader.execute(param, statusCallback);
-				}
-				return true;
+		Status currentStatus = status;
+		if (currentStatus != null && currentStatus.getEmbeddedStatus() != null)
+			currentStatus = currentStatus.getEmbeddedStatus();
+		// add/remove bookmark
+		if (item.getItemId() == R.id.menu_status_bookmark) {
+			if (currentStatus != null && statusLoader.isIdle()) {
+				Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
+				int mode = currentStatus.isBookmarked() ? StatusAction.Param.UNBOOKMARK : StatusAction.Param.BOOKMARK;
+				StatusAction.Param param = new StatusAction.Param(mode, currentStatus.getId());
+				statusLoader.execute(param, statusCallback);
 			}
-			// hide status
-			else if (item.getItemId() == R.id.menu_status_hide) {
-				if (statusLoader.isIdle()) {
-					Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
-					int mode = hidden ? StatusAction.Param.UNHIDE : StatusAction.Param.HIDE;
-					StatusAction.Param param = new StatusAction.Param(mode, status.getId());
-					statusLoader.execute(param, statusCallback);
-				}
-				return true;
+			return true;
+		}
+		// hide status
+		else if (item.getItemId() == R.id.menu_status_hide) {
+			if (currentStatus != null && statusLoader.isIdle()) {
+				Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
+				int mode = hidden ? StatusAction.Param.UNHIDE : StatusAction.Param.HIDE;
+				StatusAction.Param param = new StatusAction.Param(mode, currentStatus.getId());
+				statusLoader.execute(param, statusCallback);
 			}
-			// pin/unpin status
-			else if (item.getItemId() == R.id.menu_status_pin) {
-				if (statusLoader.isIdle()) {
-					Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
-					int mode = status.isPinned() ? StatusAction.Param.UNPIN : StatusAction.Param.PIN;
-					StatusAction.Param param = new StatusAction.Param(mode, status.getId());
-					statusLoader.execute(param, statusCallback);
-				}
+			return true;
+		}
+		// pin/unpin status
+		else if (item.getItemId() == R.id.menu_status_pin) {
+			if (currentStatus != null && statusLoader.isIdle()) {
+				Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
+				int mode = currentStatus.isPinned() ? StatusAction.Param.UNPIN : StatusAction.Param.PIN;
+				StatusAction.Param param = new StatusAction.Param(mode, currentStatus.getId());
+				statusLoader.execute(param, statusCallback);
 			}
-			// get status link
-			else if (item.getItemId() == R.id.menu_status_browser) {
-				if (!status.getUrl().isEmpty()) {
-					//LinkUtils.openLink(this, status.getUrl());
-				}
-				return true;
+			return true;
+		}
+		// get status link
+		else if (item.getItemId() == R.id.menu_status_browser) {
+			if (currentStatus != null && !currentStatus.getUrl().isEmpty()) {
+				LinkUtils.redirectToBrowser(this, currentStatus.getUrl());
 			}
-			// copy status link to clipboard
-			else if (item.getItemId() == R.id.menu_status_copy_text) {
-				if (clip != null) {
-					ClipData linkClip = ClipData.newPlainText("status text", status.getText());
-					clip.setPrimaryClip(linkClip);
-					Toast.makeText(getApplicationContext(), R.string.info_status_text_copied, Toast.LENGTH_SHORT).show();
-				}
-				return true;
+			return true;
+		}
+		// copy status link to clipboard
+		else if (item.getItemId() == R.id.menu_status_copy_text) {
+			if (currentStatus != null && clip != null) {
+				ClipData linkClip = ClipData.newPlainText("status text", currentStatus.getText());
+				clip.setPrimaryClip(linkClip);
+				Toast.makeText(getApplicationContext(), R.string.info_status_text_copied, Toast.LENGTH_SHORT).show();
 			}
-			// copy status link to clipboard
-			else if (item.getItemId() == R.id.menu_status_copy_link) {
-				if (clip != null) {
-					ClipData linkClip = ClipData.newPlainText("status link", status.getUrl());
-					clip.setPrimaryClip(linkClip);
-					Toast.makeText(getApplicationContext(), R.string.info_status_link_copied, Toast.LENGTH_SHORT).show();
-				}
-				return true;
+			return true;
+		}
+		// copy status link to clipboard
+		else if (item.getItemId() == R.id.menu_status_copy_link) {
+			if (currentStatus != null && clip != null) {
+				ClipData linkClip = ClipData.newPlainText("status link", currentStatus.getUrl());
+				clip.setPrimaryClip(linkClip);
+				Toast.makeText(getApplicationContext(), R.string.info_status_link_copied, Toast.LENGTH_SHORT).show();
 			}
-			// copy media links
-			else if (item.getGroupId() == MENU_GROUP_COPY) {
+			return true;
+		}
+		// copy media links
+		else if (item.getGroupId() == MENU_GROUP_COPY) {
+			if (currentStatus != null) {
 				int index = item.getItemId();
-				Media[] medias = status.getMedia();
+				Media[] medias = currentStatus.getMedia();
 				if (index >= 0 && index < medias.length) {
 					if (clip != null) {
 						ClipData linkClip = ClipData.newPlainText("status media link", medias[index].getUrl());
@@ -494,33 +495,38 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 						Toast.makeText(getApplicationContext(), R.string.info_status_medialink_copied, Toast.LENGTH_SHORT).show();
 					}
 				}
-				return true;
 			}
-			// edit status
-			else if (item.getItemId() == R.id.menu_status_edit) {
+			return true;
+		}
+		// edit status
+		else if (item.getItemId() == R.id.menu_status_edit) {
+			if (currentStatus != null) {
 				Intent intent = new Intent(this, StatusEditor.class);
-				intent.putExtra(StatusEditor.KEY_STATUS_DATA, status);
-				intent.putExtra(StatusEditor.KEY_EDIT, true);
+				intent.putExtra(StatusEditor.KEY_EDIT_DATA, currentStatus);
 				activityResultLauncher.launch(intent);
-				return true;
 			}
-			// report status
-			else if (item.getItemId() == R.id.menu_status_report) {
-				ReportDialog.show(this, status.getAuthor().getId(), status.getId());
-				return true;
+			return true;
+		}
+		// report status
+		else if (item.getItemId() == R.id.menu_status_report) {
+			if (currentStatus != null) {
+				ReportDialog.show(this, currentStatus.getAuthor().getId(), currentStatus.getId());
 			}
-			// get edit history
-			else if (item.getItemId() == R.id.menu_status_history) {
+			return true;
+		}
+		// get edit history
+		else if (item.getItemId() == R.id.menu_status_history) {
+			if (currentStatus != null) {
 				Intent intent = new Intent(this, EditHistoryActivity.class);
-				intent.putExtra(EditHistoryActivity.KEY_ID, status.getId());
+				intent.putExtra(EditHistoryActivity.KEY_ID, currentStatus.getId());
 				startActivity(intent);
-				return true;
 			}
-			// Delete status option
-			else if (item.getItemId() == R.id.menu_status_delete) {
-				ConfirmDialog.show(this, ConfirmDialog.DELETE_STATUS, null);
-				return true;
-			}
+			return true;
+		}
+		// Delete status option
+		else if (item.getItemId() == R.id.menu_status_delete) {
+			ConfirmDialog.show(this, ConfirmDialog.DELETE_STATUS, null);
+			return true;
 		}
 		return false;
 	}
@@ -530,7 +536,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public void onActivityResult(ActivityResult result) {
 		if (result.getData() != null) {
 			if (result.getResultCode() == StatusEditor.RETURN_STATUS_UPDATE) {
-				Serializable data = result.getData().getSerializableExtra(StatusEditor.KEY_STATUS_DATA);
+				Serializable data = result.getData().getSerializableExtra(StatusEditor.KEY_REPLY_DATA);
 				if (data instanceof Status) {
 					setStatus((Status) data);
 				}
@@ -548,7 +554,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			// answer to the status
 			if (v.getId() == R.id.page_status_reply) {
 				Intent intent = new Intent(this, StatusEditor.class);
-				intent.putExtra(StatusEditor.KEY_STATUS_DATA, status);
+				intent.putExtra(StatusEditor.KEY_REPLY_DATA, status);
 				startActivity(intent);
 			}
 			// show user reposting this status
@@ -744,7 +750,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public void onLinkClick(String tag) {
 		// proceed click when there is no text blur
 		if (status_text.getPaint().getMaskFilter() == null) {
-			//LinkUtils.openLink(this, tag);
+			LinkUtils.redirectToBrowser(this, tag);
 		}
 	}
 

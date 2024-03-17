@@ -225,13 +225,14 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageDow
 		if (item.getItemId() == R.id.menu_image_save) {
 			if (cacheUri != null) {
 				storeImage(cacheUri);
-				return true;
 			}
+			return true;
 		} else if (item.getItemId() == R.id.menu_image_add_description) {
-			if (mediaStatus != null)
+			if (mediaStatus != null) {
 				DescriptionDialog.show(this, mediaStatus.getDescription());
-			else
+			} else {
 				DescriptionDialog.show(this, "");
+			}
 			return true;
 		} else if (item.getItemId() == R.id.menu_image_show_meta) {
 			if (meta != null) {
@@ -239,7 +240,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageDow
 			}
 			return true;
 		}
-		return super.onOptionsItemSelected(item);
+		return false;
 	}
 
 

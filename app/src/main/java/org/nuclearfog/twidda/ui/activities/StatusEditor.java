@@ -68,22 +68,29 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	public static final int RETURN_STATUS_UPDATE = 0x30220;
 
 	/**
-	 * key to add the status to reply
-	 * value type is {@link Status}
-	 */
-	public static final String KEY_STATUS_DATA = "status_data";
-
-	/**
-	 * key to edit status send with {@link #KEY_STATUS_DATA}
-	 * value type is Boolean
-	 */
-	public static final String KEY_EDIT = "status_edit";
-
-	/**
 	 * key for the text added to the status if any
 	 * value type is String
 	 */
 	public static final String KEY_TEXT = "status_text";
+
+	/**
+	 * Bundle key used to add a status to reply
+	 * value type is {@link Status}
+	 */
+	public static final String KEY_REPLY_DATA = "status_reply_data";
+
+	/**
+	 * Bundle key used to add a status to edit
+	 * value type is {@link Status}
+	 */
+	public static final String KEY_EDIT_DATA = "status_edit_data";
+
+	/**
+	 * Bundle key used to restore status update from previous lifecycle
+	 * value type is {@link StatusUpdate}
+	 */
+	private static final String KEY_UPDATE_DATA = "status_update_data";
+
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 	private AsyncCallback<StatusUpdater.Result> statusUpdateResult = this::onStatusUpdated;
@@ -144,47 +151,43 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 		if (!settings.getLogin().getConfiguration().isEmojiSupported()) {
 			emojiButton.setVisibility(View.GONE);
 		}
-		// fetch parameters
-		boolean editStatus;
-		String prefix;
-		Serializable serializedData;
+
+		// get statusupdate from previous lifecycle of this activity
 		if (savedInstanceState != null) {
-			serializedData = savedInstanceState.getSerializable(KEY_STATUS_DATA);
-			editStatus = savedInstanceState.getBoolean(KEY_EDIT, false);
-			prefix = savedInstanceState.getString(KEY_TEXT, "");
-		} else {
-			serializedData = getIntent().getSerializableExtra(KEY_STATUS_DATA);
-			editStatus = getIntent().getBooleanExtra(KEY_EDIT, false);
-			if (getIntent().hasExtra(KEY_TEXT)) {
-				prefix = getIntent().getStringExtra(KEY_TEXT);
-			} else {
-				prefix = "";
-			}
-		}
-		if (serializedData instanceof StatusUpdate) {
-			statusUpdate = (StatusUpdate) serializedData;
+			statusUpdate = (StatusUpdate) savedInstanceState.getSerializable(KEY_UPDATE_DATA);
+			statusText.setText(statusUpdate.getText());
 			for (MediaStatus item : statusUpdate.getMediaStatuses()) {
 				addMedia(item.getMediaType());
 			}
-		} else if (serializedData instanceof Status) {
-			Status status = (Status) serializedData;
-			if (editStatus) {
-				statusUpdate.setStatus(status);
-				statusText.append(status.getText());
-				for (Media media : status.getMedia()) {
-					addMedia(media.getMediaType());
+		}
+		// get parameters from other activities
+		else {
+			if (getIntent().hasExtra(KEY_TEXT)) {
+				String prefix = getIntent().getStringExtra(KEY_TEXT);
+				if (prefix != null) {
+					statusUpdate.addText(prefix);
+					statusText.setText(prefix);
 				}
-				// disable attach button
-				mediaBtn.setVisibility(View.GONE);
-			} else {
-				statusUpdate.addReplyStatusId(status.getId());
-				statusUpdate.getStatusPreferences().setVisibility(status.getVisibility());
-				statusUpdate.addText(status.getUserMentions());
-				statusText.append(status.getUserMentions());
+			} else if (getIntent().hasExtra(KEY_REPLY_DATA)) {
+				Object data = getIntent().getSerializableExtra(KEY_REPLY_DATA);
+				if (data instanceof Status) {
+					Status status = (Status) data;
+					statusUpdate.setStatusToReply(status);
+					statusText.append(status.getUserMentions());
+				}
+			} else if (getIntent().hasExtra(KEY_EDIT_DATA)) {
+				Object data = getIntent().getSerializableExtra(KEY_EDIT_DATA);
+				if (data instanceof Status) {
+					Status status = (Status) data;
+					statusUpdate.setStatusToEdit(status);
+					statusText.append(status.getText());
+					for (Media media : status.getMedia()) {
+						addMedia(media.getMediaType());
+					}
+					// disable attach button
+					mediaBtn.setVisibility(View.GONE);
+				}
 			}
-		} else {
-			statusUpdate.addText(prefix);
-			statusText.append(prefix);
 		}
 		statusText.setOnTextChangeListener(this);
 		emojiButton.setOnClickListener(this);
@@ -217,7 +220,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 
 	@Override
 	protected void onSaveInstanceState(@NonNull Bundle outState) {
-		outState.putSerializable(KEY_STATUS_DATA, statusUpdate);
+		outState.putSerializable(KEY_REPLY_DATA, statusUpdate);
 		super.onSaveInstanceState(outState);
 	}
 
@@ -291,7 +294,11 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 		}
 		// open status preference
 		else if (v.getId() == R.id.popup_status_pref) {
-			StatusPreferenceDialog.show(this, statusUpdate.getStatusPreferences(), true);
+			if (statusUpdate.getStatusId() == 0L) {
+				StatusPreferenceDialog.show(this, statusUpdate.getStatusPreferences(), StatusPreferenceDialog.STATUS_POST);
+			} else {
+				StatusPreferenceDialog.show(this, statusUpdate.getStatusPreferences(), StatusPreferenceDialog.STATUS_EDIT);
+			}
 		}
 		// Add media to the status
 		else if (v.getId() == R.id.popup_status_add_media) {
@@ -482,7 +489,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 		} else {
 			if (result.status != null) {
 				Intent intent = new Intent();
-				intent.putExtra(KEY_STATUS_DATA, result.status);
+				intent.putExtra(KEY_REPLY_DATA, result.status);
 				setResult(RETURN_STATUS_UPDATE, intent);
 			}
 			Toast.makeText(getApplicationContext(), R.string.info_status_sent, Toast.LENGTH_LONG).show();

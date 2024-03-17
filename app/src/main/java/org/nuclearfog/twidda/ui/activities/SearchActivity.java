@@ -178,8 +178,9 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 			} else {
 				tag_item.setTitle(R.string.menu_tag_follow);
 			}
+			return true;
 		}
-		return super.onPrepareOptionsMenu(menu);
+		return false;
 	}
 
 
@@ -216,8 +217,9 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 					param = new TagAction.Param(TagAction.Param.FOLLOW, tag.getName());
 				tagAction.execute(param, this);
 			}
+			return true;
 		}
-		return super.onOptionsItemSelected(item);
+		return false;
 	}
 
 

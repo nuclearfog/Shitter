@@ -98,7 +98,7 @@ public class UserlistsActivity extends AppCompatActivity implements UserlistUpda
 	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.lists, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
-		return super.onCreateOptionsMenu(m);
+		return true;
 	}
 
 
@@ -116,7 +116,7 @@ public class UserlistsActivity extends AppCompatActivity implements UserlistUpda
 			startActivity(usersIntent);
 			return true;
 		}
-		return super.onOptionsItemSelected(item);
+		return false;
 	}
 
 

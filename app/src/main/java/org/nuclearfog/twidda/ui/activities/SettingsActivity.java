@@ -276,7 +276,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.settings, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
-		return super.onCreateOptionsMenu(m);
+		return true;
 	}
 
 
@@ -284,10 +284,12 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (item.getItemId() == R.id.settings_info) {
 			InfoDialog.show(this);
+			return true;
 		} else if (item.getItemId() == R.id.settings_licenses) {
 			LicenseDialog.show(this);
+			return true;
 		}
-		return super.onOptionsItemSelected(item);
+		return false;
 	}
 
 

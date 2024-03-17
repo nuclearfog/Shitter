@@ -48,6 +48,7 @@ import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.backend.utils.Tagger;
 import org.nuclearfog.twidda.backend.utils.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.backend.utils.ToolbarUpdater;
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
@@ -292,55 +293,43 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		getMenuInflater().inflate(R.menu.profile, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
-		return super.onCreateOptionsMenu(m);
+		return true;
 	}
 
 
 	@Override
 	public boolean onPrepareOptionsMenu(@NonNull Menu m) {
-		boolean result = super.onPrepareOptionsMenu(m);
-		if (user != null) {
+		if (user != null && relation != null) {
 			MenuItem listItem = m.findItem(R.id.profile_lists);
 			MenuItem domainItem = m.findItem(R.id.profile_block_domain);
 			MenuItem reportItem = m.findItem(R.id.profile_report);
+			MenuItem followIcon = m.findItem(R.id.profile_follow);
+			MenuItem blockIcon = m.findItem(R.id.profile_block);
+			MenuItem muteIcon = m.findItem(R.id.profile_mute);
 
-			switch (settings.getLogin().getConfiguration()) {
-				case MASTODON:
-					listItem.setVisible(user.isCurrentUser());
-					domainItem.setVisible(!user.isCurrentUser());
-					reportItem.setVisible(!user.isCurrentUser());
-					break;
+			if (settings.getLogin().getConfiguration() == Configuration.MASTODON) {
+				listItem.setVisible(user.isCurrentUser());
+				domainItem.setVisible(!user.isCurrentUser());
+				reportItem.setVisible(!user.isCurrentUser());
 			}
 			if (!user.isCurrentUser()) {
-				MenuItem followIcon = m.findItem(R.id.profile_follow);
-				MenuItem blockIcon = m.findItem(R.id.profile_block);
-				MenuItem muteIcon = m.findItem(R.id.profile_mute);
 				followIcon.setVisible(true);
 				blockIcon.setVisible(true);
 				muteIcon.setVisible(true);
 			}
-			result = true;
-		}
-		if (relation != null) {
 			if (relation.isFollowing()) {
-				MenuItem followIcon = m.findItem(R.id.profile_follow);
 				AppStyles.setMenuItemColor(followIcon, settings.getFollowIconColor());
 				followIcon.setTitle(R.string.menu_user_unfollow);
 			}
 			if (relation.isBlocked()) {
-				MenuItem blockIcon = m.findItem(R.id.profile_block);
 				blockIcon.setTitle(R.string.menu_user_unblock);
 			}
 			if (relation.isMuted()) {
-				MenuItem muteIcon = m.findItem(R.id.profile_mute);
 				muteIcon.setTitle(R.string.menu_unmute_user);
 			}
-			if (relation.isFollower()) {
-				follow_back.setVisibility(View.VISIBLE);
-			}
-			result = true;
+			return true;
 		}
-		return result;
+		return false;
 	}
 
 
@@ -413,14 +402,16 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			if (user != null) {
 				ConfirmDialog.show(this, ConfirmDialog.DOMAIN_BLOCK_ADD, null);
 			}
+			return true;
 		}
 		// report user
 		else if (item.getItemId() == R.id.profile_report) {
 			if (user != null) {
 				ReportDialog.show(this, user.getId());
 			}
+			return true;
 		}
-		return super.onOptionsItemSelected(item);
+		return false;
 	}
 
 
@@ -623,6 +614,9 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		}
 		if (result.relation != null) {
 			relation = result.relation;
+			if (relation.isFollower()) {
+				follow_back.setVisibility(View.VISIBLE);
+			}
 			invalidateOptionsMenu();
 		}
 	}

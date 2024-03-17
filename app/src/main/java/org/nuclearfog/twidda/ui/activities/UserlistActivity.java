@@ -145,7 +145,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 		getMenuInflater().inflate(R.menu.userlist, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
-		return super.onCreateOptionsMenu(m);
+		return true;
 	}
 
 

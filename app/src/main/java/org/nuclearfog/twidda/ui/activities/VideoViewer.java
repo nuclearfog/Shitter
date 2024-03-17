@@ -245,7 +245,7 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 		menuOpenUrl.setVisible(media != null);
 		menuDescription.setVisible(mediaStatus != null);
 		menuMeta.setVisible(media != null && media.getMeta() != null);
-		return super.onCreateOptionsMenu(menu);
+		return true;
 	}
 
 

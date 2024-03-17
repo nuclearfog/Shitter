@@ -193,7 +193,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 			activityResultLauncher.launch(accountManager);
 			return true;
 		}
-		return super.onOptionsItemSelected(item);
+		return false;
 	}
 
 

@@ -65,17 +65,18 @@ public class StatusUpdate implements Serializable, Closeable {
 	}
 
 	/**
-	 * set informations of an existing status to edit these
+	 * add status information to edit
 	 *
-	 * @param status existing status
+	 * @param status status to edit
 	 */
-	public void setStatus(Status status) {
+	public void setStatusToEdit(Status status) {
 		statusId = status.getId();
 		replyId = status.getRepliedStatusId();
 		text = status.getText();
 		statusPreferences.setSensitive(status.isSensitive());
 		statusPreferences.setSpoiler(status.isSpoiler());
 		statusPreferences.setVisibility(status.getVisibility());
+		statusPreferences.setLanguage(status.getLanguage());
 		if (status.getPoll() != null) {
 			poll = new PollUpdate(status.getPoll());
 		}
@@ -90,12 +91,14 @@ public class StatusUpdate implements Serializable, Closeable {
 	}
 
 	/**
-	 * set ID of the replied status
+	 * add status information for a reply
 	 *
-	 * @param replyId status ID to reply
+	 * @param status status to reply
 	 */
-	public void addReplyStatusId(long replyId) {
-		this.replyId = replyId;
+	public void setStatusToReply(Status status) {
+		replyId = status.getId();
+		text = status.getUserMentions();
+		statusPreferences.setVisibility(status.getVisibility());
 	}
 
 	/**

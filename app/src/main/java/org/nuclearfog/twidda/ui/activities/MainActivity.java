@@ -328,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			AppStyles.setTheme(searchView, Color.TRANSPARENT);
 			return true;
 		}
-		return super.onOptionsItemSelected(item);
+		return false;
 	}
 
 
