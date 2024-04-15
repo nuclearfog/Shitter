@@ -3,8 +3,10 @@ package org.nuclearfog.twidda.ui.activities;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.ACCESS_MEDIA_LOCATION;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.READ_MEDIA_AUDIO;
 import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import static android.Manifest.permission.READ_MEDIA_VIDEO;
+import static android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.provider.MediaStore.Images.Media.DATE_TAKEN;
 import static android.provider.MediaStore.Images.Media.DISPLAY_NAME;
@@ -24,6 +26,8 @@ import android.location.LocationManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Environment;
 import android.widget.Toast;
@@ -69,10 +73,10 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	private static final String[] PERMISSIONS_READ;
 
 	static {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-			PERMISSIONS_READ = new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO};
-		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-			PERMISSIONS_READ = new String[]{ACCESS_MEDIA_LOCATION, READ_EXTERNAL_STORAGE};
+		if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
+			PERMISSIONS_READ = new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO, READ_MEDIA_VISUAL_USER_SELECTED};
+		} else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
+			PERMISSIONS_READ = new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO};
 		} else {
 			PERMISSIONS_READ = new String[]{READ_EXTERNAL_STORAGE};
 		}

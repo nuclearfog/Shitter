@@ -1499,8 +1499,9 @@ public class AppDatabase {
 			String emojiKeys = buf.deleteCharAt(buf.length() - 1).toString();
 			column.put(UserTable.EMOJI, emojiKeys);
 		}
-		saveFields(user.getFields(), user.getId(), db);
-
+		if (mode == SQLiteDatabase.CONFLICT_REPLACE) {
+			saveFields(user.getFields(), user.getId(), db);
+		}
 		column.put(UserTable.ID, user.getId());
 		column.put(UserTable.USERNAME, user.getUsername());
 		column.put(UserTable.SCREENNAME, user.getScreenname());
@@ -1672,6 +1673,9 @@ public class AppDatabase {
 	 * @param userId ID of the user
 	 */
 	private void saveFields(Field[] fields, long userId, SQLiteDatabase db) {
+		// delete previous user fields
+		db.delete(UserFieldTable.TABLE, FIELD_SELECT, new String[]{Long.toString(userId)});
+		// save new user fields
 		for (Field field : fields) {
 			ContentValues column = new ContentValues();
 			String[] args = {Long.toString(userId), field.getKey()};

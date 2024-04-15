@@ -259,19 +259,14 @@ public class AppStyles {
 				if (image.getWidth() > 0 && image.getHeight() > 0) {
 					// crop image to background size
 					if (background.getMeasuredHeight() > 0 && background.getMeasuredWidth() > 0) {
-						CropTransformation crop;
-						int width, height;
+						int width = image.getWidth();
+						int height = image.getHeight();
 						if ((image.getWidth() / (float) image.getHeight() < (background.getWidth() / (float) background.getHeight()))) {
 							height = image.getWidth() * background.getMeasuredHeight() / background.getMeasuredWidth();
-							width = image.getWidth();
 						} else if ((image.getWidth() / (float) image.getHeight() > (background.getWidth() / (float) background.getHeight()))) {
-							height = image.getHeight();
 							width = image.getHeight() * background.getMeasuredWidth() / background.getMeasuredHeight();
-						} else {
-							width = image.getWidth();
-							height = image.getHeight();
 						}
-						crop = new CropTransformation(width, height, GravityHorizontal.CENTER, GravityVertical.CENTER);
+						CropTransformation crop = new CropTransformation(width, height, GravityHorizontal.CENTER, GravityVertical.CENTER);
 						image = crop.transform(image);
 					}
 					int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;

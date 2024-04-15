@@ -10,8 +10,8 @@ android {
 		applicationId 'org.nuclearfog.twidda'
 		minSdkVersion 21
 		targetSdkVersion 34
-		versionCode 111
-		versionName '3.5.8'
+		versionCode 112
+		versionName '3.5.9'
 		resConfigs 'en', 'es', 'de', 'zh-rCN'
 	}
 
@@ -31,6 +31,13 @@ android {
 
 	buildFeatures {
 		buildConfig true
+	}
+
+	dependenciesInfo {
+		// Disables dependency metadata when building APKs.
+		includeInApk = false
+		// Disables dependency metadata when building Android App Bundles.
+		includeInBundle = false
 	}
 
 	packagingOptions {
