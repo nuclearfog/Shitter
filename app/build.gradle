@@ -77,6 +77,6 @@ dependencies {
 	//noinspection GradleDependency
 	implementation 'com.google.android.material:material:1.9.0'
 	implementation 'jp.wasabeef:picasso-transformations:2.4.0'
-	implementation 'net.danlew:android.joda:2.12.5'
-	implementation 'org.jsoup:jsoup:1.17.1'
+	implementation 'net.danlew:android.joda:2.12.7'
+	implementation 'org.jsoup:jsoup:1.17.2'
 }

@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.InstanceLoader;
 import org.nuclearfog.twidda.backend.async.StatusUpdater;
@@ -483,9 +484,10 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	 */
 	private void onStatusUpdated(@NonNull StatusUpdater.Result result) {
 		if (result.exception != null) {
-			String message = ErrorUtils.getErrorMessage(this, result.exception);
-			ConfirmDialog.show(this, ConfirmDialog.STATUS_EDITOR_ERROR, message);
-			ProgressDialog.dismiss(this);
+			if (result.exception.getErrorCode() != ConnectionException.INTERRUPTED) {
+				String message = ErrorUtils.getErrorMessage(this, result.exception);
+				ConfirmDialog.show(this, ConfirmDialog.STATUS_EDITOR_ERROR, message);
+			}
 		} else {
 			if (result.status != null) {
 				Intent intent = new Intent();
@@ -495,6 +497,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 			Toast.makeText(getApplicationContext(), R.string.info_status_sent, Toast.LENGTH_LONG).show();
 			finish();
 		}
+		ProgressDialog.dismiss(this);
 	}
 
 	/**
