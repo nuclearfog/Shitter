@@ -2,9 +2,9 @@ package org.nuclearfog.twidda.ui.activities;
 
 import static android.Manifest.permission.POST_NOTIFICATIONS;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.Menu;
@@ -28,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
 import com.kyleduo.switchbutton.SwitchButton;
 
@@ -389,6 +390,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	}
 
 
+	@SuppressLint("InlinedApi")
 	@Override
 	public void onCheckedChanged(CompoundButton c, boolean checked) {
 		// toggle image loading
@@ -419,8 +421,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// enable/disable push notification
 		else if (c.getId() == R.id.page_settings_enable_push) {
 			if (checked) {
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && checkSelfPermission(POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-					requestPermissions(new String[]{POST_NOTIFICATIONS}, REQUEST_PERMISSION_NOTIFICATION);
+				if (ActivityCompat.checkSelfPermission(this, POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+					ActivityCompat.requestPermissions(this, new String[]{POST_NOTIFICATIONS}, REQUEST_PERMISSION_NOTIFICATION);
 				} else {
 					PushSubscription.subscripe(getApplicationContext());
 					WebPushDialog.show(this);

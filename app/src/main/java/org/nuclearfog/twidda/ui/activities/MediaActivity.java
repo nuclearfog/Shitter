@@ -39,6 +39,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
@@ -214,8 +215,8 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	}
 
 
-	private void setResult(@NonNull Boolean res) {
-		if (res) {
+	private void setResult(@NonNull Boolean succeed) {
+		if (succeed) {
 			Toast.makeText(getApplicationContext(), R.string.info_image_saved, Toast.LENGTH_SHORT).show();
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && destMediaFile != null) {
 				// start media scanner to scan for new image
@@ -267,13 +268,12 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	 * Ask for GPS location
 	 */
 	protected void getLocation() {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checkSelfPermission(ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+		if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 			startLocating();
 		} else {
-			if (shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {
+			if (ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_FINE_LOCATION))
 				Toast.makeText(getApplicationContext(), R.string.info_permission_location, Toast.LENGTH_LONG).show();
-			}
-			requestPermissions(PERMISSION_LOCATION, REQUEST_LOCATION);
+			ActivityCompat.requestPermissions(this, PERMISSION_LOCATION, REQUEST_LOCATION);
 		}
 	}
 
@@ -283,30 +283,23 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	 * @param requestCode media type
 	 */
 	protected void getMedia(int requestCode) {
-		// open media picker directly without permission
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-			openMediaPicker(requestCode);
+		boolean requiresPermission = false;
+		for (String permission : PERMISSIONS_READ) {
+			if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+				requiresPermission = true;
+				break;
+			}
 		}
-		// ask for permission
-		else {
-			boolean requiresPermission = false;
+		if (requiresPermission) {
 			for (String permission : PERMISSIONS_READ) {
-				if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-					requiresPermission = true;
+				if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+					Toast.makeText(getApplicationContext(), R.string.info_permission_read, Toast.LENGTH_LONG).show();
 					break;
 				}
 			}
-			if (requiresPermission) {
-				for (String permission : PERMISSIONS_READ) {
-					if (shouldShowRequestPermissionRationale(permission)) {
-						Toast.makeText(getApplicationContext(), R.string.info_permission_read, Toast.LENGTH_LONG).show();
-						break;
-					}
-				}
-				requestPermissions(PERMISSIONS_READ, requestCode);
-			} else {
-				openMediaPicker(requestCode);
-			}
+			ActivityCompat.requestPermissions(this, PERMISSIONS_READ, requestCode);
+		} else {
+			openMediaPicker(requestCode);
 		}
 	}
 
@@ -320,14 +313,12 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 		File imageFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 		destMediaFile = new File(imageFolder, imageName);
 		srcMediaUri = uri;
-
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-				|| checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+		if (ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
 			saveImage();
 		} else {
-			if (shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE))
+			if (ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE))
 				Toast.makeText(getApplicationContext(), R.string.info_permission_write, Toast.LENGTH_LONG).show();
-			requestPermissions(PERMISSION_WRITE, REQUEST_STORE_IMG);
+			ActivityCompat.requestPermissions(this, PERMISSION_WRITE, REQUEST_STORE_IMG);
 		}
 	}
 

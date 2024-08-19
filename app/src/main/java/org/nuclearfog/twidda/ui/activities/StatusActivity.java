@@ -387,7 +387,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				optPin.setTitle(status.isPinned() ? R.string.menu_status_unpin : R.string.menu_status_pin);
 				optPin.setVisible(true);
 			} else if (currentStatus.getRepliedUserId() == settings.getLogin().getId()) {
-				optHide.setTitle(hidden ? R.string.menu_status_hide : R.string.menu_status_unhide);
+				optHide.setTitle(hidden ? R.string.menu_status_unhide : R.string.menu_status_hide);
 				optHide.setVisible(true);
 			}
 			// enable/disable bookmark
