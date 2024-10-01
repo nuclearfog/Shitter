@@ -1592,16 +1592,23 @@ public class Mastodon implements Connection {
 	 * @return status  timeline
 	 */
 	private Statuses getStatuses(String endpoint, long minId, long maxId, List<String> params) throws MastodonException {
-		if (minId != 0L)
-			params.add("min_id=" + minId);
 		if (maxId != 0L)
 			params.add("max_id=" + maxId);
 		params.add("limit=" + settings.getListSize());
 		try {
 			Statuses result = createStatuses(get(endpoint, params));
 			// posts from reply endpoint should not be sorted
-			if (result.size() > 1 && !endpoint.endsWith("/context"))
+			if (result.size() > 1 && !endpoint.endsWith("/context")) {
 				Collections.sort(result);
+				// alternative to min_id parameter: filtering all posts below min_id
+				// to get the most recent posts first, instead of scrolling to top
+				for (int i = result.size() - 1; i >= 0; i--) {
+					Status item = result.get(i);
+					if (item != null && item.getId() <= minId) {
+						result.remove(i);
+					}
+				}
+			}
 			return result;
 		} catch (IOException e) {
 			throw new MastodonException(e);
