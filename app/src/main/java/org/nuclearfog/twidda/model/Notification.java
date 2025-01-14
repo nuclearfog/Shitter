@@ -52,6 +52,11 @@ public interface Notification extends Serializable, Comparable<Notification> {
 	int TYPE_POLL = 0x6EB7;
 
 	/**
+	 *
+	 */
+	int TYPE_ANNUAL_REPORT = 0x891;
+
+	/**
 	 * notification ID
 	 *
 	 * @return ID

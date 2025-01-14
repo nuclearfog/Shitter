@@ -1848,8 +1848,12 @@ public class Mastodon implements Connection {
 				long currentId = settings.getLogin().getId();
 				JSONArray json = new JSONArray(body.string());
 				Notifications result = new Notifications();
-				for (int i = 0; i < json.length(); i++)
-					result.add(new MastodonNotification(json.getJSONObject(i), currentId));
+				for (int i = 0; i < json.length(); i++) {
+					Notification notification = new MastodonNotification(json.getJSONObject(i), currentId);
+					// fix: filter currently unsupported notification type
+					if (notification.getType() != Notification.TYPE_ANNUAL_REPORT)
+						result.add(notification);
+				}
 				return result;
 			}
 			throw new MastodonException(response);

@@ -69,6 +69,10 @@ public class MastodonNotification implements Notification {
 			case "update":
 				type = TYPE_UPDATE;
 				break;
+
+			case "annual_report":
+				type = TYPE_ANNUAL_REPORT;
+				break;
 		}
 		if (statusJson != null) {
 			status = new MastodonStatus(statusJson, currentId);
