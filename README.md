@@ -1,3 +1,3 @@
-#New home
+# New home
 
-<a href="https://codeberg.org/nuclearfog/Smither"/>
+<a href="https://codeberg.org/nuclearfog/Smither">Codeberg</a>
